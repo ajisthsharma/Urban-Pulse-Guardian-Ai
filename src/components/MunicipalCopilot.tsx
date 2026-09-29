@@ -126,7 +126,7 @@ export default function MunicipalCopilot({
   return (
     <div id="municipal-copilot-container" className="space-y-4">
       {/* HEADER WITH TELEMETRY BADGES */}
-      <div className="bg-gradient-to-r from-blue-50 dark:from-slate-900 via-[#F8FAFC] to-[#FFFFFF] border border-[#DBEAFE] rounded-2xl p-5 text-slate-900 dark:text-white shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-blue-50 dark:from-[#0A0A0A] via-[#F8FAFC] to-[#FFFFFF] border border-[#DBEAFE] rounded-2xl p-5 text-slate-900 dark:text-white shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-[#DBEAFE] flex items-center justify-center text-slate-900 dark:text-white shadow-2xs">
             <Building2 className="w-5 h-5" />
@@ -140,7 +140,7 @@ export default function MunicipalCopilot({
                 Officer Clearance Required
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-zinc-300 mt-0.5">
               Strategic fleet routing, dispatch queue optimization, and cross-department SLA intelligence.
             </p>
           </div>
@@ -148,30 +148,30 @@ export default function MunicipalCopilot({
 
         {/* Quick Operational Metrics */}
         <div className="flex items-center gap-2 font-mono text-xs">
-          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-2xs">
-            <span className="text-slate-500 dark:text-slate-300 text-[10px] uppercase block font-semibold">Active Backlog</span>
+          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl shadow-2xs">
+            <span className="text-slate-500 dark:text-zinc-300 text-[10px] uppercase block font-semibold">Active Backlog</span>
             <span className="text-amber-500 dark:text-amber-400 font-bold">{activeCount} tickets</span>
           </div>
-          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-2xs">
-            <span className="text-slate-500 dark:text-slate-300 text-[10px] uppercase block font-semibold">Critical Priority</span>
+          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl shadow-2xs">
+            <span className="text-slate-500 dark:text-zinc-300 text-[10px] uppercase block font-semibold">Critical Priority</span>
             <span className="text-red-600 dark:text-red-400 font-bold">{criticalCount} high-risk</span>
           </div>
-          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-2xs">
-            <span className="text-slate-500 dark:text-slate-300 text-[10px] uppercase block font-semibold">Resolution Rate</span>
+          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl shadow-2xs">
+            <span className="text-slate-500 dark:text-zinc-300 text-[10px] uppercase block font-semibold">Resolution Rate</span>
             <span className="text-green-600 dark:text-green-400 font-bold">{resolutionRate}%</span>
           </div>
         </div>
       </div>
 
       {/* MAIN CHAT THREAD CARD */}
-      <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xs overflow-hidden flex flex-col h-[620px]">
+      <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col h-[620px]">
         {/* Thread Status Subheader */}
-        <div className="bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 px-5 py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-700">
+        <div className="bg-slate-50 dark:bg-[#111111]/50 text-slate-600 dark:text-zinc-400 px-5 py-3 flex items-center justify-between border-b border-slate-200 dark:border-white/10">
           <div className="flex items-center gap-2 text-xs">
             <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
             <span className="font-semibold text-slate-900 dark:text-white">Urban Operations Neural Channel</span>
             <span className="text-[#CBD5E1]">•</span>
-            <span className="text-slate-500 dark:text-slate-300 text-[11px]">Clearance: {(currentUserRole || "MUNICIPAL").toUpperCase()}</span>
+            <span className="text-slate-500 dark:text-zinc-300 text-[11px]">Clearance: {(currentUserRole || "MUNICIPAL").toUpperCase()}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -179,7 +179,7 @@ export default function MunicipalCopilot({
               type="button"
               onClick={handleClearChat}
               title="Reset AI conversation memory"
-              className="flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:text-white bg-white dark:bg-slate-800/60 hover:bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-zinc-300 hover:text-slate-900 dark:text-white bg-white dark:bg-[#0A0A0A] hover:bg-slate-100 dark:bg-[#111111] border border-slate-200 dark:border-white/10 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
               <span>Clear Chat</span>
@@ -198,7 +198,7 @@ export default function MunicipalCopilot({
         </div>
 
         {/* Message Stream */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-slate-50 dark:bg-slate-800/50 flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-slate-50 dark:bg-[#111111]/50 flex flex-col gap-4">
           {messages.map((m) => (
             <div
               key={m.id}
@@ -217,7 +217,7 @@ export default function MunicipalCopilot({
               <div className={`p-4 rounded-2xl text-xs leading-relaxed ${
                 m.role === "user"
                   ? "bg-[#2563EB] text-white rounded-tr-xs shadow-2xs"
-                  : "bg-white dark:bg-slate-800/60 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-tl-xs shadow-2xs"
+                  : "bg-white dark:bg-[#0A0A0A] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 rounded-tl-xs shadow-2xs"
               }`}>
                 <div className="space-y-2 whitespace-pre-wrap">
                   {m.content.split("\n\n").map((para, idx) => {
@@ -271,7 +271,7 @@ export default function MunicipalCopilot({
               key={idx}
               disabled={sending}
               onClick={() => handleSend(chip)}
-              className="text-[11px] font-medium bg-white dark:bg-slate-800/60 hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-3xs disabled:opacity-50"
+              className="text-[11px] font-medium bg-white dark:bg-[#0A0A0A] hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-3xs disabled:opacity-50"
             >
               {chip}
             </button>
@@ -284,7 +284,7 @@ export default function MunicipalCopilot({
             e.preventDefault();
             handleSend(inputVal);
           }}
-          className="p-3 bg-white dark:bg-slate-800/60 border-t border-slate-200 flex gap-2 items-center"
+          className="p-3 bg-white dark:bg-[#0A0A0A] border-t border-slate-200 flex gap-2 items-center"
         >
           <input
             type="text"
@@ -292,7 +292,7 @@ export default function MunicipalCopilot({
             onChange={(e) => setInputVal(e.target.value)}
             placeholder="Ask about pending reports, priority hazards, Road Scanner detections, or dispatch recommendations..."
             disabled={sending}
-            className="flex-1 bg-slate-50 text-xs text-slate-800 rounded-xl px-4 py-3 border border-slate-200 focus:outline-none focus:bg-white dark:bg-slate-800/60 focus:border-amber-500 transition-all placeholder:text-slate-400"
+            className="flex-1 bg-slate-50 text-xs text-slate-800 rounded-xl px-4 py-3 border border-slate-200 focus:outline-none focus:bg-white dark:bg-[#0A0A0A] focus:border-amber-500 transition-all placeholder:text-slate-400"
           />
           <button
             type="submit"

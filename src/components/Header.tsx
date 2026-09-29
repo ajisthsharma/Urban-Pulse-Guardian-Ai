@@ -43,7 +43,7 @@ export default function Header({
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <header id="header-bar" className="sticky top-0 z-[1100] w-full bg-white dark:bg-slate-800/60 border-b border-gray-200 shadow-xs backdrop-blur-md bg-white dark:bg-slate-800/60/95 dark:bg-slate-900/95">
+    <header id="header-bar" className="sticky top-0 z-[1100] w-full bg-white dark:bg-[#0A0A0A] border-b border-gray-200 shadow-xs backdrop-blur-md bg-white dark:bg-[#0A0A0A]/95 dark:bg-black/95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Branding & Logo */}
@@ -97,7 +97,7 @@ export default function Header({
 
             {/* Notifications panel */}
             {showNotifDropdown && (
-              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl shadow-xl z-50 py-1 divide-y divide-slate-100 overflow-hidden animate-in fade-in duration-100">
+              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-xl shadow-xl z-50 py-1 divide-y divide-slate-100 overflow-hidden animate-in fade-in duration-100">
                 <div className="px-4 py-2.5 bg-slate-50 flex items-center justify-between">
                   <h4 className="font-semibold text-xs text-slate-800">Operational Alerts</h4>
                   {unreadCount > 0 && (

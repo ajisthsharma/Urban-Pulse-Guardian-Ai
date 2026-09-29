@@ -154,7 +154,7 @@ export default function CitizenMyReports({
               className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
                 filterCategory === cat
                   ? "bg-[#172033] text-white shadow-2xs"
-                  : "bg-slate-50 dark:bg-slate-800/50 text-[#64748B] hover:bg-[#F1F5F9]"
+                  : "bg-slate-50 dark:bg-[#111111]/50 text-[#64748B] hover:bg-[#F1F5F9]"
               }`}
             >
               {cat}
@@ -225,7 +225,7 @@ export default function CitizenMyReports({
 
                     <button
                       onClick={() => onSelectReport(rep)}
-                      className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800/50 hover:bg-[#EFF6FF] text-[#1D4ED8] border border-[#E2E8F0] hover:border-[#BFDBFE] rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                      className="px-3 py-1.5 bg-slate-50 dark:bg-[#111111]/50 hover:bg-[#EFF6FF] text-[#1D4ED8] border border-[#E2E8F0] hover:border-[#BFDBFE] rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5" />
                       <span>Details</span>
@@ -278,7 +278,7 @@ export default function CitizenMyReports({
                           stage.isCurrent
                             ? "bg-[#EFF6FF] border-[#2563EB] shadow-2xs"
                             : stage.isComplete
-                            ? "bg-slate-50 dark:bg-slate-800/50 border-[#CBD5E1]"
+                            ? "bg-slate-50 dark:bg-[#111111]/50 border-[#CBD5E1]"
                             : "bg-[#FAFAFA] border-[#F1F5F9] opacity-60"
                         }`}
                       >

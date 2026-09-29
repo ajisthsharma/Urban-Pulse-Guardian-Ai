@@ -13,7 +13,7 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-slate-900 dark:to-slate-800 rounded-3xl p-8 sm:p-10 text-slate-900 dark:text-white relative overflow-hidden shadow-xs border border-[#DBEAFE]">
+      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-[#0A0A0A] dark:to-black rounded-3xl p-8 sm:p-10 text-slate-900 dark:text-white relative overflow-hidden shadow-xs border border-[#DBEAFE]">
         <div className="absolute top-0 right-0 p-12 text-slate-900 dark:text-white opacity-5 pointer-events-none">
            <ShieldAlert className="w-48 h-48 rotate-12" />
         </div>
@@ -29,7 +29,7 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
           <p className="text-slate-900 dark:text-white text-sm sm:text-base mb-2 font-semibold">
             City intelligence for detecting, prioritizing and resolving urban risks.
           </p>
-          <p className="text-slate-500 dark:text-slate-300 text-xs sm:text-sm max-w-xl leading-relaxed">
+          <p className="text-slate-500 dark:text-zinc-300 text-xs sm:text-sm max-w-xl leading-relaxed">
             Monitor {cityName} operations, manage citizen reports, view AI scanner telemetry, and dispatch utility fleets to high-risk areas.
           </p>
         </div>
@@ -37,21 +37,21 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
 
       {/* Quick Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
-        <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-xs">
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider mb-2">Critical Hazards</div>
+        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-bold text-slate-500 dark:text-zinc-300 uppercase tracking-wider mb-2">Critical Hazards</div>
           {activeCriticalCount > 0 ? (
              <div className="text-3xl font-black text-red-600 dark:text-red-400 animate-pulse">{activeCriticalCount}</div>
           ) : (
-             <div className="text-sm font-medium text-slate-400 dark:text-slate-400 mt-2">No active critical tickets within warning limits.</div>
+             <div className="text-sm font-medium text-slate-400 dark:text-zinc-400 mt-2">No active critical tickets within warning limits.</div>
           )}
         </div>
-        <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-xs">
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider mb-2">Pending Reports</div>
+        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-bold text-slate-500 dark:text-zinc-300 uppercase tracking-wider mb-2">Pending Reports</div>
           <div className="text-3xl font-black text-amber-500 dark:text-amber-400">{pendingCount}</div>
         </div>
-        <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-xs col-span-1 sm:col-span-2 flex items-center justify-between">
+        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-xs col-span-1 sm:col-span-2 flex items-center justify-between">
            <div>
-              <div className="text-xs font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider mb-1">Road Scanner Feed</div>
+              <div className="text-xs font-bold text-slate-500 dark:text-zinc-300 uppercase tracking-wider mb-1">Road Scanner Feed</div>
               <div className="text-sm font-semibold text-slate-900 dark:text-white">AI telemetry active</div>
            </div>
            <button onClick={() => onNavigate('command-center')} className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-xs transition-colors cursor-pointer">
@@ -67,7 +67,7 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
           
           <button
             onClick={() => onNavigate('infrastructure')}
-            className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#F59E0B] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
+            className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#F59E0B] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
           >
             <div className="w-12 h-12 bg-[#FFFBEB] text-amber-500 dark:text-amber-400 border border-[#FDE68A] rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="w-6 h-6" />
@@ -77,13 +77,13 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
                 View Live Reports
                 <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-amber-500 dark:text-amber-400" />
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-300 line-clamp-2">Manage all incoming reports, assign fleets, and update statuses.</p>
+              <p className="text-xs text-slate-500 dark:text-zinc-300 line-clamp-2">Manage all incoming reports, assign fleets, and update statuses.</p>
             </div>
           </button>
 
           <button
             onClick={() => onNavigate('safety')}
-            className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#2563EB] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
+            className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#2563EB] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
           >
             <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
               <MapPin className="w-6 h-6" />
@@ -93,13 +93,13 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
                 Open City Map
                 <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-slate-900 dark:text-white" />
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-300 line-clamp-2">Geographic risk overlays and real-time hazard mapping.</p>
+              <p className="text-xs text-slate-500 dark:text-zinc-300 line-clamp-2">Geographic risk overlays and real-time hazard mapping.</p>
             </div>
           </button>
 
           <button
             onClick={() => onNavigate('analytics')}
-            className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#16A34A] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
+            className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#16A34A] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
           >
             <div className="w-12 h-12 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 dark:text-green-400 border border-green-200 dark:border-green-800 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
               <BarChart3 className="w-6 h-6" />
@@ -109,13 +109,13 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
                 View Analytics
                 <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-green-600 dark:text-green-400" />
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-300 line-clamp-2">City health standings, department indices, and issue growth.</p>
+              <p className="text-xs text-slate-500 dark:text-zinc-300 line-clamp-2">City health standings, department indices, and issue growth.</p>
             </div>
           </button>
 
           <button
             onClick={() => onNavigate('digital-twin')}
-            className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#7C3AED] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
+            className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#7C3AED] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
           >
             <div className="w-12 h-12 bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800/50 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
               <Layers className="w-6 h-6" />
@@ -125,7 +125,7 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
                 Digital Twin
                 <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-violet-600 dark:text-violet-400" />
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-300 line-clamp-2">5-layer vector hologram of current municipal infrastructure.</p>
+              <p className="text-xs text-slate-500 dark:text-zinc-300 line-clamp-2">5-layer vector hologram of current municipal infrastructure.</p>
             </div>
           </button>
 

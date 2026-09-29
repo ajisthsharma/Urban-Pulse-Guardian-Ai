@@ -108,7 +108,7 @@ export default function RewardsPortal({ currentUser, userPoints }: RewardsPortal
   return (
     <div id="rewards-portal-container" className="space-y-6">
       {/* HERO / POINTS STATS */}
-      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-slate-900 dark:to-slate-800 border border-[#DBEAFE] rounded-3xl p-6 text-slate-900 dark:text-white shadow-xs relative overflow-hidden">
+      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-[#0A0A0A] dark:to-black border border-[#DBEAFE] rounded-3xl p-6 text-slate-900 dark:text-white shadow-xs relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -119,13 +119,13 @@ export default function RewardsPortal({ currentUser, userPoints }: RewardsPortal
             <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
               Citizen Impact & Reward Hub
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-300 max-w-xl leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-zinc-300 max-w-xl leading-relaxed">
               Earn civic points automatically by running the AI Road Scanner on daily commutes and logging road surface anomalies.
             </p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800/60 border border-[#DBEAFE] rounded-2xl p-5 text-center min-w-[200px] shadow-xs">
-            <span className="text-xs font-mono text-slate-500 dark:text-slate-300 uppercase tracking-wider block font-semibold">
+          <div className="bg-white dark:bg-[#0A0A0A] border border-[#DBEAFE] rounded-2xl p-5 text-center min-w-[200px] shadow-xs">
+            <span className="text-xs font-mono text-slate-500 dark:text-zinc-300 uppercase tracking-wider block font-semibold">
               Your Civic Balance
             </span>
             <div className="flex items-center justify-center gap-2 mt-1">
@@ -150,7 +150,7 @@ export default function RewardsPortal({ currentUser, userPoints }: RewardsPortal
               <Gift className="w-4 h-4 text-slate-900 dark:text-white" />
               <span>Redeemable Civic Vouchers</span>
             </h3>
-            <span className="text-xs text-slate-500 dark:text-slate-300 font-mono">Available Partner Perks</span>
+            <span className="text-xs text-slate-500 dark:text-zinc-300 font-mono">Available Partner Perks</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -159,17 +159,17 @@ export default function RewardsPortal({ currentUser, userPoints }: RewardsPortal
               return (
                 <div
                   key={rew.id}
-                  className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 flex flex-col justify-between space-y-3 transition-all hover:border-slate-300 dark:border-slate-700 shadow-xs"
+                  className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl p-4 flex flex-col justify-between space-y-3 transition-all hover:border-slate-300 dark:border-white/10 shadow-xs"
                 >
                   <div className="space-y-1.5">
                     <span className="text-[10px] font-mono font-bold text-slate-900 dark:text-white px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 rounded border border-[#DBEAFE]">
                       {rew.category}
                     </span>
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">{rew.title}</h4>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-300">{rew.partner}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-zinc-300">{rew.partner}</p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                  <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
                     <span className="text-xs font-mono font-bold text-amber-500 dark:text-amber-400">
                       {rew.pointsRequired} PTS
                     </span>
@@ -192,7 +192,7 @@ export default function RewardsPortal({ currentUser, userPoints }: RewardsPortal
                         )}
                       </button>
                     ) : (
-                      <span className="text-[11px] font-mono text-slate-400 dark:text-slate-400">
+                      <span className="text-[11px] font-mono text-slate-400 dark:text-zinc-400">
                         Need {rew.pointsRequired - userPoints} more pts
                       </span>
                     )}
@@ -210,22 +210,22 @@ export default function RewardsPortal({ currentUser, userPoints }: RewardsPortal
               <Trophy className="w-4 h-4 text-amber-500 dark:text-amber-400" />
               <span>City Guardian Leaderboard</span>
             </h3>
-            <span className="text-xs text-slate-500 dark:text-slate-300 font-mono">This Month</span>
+            <span className="text-xs text-slate-500 dark:text-zinc-300 font-mono">This Month</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 space-y-2.5 shadow-xs">
+          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl p-4 space-y-2.5 shadow-xs">
             {leaderboard.map((lb) => (
               <div
                 key={lb.rank}
                 className={`p-3 rounded-xl border flex items-center justify-between text-xs transition-all ${
                   lb.isCurrentUser
                     ? "bg-blue-50 dark:bg-blue-900/20 border-[#DBEAFE] ring-1 ring-[#2563EB]/20"
-                    : "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+                    : "bg-slate-50 dark:bg-[#111111]/50 border-slate-200 dark:border-white/10"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center font-mono font-bold text-xs ${
-                    lb.rank === 1 ? "bg-[#F59E0B] text-white" : lb.rank === 2 ? "bg-[#CBD5E1] text-slate-900 dark:text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300"
+                    lb.rank === 1 ? "bg-[#F59E0B] text-white" : lb.rank === 2 ? "bg-[#CBD5E1] text-slate-900 dark:text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-zinc-300"
                   }`}>
                     {lb.rank}
                   </div>
@@ -233,7 +233,7 @@ export default function RewardsPortal({ currentUser, userPoints }: RewardsPortal
                     <span className="font-bold text-slate-900 dark:text-white block">
                       {lb.name} {lb.isCurrentUser && "(You)"}
                     </span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-300 font-mono">
+                    <span className="text-[10px] text-slate-500 dark:text-zinc-300 font-mono">
                       {lb.scansCount} scans • {lb.badge}
                     </span>
                   </div>
@@ -241,7 +241,7 @@ export default function RewardsPortal({ currentUser, userPoints }: RewardsPortal
 
                 <div className="text-right font-mono">
                   <span className="font-bold text-amber-500 dark:text-amber-400 text-sm">{lb.points}</span>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-400 block">PTS</span>
+                  <span className="text-[10px] text-slate-400 dark:text-zinc-400 block">PTS</span>
                 </div>
               </div>
             ))}
