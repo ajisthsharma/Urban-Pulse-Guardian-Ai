@@ -55,7 +55,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
           <p className="text-xs text-red-700 max-w-md mb-3">
             Your current role (<span className="font-mono font-bold uppercase">{role}</span>) does not possess permission clearance for this municipal command view.
           </p>
-          <div className="text-[11px] font-mono text-slate-500 bg-white dark:bg-[#0A0A0A]/80 dark:bg-black/80 border border-red-100 px-3 py-1.5 rounded-lg">
+          <div className="text-[11px] font-mono text-slate-500 bg-white dark:bg-slate-900/80 dark:bg-slate-900/80 border border-red-100 px-3 py-1.5 rounded-lg">
             Required Role Tier: {allowedRoles.join(" | ").toUpperCase()}
           </div>
         </div>

@@ -81,7 +81,7 @@ export default function CityHealthReport({ reports, selectedCityName }: CityHeal
   };
 
   return (
-    <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 shadow-sm rounded-2xl p-6 text-left" id="city-health-reports-panel">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 shadow-sm rounded-2xl p-6 text-left" id="city-health-reports-panel">
       
       {/* Upper header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-5 mb-5 Print-Hidden">
@@ -151,25 +151,25 @@ export default function CityHealthReport({ reports, selectedCityName }: CityHeal
         {/* Dynamic KPI Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           
-          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200/80 p-4.5 rounded-xl">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 p-4.5 rounded-xl">
             <span className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider block">Total Intake Count</span>
             <div className="text-2xl font-mono font-black text-slate-900 mt-1">{totalReportsCount}</div>
             <p className="text-[10px] text-slate-450 mt-1">Sum of civilian & patrol logs</p>
           </div>
 
-          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200/80 p-4.5 rounded-xl">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 p-4.5 rounded-xl">
             <span className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider block">Active Unresolved Hazards</span>
             <div className="text-2xl font-mono font-black text-red-650 mt-1">{activeCount}</div>
             <p className="text-[10px] text-slate-455 mt-1">In active dispatch resolution</p>
           </div>
 
-          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200/80 p-4.5 rounded-xl">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 p-4.5 rounded-xl">
             <span className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider block">Completed Sign-Offs</span>
             <div className="text-2xl font-mono font-black text-emerald-650 mt-1">{resolvedCount}</div>
             <p className="text-[10px] text-slate-450 mt-1">SWORN RESOLUTION RATE</p>
           </div>
 
-          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200/80 p-4.5 rounded-xl">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/80 p-4.5 rounded-xl">
             <span className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider block">SLA Target Compliance</span>
             <div className="text-2xl font-mono font-black text-blue-600 mt-1">{resolutionPercentage}%</div>
             <p className="text-[10px] text-slate-450 mt-1">Goal vs recorded duration</p>
@@ -181,7 +181,7 @@ export default function CityHealthReport({ reports, selectedCityName }: CityHeal
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
           
           {/* Left Block: rankings (6 spans) */}
-          <div className="md:col-span-6 bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-xl p-5">
+          <div className="md:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-5">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-800 mb-4 border-b border-slate-100 pb-2 flex items-center gap-1.5">
               <Award className="w-4 h-4 text-amber-500" />
               <span>Sovereign Area Risk Rankings</span>
@@ -209,7 +209,7 @@ export default function CityHealthReport({ reports, selectedCityName }: CityHeal
           </div>
 
           {/* Right Block: categories (6 spans) */}
-          <div className="md:col-span-6 bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-xl p-5">
+          <div className="md:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-5">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-800 mb-4 border-b border-slate-100 pb-2 flex items-center gap-1.5">
               <BarChart3 className="w-4 h-4 text-blue-500" />
               <span>Issue Categories Breakdown</span>
@@ -237,7 +237,7 @@ export default function CityHealthReport({ reports, selectedCityName }: CityHeal
         </div>
 
         {/* Executive AI Recommendations Block */}
-        <div className="bg-white dark:bg-[#0A0A0A] border-2 border-blue-500/10 rounded-xl p-5 mt-6 text-left">
+        <div className="bg-white dark:bg-slate-900 border-2 border-blue-500/10 rounded-xl p-5 mt-6 text-left">
           <div className="flex items-center gap-1.5 text-blue-800 font-bold text-xs uppercase mb-3">
             <span className="w-2.5 h-2.5 rounded bg-blue-600"></span>
             <span>Recommended Core System Directives (Q2 FY2026)</span>
