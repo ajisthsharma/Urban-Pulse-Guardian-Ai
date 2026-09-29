@@ -186,8 +186,8 @@ export default function CitizenSuccessToast({
       <div className="bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 px-4 py-2 flex items-center justify-between text-white text-[11px] font-bold">
         <div className="flex items-center gap-2">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white dark:bg-[#0A0A0A] opacity-80"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white dark:bg-[#0A0A0A]"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white dark:bg-slate-900 opacity-80"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white dark:bg-slate-900"></span>
           </span>
           <span className="uppercase tracking-wider font-extrabold flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5" />

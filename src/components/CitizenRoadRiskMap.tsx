@@ -247,7 +247,7 @@ export default function CitizenRoadRiskMap({
             <span className="text-[10px] text-[#94A3B8]">Click any pin or incident to inspect details</span>
           </div>
 
-          <div className="relative w-full h-[440px] sm:h-[500px] rounded-xl overflow-hidden border border-[#CBD5E1] shadow-inner bg-slate-50 dark:bg-[#111111]/50">
+          <div className="relative w-full h-[440px] sm:h-[500px] rounded-xl overflow-hidden border border-[#CBD5E1] shadow-inner bg-slate-50 dark:bg-slate-800/50">
             <div ref={mapContainerRef} className="w-full h-full" />
           </div>
         </div>
@@ -280,14 +280,14 @@ export default function CitizenRoadRiskMap({
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-slate-50 dark:bg-[#111111]/50 p-2.5 rounded-xl border border-[#E2E8F0]">
+                <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-[#E2E8F0]">
                   <span className="text-[9px] font-bold text-[#64748B] uppercase block">Risk Score</span>
                   <span className="font-black text-sm text-[#172033] block mt-0.5">
                     {selectedIncident.severity} / 100
                   </span>
                 </div>
 
-                <div className="bg-slate-50 dark:bg-[#111111]/50 p-2.5 rounded-xl border border-[#E2E8F0]">
+                <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-[#E2E8F0]">
                   <span className="text-[9px] font-bold text-[#64748B] uppercase block">Status</span>
                   <span className="font-bold text-xs text-[#2563EB] block mt-0.5">
                     {selectedIncident.status}
@@ -295,7 +295,7 @@ export default function CitizenRoadRiskMap({
                 </div>
               </div>
 
-              <div className="bg-slate-50 dark:bg-[#111111]/50 p-2.5 rounded-xl border border-[#E2E8F0] text-xs">
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-[#E2E8F0] text-xs">
                 <span className="text-[9px] font-bold text-[#64748B] uppercase block mb-0.5">Location</span>
                 <div className="flex items-center gap-1 text-[#172033]">
                   <MapPin className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
@@ -325,7 +325,7 @@ export default function CitizenRoadRiskMap({
               )}
             </div>
           ) : (
-            <div className="bg-slate-50 dark:bg-[#111111]/50 border border-dashed border-[#CBD5E1] rounded-2xl p-6 text-center text-[#64748B]">
+            <div className="bg-slate-50 dark:bg-slate-800/50 border border-dashed border-[#CBD5E1] rounded-2xl p-6 text-center text-[#64748B]">
               <MapPin className="w-8 h-8 text-[#94A3B8] mx-auto mb-2" />
               <h4 className="text-xs font-bold text-[#172033] mb-1">Select an Incident</h4>
               <p className="text-[11px] text-[#64748B]">
@@ -368,7 +368,7 @@ export default function CitizenRoadRiskMap({
                       className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between gap-3 ${
                         selectedIncident?.id === rep.id
                           ? "bg-[#EFF6FF] border-[#2563EB]"
-                          : "bg-slate-50 dark:bg-[#111111]/50 hover:bg-white border-[#E2E8F0]"
+                          : "bg-slate-50 dark:bg-slate-800/50 hover:bg-white border-[#E2E8F0]"
                       }`}
                     >
                       <div className="min-w-0">

@@ -89,7 +89,7 @@ export default function CitizenAlerts({
                   className={`p-3.5 rounded-xl border text-xs transition-all ${
                     !notif.read
                       ? "bg-[#EFF6FF] border-[#BFDBFE]"
-                      : "bg-slate-50 dark:bg-[#111111]/50 border-[#E2E8F0]"
+                      : "bg-slate-50 dark:bg-slate-800/50 border-[#E2E8F0]"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1">

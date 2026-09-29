@@ -54,7 +54,7 @@ export default function CityCommandCenter({
     <div className="flex flex-col gap-6 text-left">
       
       {/* City Status Hub Banner */}
-      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-[#0A0A0A] dark:to-black text-slate-900 dark:text-white rounded-2xl p-6 border border-[#DBEAFE] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-xs relative overflow-hidden">
+      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-slate-900 dark:to-slate-950 text-slate-900 dark:text-white rounded-2xl p-6 border border-[#DBEAFE] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-xs relative overflow-hidden">
         <div className="flex items-start gap-4">
           <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-[#DBEAFE] text-slate-900 dark:text-white rounded-xl shadow-xs">
             <Radio className="w-6 h-6 animate-pulse" />
@@ -69,19 +69,19 @@ export default function CityCommandCenter({
             <h2 className="text-xl font-extrabold tracking-tight mt-1 font-display text-slate-900 dark:text-white">
               AI Command & Control Center
             </h2>
-            <p className="text-xs text-slate-500 dark:text-zinc-300 leading-normal max-w-xl mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-300 leading-normal max-w-xl mt-1">
               Active command deck administering digital twin layers, citizen complaint dispatch algorithms, and direct municipal contractor status histories on an encrypted supervisor pipeline.
             </p>
           </div>
         </div>
 
         <div className="flex flex-col items-end shrink-0 w-full sm:w-auto">
-          <span className="text-[9px] text-slate-500 dark:text-zinc-300 uppercase font-mono font-bold">GRID ALERT SYSTEM STATUS</span>
+          <span className="text-[9px] text-slate-500 dark:text-slate-300 uppercase font-mono font-bold">GRID ALERT SYSTEM STATUS</span>
           <span className="text-base font-bold bg-[#F0FDF4] border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 px-4 py-1.5 rounded-xl font-sans mt-1.5 flex items-center gap-1.5 shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-ping" />
             OPERATIONAL
           </span>
-          <span className="text-[10px] text-slate-400 dark:text-zinc-400 font-mono mt-1.5">No critical packet drops detected</span>
+          <span className="text-[10px] text-slate-400 dark:text-slate-400 font-mono mt-1.5">No critical packet drops detected</span>
         </div>
       </div>
 
@@ -89,42 +89,42 @@ export default function CityCommandCenter({
       
 
       {/* SOVEREIGN SMART-CITY TELEMETRY HUDBAR */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-white dark:bg-[#0A0A0A] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 rounded-2xl p-4 px-5 font-mono text-xs shadow-xs relative overflow-hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 px-5 font-mono text-xs shadow-xs relative overflow-hidden">
         <div className="flex items-center gap-3 relative z-10">
           <div className="relative flex items-center justify-center w-4 h-4">
             <span className="absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75 animate-ping" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#16A34A]" />
           </div>
           <div>
-            <span className="text-[9px] text-slate-500 dark:text-zinc-300 uppercase block font-bold tracking-wider">Active Monitoring</span>
+            <span className="text-[9px] text-slate-500 dark:text-slate-300 uppercase block font-bold tracking-wider">Active Monitoring</span>
             <span className="text-[11px] font-black text-slate-900 dark:text-white uppercase">ON & SAFEGUARDING</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-slate-200 dark:border-white/10 pt-3 sm:pt-0 sm:pl-4 relative z-10">
+        <div className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-slate-200 dark:border-slate-700 pt-3 sm:pt-0 sm:pl-4 relative z-10">
           <Activity className="w-4 h-4 text-[#0284C7] animate-pulse shrink-0" />
           <div>
-            <span className="text-[9px] text-slate-500 dark:text-zinc-300 uppercase block font-bold tracking-wider">Municipal Risk Engine</span>
+            <span className="text-[9px] text-slate-500 dark:text-slate-300 uppercase block font-bold tracking-wider">Municipal Risk Engine</span>
             <span className="text-[11px] font-black text-[#0284C7] flex items-center gap-1 uppercase">
               RUNNING <span className="inline-block animate-spin text-[8px] text-[#0284C7]">⚙️</span>
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 dark:border-white/10 pt-3 md:pt-0 md:pl-4 relative z-10">
+        <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-700 pt-3 md:pt-0 md:pl-4 relative z-10">
           <Clock className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0" />
           <div>
-            <span className="text-[9px] text-slate-500 dark:text-zinc-300 uppercase block font-bold tracking-wider">Telemetry Heartbeat</span>
+            <span className="text-[9px] text-slate-500 dark:text-slate-300 uppercase block font-bold tracking-wider">Telemetry Heartbeat</span>
             <span className="text-[11px] font-black text-[#B45309]">
               {secSinceRef === 0 ? "JUST SYNCED" : `${secSinceRef}s AGO`}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 dark:border-white/10 pt-3 md:pt-0 md:pl-4 relative z-10">
+        <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-700 pt-3 md:pt-0 md:pl-4 relative z-10">
           <Cpu className="w-4 h-4 text-[#7C3AED] shrink-0" />
           <div>
-            <span className="text-[9px] text-slate-500 dark:text-zinc-300 uppercase block font-bold tracking-wider">Cognitive Capacity</span>
+            <span className="text-[9px] text-slate-500 dark:text-slate-300 uppercase block font-bold tracking-wider">Cognitive Capacity</span>
             <span className="text-[11px] font-black text-[#7C3AED]">98.4% OPTIMAL TFLOPs</span>
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function CityCommandCenter({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         
         {/* Stats 1: Active issues */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 p-4.5 rounded-2xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-2xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Active Bottlenecks</span>
             <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
@@ -151,7 +151,7 @@ export default function CityCommandCenter({
         </div>
 
         {/* Stats 2: Critical Alerts */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 p-4.5 rounded-xl shadow-3xs border-l-4 border-red-500">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs border-l-4 border-red-500">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Critical Risks</span>
             <div className="p-1.5 bg-red-50 text-red-600 rounded-lg shrink-0">
@@ -165,7 +165,7 @@ export default function CityCommandCenter({
         </div>
 
         {/* Stats 3: Areas At Risk */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 p-4.5 rounded-xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Areas At Risk</span>
             <div className="p-1.5 bg-amber-50 text-amber-600 rounded-lg shrink-0">
@@ -179,7 +179,7 @@ export default function CityCommandCenter({
         </div>
 
         {/* Stats 4: Open Tasks */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 p-4.5 rounded-xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Open Dispatch Tasks</span>
             <div className="p-1.5 bg-purple-50 text-purple-600 rounded-lg shrink-0">
@@ -193,7 +193,7 @@ export default function CityCommandCenter({
         </div>
 
         {/* Stats 5: Resolved issues */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 p-4.5 rounded-xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Resolved Issues</span>
             <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg shrink-0">
@@ -207,7 +207,7 @@ export default function CityCommandCenter({
         </div>
 
         {/* Stats 6: Resolution Time */}
-        <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 p-4.5 rounded-xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Average Dispatch Triage</span>
             <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
@@ -226,7 +226,7 @@ export default function CityCommandCenter({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Core Live Command Log Panel (Col-7) */}
-        <div className="lg:col-span-7 bg-white dark:bg-[#0A0A0A] p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
+        <div className="lg:col-span-7 bg-white dark:bg-slate-900 p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
           <div>
             <span className="text-[10px] font-mono font-extrabold text-blue-600 uppercase tracking-wider block">
               LIVE DIAGNOSTATIC FEED
@@ -300,7 +300,7 @@ export default function CityCommandCenter({
 
                     <div className="flex items-start sm:items-end flex-col shrink-0 gap-1 pl-4 sm:border-l border-slate-200 min-w-[130px]">
                       <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Citizen Impact</span>
-                      <span className="text-xs font-mono font-extrabold text-slate-850 bg-white dark:bg-[#0A0A0A] border border-slate-200 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono font-extrabold text-slate-850 bg-white dark:bg-slate-900 border border-slate-200 px-2 py-0.5 rounded-md">
                         {citizensAffected.toLocaleString()} affected
                       </span>
                       <span className="text-[11px] text-rose-600 font-bold flex items-center gap-0.5 font-mono">
@@ -315,7 +315,7 @@ export default function CityCommandCenter({
         </div>
 
         {/* Feature 13 Resource Allocation Desk (Col-5) */}
-        <div className="lg:col-span-5 bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-2xl p-5 flex flex-col gap-4 shadow-sm text-left">
+        <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-5 flex flex-col gap-4 shadow-sm text-left">
           <div>
             <div className="flex items-center gap-1.5 text-[10px] font-mono font-extrabold text-blue-600 uppercase tracking-wider">
               <Cpu className="w-3.5 h-3.5 text-blue-500 animate-spin-slow" />

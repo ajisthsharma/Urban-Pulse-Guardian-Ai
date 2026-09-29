@@ -121,13 +121,13 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
 
   return (
     <div className="fixed inset-0 z-[1300] bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
         
         {/* Head branding */}
         <div className="px-6 py-4.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 bg-blue-650 rounded flex items-center justify-center">
-              <span className="w-2 h-2 rounded-full bg-white dark:bg-[#0A0A0A]" />
+              <span className="w-2 h-2 rounded-full bg-white dark:bg-slate-900" />
             </div>
             <span className="text-[10.5px] font-mono font-black text-slate-800 tracking-wider">
               SYSTEM ONBOARDING BRIEFING
@@ -187,7 +187,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
             {activeStep > 0 && (
               <button
                 onClick={() => setActiveStep(prev => prev - 1)}
-                className="px-3.5 py-1.5 bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-lg text-slate-650 hover:bg-slate-100 text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 rounded-lg text-slate-650 hover:bg-slate-100 text-xs font-semibold flex items-center gap-1 cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" /> Back
               </button>

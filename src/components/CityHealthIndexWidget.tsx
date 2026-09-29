@@ -11,7 +11,7 @@ export default function CityHealthIndexWidget() {
   ];
 
   return (
-    <div id="city-health-index-panel" className="bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-2xl p-6 shadow-sm mb-6 text-left">
+    <div id="city-health-index-panel" className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-6 shadow-sm mb-6 text-left">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-6 border-b border-slate-100">
         <div>
           <span className="text-[10px] sm:text-xs font-mono font-extrabold text-blue-600 uppercase tracking-wider block">
@@ -49,7 +49,7 @@ export default function CityHealthIndexWidget() {
         {categories.map((cat, idx) => {
           const Icon = cat.icon;
           return (
-            <div key={idx} className="bg-slate-50/50 border border-slate-200/60 hover:border-slate-300 rounded-xl p-4 transition-all hover:bg-white dark:bg-[#0A0A0A] duration-150 relative group">
+            <div key={idx} className="bg-slate-50/50 border border-slate-200/60 hover:border-slate-300 rounded-xl p-4 transition-all hover:bg-white dark:bg-slate-900 duration-150 relative group">
               <div className="flex items-center justify-between mb-3">
                 <div className={`p-2 rounded-lg ${cat.bg} ${cat.color} shrink-0`}>
                   <Icon className="w-4 h-4" />
