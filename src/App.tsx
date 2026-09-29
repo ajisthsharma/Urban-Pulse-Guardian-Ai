@@ -24,6 +24,10 @@ import RewardsPortal from "./components/RewardsPortal";
 import CitizenEmergencySOS from "./components/CitizenEmergencySOS";
 import CitizenCopilot from "./components/CitizenCopilot";
 import CitizenHome from "./components/CitizenHome";
+import CitizenRoadRiskMap from "./components/CitizenRoadRiskMap";
+import CitizenMyReports from "./components/CitizenMyReports";
+import CitizenAlerts from "./components/CitizenAlerts";
+import CitizenProfile from "./components/CitizenProfile";
 import MunicipalHome from "./components/MunicipalHome";
 import MunicipalCopilot from "./components/MunicipalCopilot";
 import FooterEmergencyButton from "./components/FooterEmergencyButton";
@@ -134,7 +138,7 @@ export default function App() {
   // High-fidelity sidebar terminal states
   const [activeTerminal, setActiveTerminal] = useState<"citizen" | "admin" | "field_team" | "split">("citizen");
   const [activeSubTab, setActiveSubTab] = useState<
-    "citizen-home" | "my-reports" | "municipal-home" | "command-center" | "infrastructure" | "dispatch-management" | "road-scanner" | "candidate-review" | "safe-route" | "rewards" | "emergency-sos" | "copilot" | "analytics" | "digital-twin" | "safety" | "traffic" | "environmental" | "emergency" | "field-operations" | "admin-panel" | "admin-users" | "admin-teams" | "admin-system" | "admin-audit" | "admin-settings" | "audit-logs"
+    "citizen-home" | "my-reports" | "municipal-home" | "command-center" | "infrastructure" | "dispatch-management" | "road-scanner" | "candidate-review" | "safe-route" | "rewards" | "emergency-sos" | "copilot" | "analytics" | "digital-twin" | "safety" | "traffic" | "environmental" | "emergency" | "field-operations" | "admin-panel" | "admin-users" | "admin-teams" | "admin-system" | "admin-audit" | "admin-settings" | "audit-logs" | "alerts" | "profile"
   >("citizen-home");
 
   // On mount and role change, reset to correct home
@@ -166,8 +170,7 @@ export default function App() {
     } else if (currentUser.role === "citizen") {
       const forbiddenForCitizen = [
         "field-operations", "command-center", "municipal-home", "dispatch-management", "admin-panel", 
-        "admin-users", "admin-teams", "admin-system", "admin-audit", "admin-settings", "audit-logs",
-        "rewards", "copilot"
+        "admin-users", "admin-teams", "admin-system", "admin-audit", "admin-settings", "audit-logs"
       ];
       if (forbiddenForCitizen.includes(activeSubTab)) {
         setActiveSubTab("citizen-home");
@@ -481,13 +484,19 @@ export default function App() {
       ]
     },
     {
-      title: "SAFETY",
+      title: "ROAD INTELLIGENCE",
       items: [
-        { id: "infrastructure", label: "Report Issue", desc: "Log urban hazards", icon: Activity },
         { id: "road-scanner", label: "AI Road Scanner", desc: "Dashcam hazard detection", icon: Camera },
         ...(activeScanSession && activeScanSession.candidates.length > 0 ? [{ id: "candidate-review", label: `Review Scans (${activeScanSession.candidates.length})`, desc: "Review & submit", icon: ShieldCheck }] : []),
-        { id: "safe-route", label: "Safe Route", desc: "Hazard-free navigation", icon: Navigation },
-        { id: "emergency-sos", label: "Emergency SOS", desc: "Critical infrastructure beacon", icon: AlertTriangle },
+        { id: "infrastructure", label: "Report Issue", desc: "Log road hazards", icon: AlertCircle },
+        { id: "safety", label: "Road Risk Map", desc: "Nearby road hazard map", icon: MapPin },
+      ]
+    },
+    {
+      title: "ACTIVITY",
+      items: [
+        { id: "alerts", label: "Alerts", desc: "Civic alerts & updates", icon: Bell },
+        { id: "profile", label: "Profile", desc: "Citizen account details", icon: UserIcon },
       ]
     }
   ];
@@ -1109,11 +1118,14 @@ export default function App() {
                       {activeSubTab === "admin-settings" && "Platform Settings & Governance Policies"}
                       {activeSubTab === "audit-logs" && "Platform Audit Log Ledger"}
                       {activeSubTab === "infrastructure" && (
+                        currentUser.role === "citizen" ? "REPORT A ROAD ISSUE" :
                         activeTerminal === "citizen" ? "Citizen Volunteer Dashboard" :
                         activeTerminal === "admin" ? "Municipal Commander Terminal" : ""
                       )}
+                      {activeSubTab === "safety" && (currentUser.role === "citizen" ? "Road Risk Map" : "Urban Heatmap Grid & AI Risk Diagnostics")}
+                      {activeSubTab === "alerts" && "Civic Alerts & Notices"}
+                      {activeSubTab === "profile" && "Citizen Profile & Clearance"}
                       {activeSubTab === "copilot" && "AI Guardian Command Advisor"}
-                      {activeSubTab === "safety" && "Urban Heatmap Grid & AI Risk Diagnostics"}
                       {activeSubTab === "traffic" && "Smart Traffic Control Center"}
                       {activeSubTab === "environmental" && "Clean Air Control Centre"}
                       {activeSubTab === "emergency" && "Emergency Services Control Center"}
@@ -1141,50 +1153,68 @@ export default function App() {
                   {activeSubTab === "analytics" && `Advanced telemetry logs tracking issue growth percentages, department performance indices, and specific ward standings across metropolitan sectors.`}
                   {activeSubTab === "digital-twin" && `Interactive 5-Layer vector city hologram displaying real-time infrastructure, traffic speed, safety, AQI smog, and composite risk parameters mapped live.`}
                   {activeSubTab === "infrastructure" && (
+                    currentUser.role === "citizen" ? "Upload evidence and let UrbanPulse AI analyze, assess and route the incident." :
                     activeTerminal === "citizen" ? `Take photos, input hazard parameters, and witness instant AI categorization mapped across active metropolitan sectors.` :
                     activeTerminal === "admin" ? `Filter municipal reports down to wards, examine high confidence diagnostic scores, and assign utility dispatch fleets.` :
                     ""
                   )}
                   {activeSubTab === "copilot" && `Chat live with UrbanPulse's real-time AI co-pilot. Obtain diagnostics, ask questions about regional hazards, or request simulated response priorities.`}
-                  {activeSubTab === "safety" && `GIS mapping system with localized micro-overlays, assessing probabilities of structural faults, dark streets, and water retention across municipal domains.`}
+                  {activeSubTab === "safety" && (currentUser.role === "citizen" ? "Live spatial visualization of reported road hazards categorized by risk severity." : "GIS mapping system with localized micro-overlays, assessing probabilities of structural faults, dark streets, and water retention across municipal domains.")}
+                  {activeSubTab === "alerts" && "Broadcast advisories, safety alerts, and updates on your submitted road issues."}
+                  {activeSubTab === "profile" && "Your citizen identity, civic participation records, and reporting history."}
                   {activeSubTab === "traffic" && `Volume telemetry capturing traffic flow speeds, road obstructions, and proposing lane adjustments and dynamic speed controls.`}
                   {activeSubTab === "environmental" && `Monitoring atmospherics and smog indicators, with real-time AQI feedback and particulate density tracking across sectors.`}
                   {activeSubTab === "emergency" && `Continuous transit routing, determining hazard bypass coordinates and dispatcher assignment priorities for hospital responder lanes.`}
                 </p>
 
                 {/* TRUST & TRANSPARENCY DECK (AI parameters, data sources, last updated) */}
-                <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-2 text-[10px] font-mono font-medium text-[#64748B] border-t border-[#F1F5F9] items-center">
-                  <div className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
-                    <span>AI Engine: <strong className="text-[#172033]">Gemini 3.5-Flash Verified</strong> (98.4% Confidence Threshold)</span>
+                {currentUser.role !== "citizen" ? (
+                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-2 text-[10px] font-mono font-medium text-[#64748B] border-t border-[#F1F5F9] items-center">
+                    <div className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
+                      <span>AI Engine: <strong className="text-[#172033]">Gemini 3.5-Flash Verified</strong> (98.4% Confidence Threshold)</span>
+                    </div>
+                    <span className="text-[#CBD5E1]">|</span>
+                    <div>
+                      <span>Data Streams: <strong className="text-[#172033]">GPS Lock, Municipal GIS & Citizen Mesh</strong></span>
+                    </div>
+                    <span className="text-[#CBD5E1]">|</span>
+                    <div>
+                      <span>Telemetry Sync: <strong className="text-[#2563EB] font-bold">Consolidated</strong></span>
+                    </div>
                   </div>
-                  <span className="text-[#CBD5E1]">|</span>
-                  <div>
-                    <span>Data Streams: <strong className="text-[#172033]">GPS Lock, Municipal GIS & Citizen Mesh</strong></span>
+                ) : (
+                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-2 text-[11px] font-medium text-[#64748B] border-t border-[#F1F5F9] items-center">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
+                      <span className="text-[#0F172A] font-medium">Citizen Road Safety Portal</span>
+                    </div>
+                    <span className="text-[#CBD5E1]">|</span>
+                    <div>
+                      <span>Domain: <strong className="text-[#2563EB]">{selectedCityName}</strong></span>
+                    </div>
                   </div>
-                  <span className="text-[#CBD5E1]">|</span>
-                  <div>
-                    <span>Telemetry Sync: <strong className="text-[#2563EB] font-bold">Consolidated</strong></span>
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Controls and Selectors panel */}
-              <div className="flex flex-row xl:flex-col items-end gap-2.5 shrink-0 self-start sm:self-auto flex-wrap">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold p-1 px-2.5 bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] rounded-lg shrink-0 select-none uppercase tracking-wide">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
-                    <span>Unified Network Active</span>
-                  </div>
+              {currentUser.role !== "citizen" && (
+                <div className="flex flex-row xl:flex-col items-end gap-2.5 shrink-0 self-start sm:self-auto flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold p-1 px-2.5 bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] rounded-lg shrink-0 select-none uppercase tracking-wide">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
+                      <span>Unified Network Active</span>
+                    </div>
 
-                  <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold p-1 px-2.5 bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] rounded-lg shrink-0 select-none uppercase tracking-wide">
-                    <span>Deck:</span>
-                    <span className="text-[#2563EB] font-bold">
-                      {activeSubTab === "infrastructure" ? `${activeTerminal} suite` : activeSubTab}
-                    </span>
+                    <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold p-1 px-2.5 bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] rounded-lg shrink-0 select-none uppercase tracking-wide">
+                      <span>Deck:</span>
+                      <span className="text-[#2563EB] font-bold">
+                        {activeSubTab === "infrastructure" ? `${activeTerminal} suite` : activeSubTab}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* ROAD SCANNER DASHCAM & VISION ANALYSIS */}
@@ -1234,7 +1264,7 @@ export default function App() {
                     setUserCivicPoints((pts) => pts + awardedPoints);
                     setActiveScanSession(null);
                     syncOperationalDatasets(currentUser.email, currentUser.role);
-                    setActiveSubTab("my-reports");
+                    setActiveSubTab("rewards");
                   }}
                   onDiscardSession={() => {
                     setActiveScanSession(null);
@@ -1276,70 +1306,12 @@ export default function App() {
             {activeSubTab === "my-reports" && (
               <RoleGuard allowedRoles={["citizen"]}>
                 <div className="w-full">
-                  <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs text-left">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E2E8F0] gap-3 mb-6">
-                      <div>
-                        <h2 className="text-lg font-bold text-[#172033] font-sans">My Submitted Reports</h2>
-                        <p className="text-xs text-[#64748B] mt-0.5">Track real-time status and remediation progress for all civic hazards you have logged.</p>
-                      </div>
-                      <span className="text-xs font-bold font-mono px-3 py-1.5 bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE] rounded-full self-start sm:self-auto">
-                        {reports.filter(r => r.reporterEmail === currentUser.email).length} Total Submissions
-                      </span>
-                    </div>
-
-                    {reports.filter(r => r.reporterEmail === currentUser.email).length === 0 ? (
-                      <div className="p-12 text-center border-2 border-dashed border-[#E2E8F0] rounded-2xl">
-                        <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center mx-auto mb-3">
-                          <FileText className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-sm font-bold text-[#172033] mb-1">No reports lodged yet</h3>
-                        <p className="text-xs text-[#64748B] mb-4 max-w-sm mx-auto">You have not submitted any infrastructure incidents. Use the Report Issue desk or AI Road Scanner to file hazards.</p>
-                        <button
-                          onClick={() => setActiveSubTab("infrastructure")}
-                          className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
-                        >
-                          Report a Problem
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {reports.filter(r => r.reporterEmail === currentUser.email).map((rep) => (
-                          <div
-                            key={rep.id}
-                            onClick={() => setSelectedReport(rep)}
-                            className="bg-[#F8FAFC] hover:bg-white border border-[#E2E8F0] hover:border-[#2563EB] p-4.5 rounded-2xl transition-all cursor-pointer shadow-3xs hover:shadow-xs flex flex-col justify-between gap-3 group"
-                          >
-                            <div>
-                              <div className="flex items-center justify-between gap-2 mb-2">
-                                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
-                                  rep.status === "Resolved" ? "bg-[#F0FDF4] text-[#16A34A] border-[#DCFCE7]" :
-                                  rep.status === "In Progress" ? "bg-[#EFF6FF] text-[#2563EB] border-[#DBEAFE]" :
-                                  "bg-[#FFFBEB] text-[#D97706] border-[#FEF3C7]"
-                                }`}>
-                                  ● {rep.status}
-                                </span>
-                                <span className="text-[10px] font-mono text-[#94A3B8]">
-                                  {getRelativeTime(rep.createdAt)}
-                                </span>
-                              </div>
-                              <h4 className="text-xs font-bold text-[#172033] group-hover:text-[#2563EB] transition-colors line-clamp-1">
-                                {rep.title}
-                              </h4>
-                              <p className="text-[11px] text-[#64748B] mt-1 line-clamp-2 leading-relaxed">
-                                {rep.description}
-                              </p>
-                            </div>
-                            <div className="pt-2.5 border-t border-[#E2E8F0] flex items-center justify-between text-[10.5px] text-[#64748B]">
-                              <span className="truncate max-w-[150px] font-medium">{rep.location}</span>
-                              <span className="font-bold text-[#2563EB] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                                Details →
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <CitizenMyReports
+                    reports={reports}
+                    currentUserEmail={currentUser.email}
+                    onSelectReport={(rep) => setSelectedReport(rep)}
+                    onNavigateToReport={() => setActiveSubTab("infrastructure")}
+                  />
                 </div>
               </RoleGuard>
             )}
@@ -1524,11 +1496,48 @@ export default function App() {
             )}
 
             {activeSubTab === "safety" && (
-              <FutureModules 
-                forcedTab="predictive" 
-                reports={reports} 
-                onReportUpdated={() => syncOperationalDatasets(currentUser!.email, currentUser!.role)}
-              />
+              currentUser.role === "citizen" ? (
+                <div className="w-full">
+                  <CitizenRoadRiskMap
+                    reports={reports}
+                    onSelectReport={(rep) => setSelectedReport(rep)}
+                  />
+                </div>
+              ) : (
+                <FutureModules 
+                  forcedTab="predictive" 
+                  reports={reports} 
+                  onReportUpdated={() => syncOperationalDatasets(currentUser!.email, currentUser!.role)}
+                />
+              )
+            )}
+
+            {/* CITIZEN ALERTS WORKSPACE */}
+            {activeSubTab === "alerts" && (
+              <div className="w-full">
+                <CitizenAlerts
+                  notifications={notifications}
+                  reports={reports}
+                  onMarkRead={handleMarkNotificationsRead}
+                  onSelectReport={(rep) => setSelectedReport(rep)}
+                />
+              </div>
+            )}
+
+            {/* CITIZEN PROFILE WORKSPACE */}
+            {activeSubTab === "profile" && (
+              <div className="w-full">
+                <CitizenProfile
+                  currentUser={{
+                    fullName: currentUser.fullName,
+                    email: currentUser.email,
+                    role: currentUser.role
+                  }}
+                  reports={reports}
+                  onLogout={handleLogout}
+                  onNavigateToReports={() => setActiveSubTab("my-reports")}
+                />
+              </div>
             )}
 
             {activeSubTab === "traffic" && (
@@ -1557,9 +1566,27 @@ export default function App() {
 
             {/* DEFAULT CORE WORKSPACE PANELS */}
             {activeSubTab === "infrastructure" && (
-              <div className="flex flex-col gap-6 w-full">
-                <AIInsightsPanel reports={reports} />
-                {activeTerminal === "split" ? (
+              currentUser.role === "citizen" ? (
+                <div className="w-full">
+                  <CitizenUpload
+                    onReportCreated={(newRep) => {
+                      setReports(prev => [newRep, ...prev]);
+                      setSelectedReport(newRep);
+                      syncOperationalDatasets(currentUser.email, currentUser.role);
+                    }}
+                    onViewReportDetails={(rep) => {
+                      setSelectedReport(rep);
+                      setActiveSubTab("my-reports");
+                    }}
+                    currentUserEmail={currentUser.email}
+                    existingReports={reports}
+                    onNavigateToMyReports={() => setActiveSubTab("my-reports")}
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col gap-6 w-full">
+                  <AIInsightsPanel reports={reports} />
+                  {activeTerminal === "split" ? (
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start h-full">
                 
                 {/* SPLIT COLUMN 1: Citizen Volunteer Simulator Console */}
@@ -2344,10 +2371,11 @@ export default function App() {
               </div>
               )}
               </div>
+              )
             )}
 
             {/* SHARED AI EXTRAPOLATION MODULE */}
-            {activeSubTab === "infrastructure" && (
+            {activeSubTab === "infrastructure" && currentUser.role !== "citizen" && (
               <div className="mt-2 border-t border-slate-200/60 pt-5">
                 <FutureModules 
                   reports={reports} 
@@ -2372,18 +2400,20 @@ export default function App() {
               </div>
 
               {/* QUICK-ACTION EMERGENCY SOS BUTTON */}
-              <div className="flex items-center gap-3">
-                <FooterEmergencyButton 
-                  currentUser={currentUser}
-                  onReportCreated={(newRep) => {
-                    setSelectedReport(newRep);
-                    if (currentUser) {
-                      syncOperationalDatasets(currentUser.email, currentUser.role);
-                    }
-                  }}
-                  onOpenReportDetails={(rep) => setSelectedReport(rep)}
-                />
-              </div>
+              {currentUser.role !== "citizen" && (
+                <div className="flex items-center gap-3">
+                  <FooterEmergencyButton 
+                    currentUser={currentUser}
+                    onReportCreated={(newRep) => {
+                      setSelectedReport(newRep);
+                      if (currentUser) {
+                        syncOperationalDatasets(currentUser.email, currentUser.role);
+                      }
+                    }}
+                    onOpenReportDetails={(rep) => setSelectedReport(rep)}
+                  />
+                </div>
+              )}
 
               <div className="text-[9.5px] text-[#94A3B8] text-center md:text-right">
                 <p className="text-[#64748B]">AI Operating System Build v4.2.0 • 24/7 Dispatch</p>

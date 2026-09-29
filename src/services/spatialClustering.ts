@@ -228,3 +228,45 @@ export function findNearbyExistingIncident<T extends { latitude: number; longitu
 
   return closestMatch;
 }
+
+export interface NearbyDuplicateMatch {
+  report: Report;
+  distanceMeters: number;
+  matchReason: string;
+}
+
+/**
+ * Checks for potential duplicate incidents within a spatial radius (e.g., 300 meters)
+ * Returns ranked duplicate candidates for consolidation review.
+ */
+export function findPotentialDuplicates(
+  lat: number,
+  lng: number,
+  category: string,
+  existingReports: Report[],
+  radiusMeters: number = 300
+): NearbyDuplicateMatch[] {
+  if (!existingReports || existingReports.length === 0) return [];
+  const matches: NearbyDuplicateMatch[] = [];
+
+  for (const rep of existingReports) {
+    if (rep.status === "Resolved") continue;
+    const repLat = Number(rep.latitude);
+    const repLng = Number(rep.longitude);
+    if (!isNaN(repLat) && !isNaN(repLng) && repLat !== 0 && repLng !== 0) {
+      const dist = calculateHaversineDistanceMeters(lat, lng, repLat, repLng);
+      if (dist <= radiusMeters) {
+        const isSameCategory = rep.category?.toLowerCase() === category?.toLowerCase();
+        matches.push({
+          report: rep,
+          distanceMeters: Math.round(dist),
+          matchReason: isSameCategory 
+            ? `Same category within ${Math.round(dist)}m` 
+            : `Nearby infrastructure issue within ${Math.round(dist)}m`
+        });
+      }
+    }
+  }
+
+  return matches.sort((a, b) => a.distanceMeters - b.distanceMeters);
+}

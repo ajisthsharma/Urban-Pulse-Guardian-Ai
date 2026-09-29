@@ -68,7 +68,7 @@ interface Report {
   userId?: string;
   title: string;
   description: string;
-  category: "Pothole" | "Garbage Overflow" | "Broken Streetlight" | "Road Obstruction" | "Vandals / Graffiti" | "Other";
+  category: "Pothole" | "Road Crack" | "Damaged Road Surface" | "Waterlogging" | "Missing/Damaged Sign" | "Broken Streetlight" | "Road Obstruction" | "Garbage Overflow" | "Vandals / Graffiti" | "Other" | string;
   issueType?: string;
   severity: number;
   riskLevel: "Low" | "Medium" | "High";
@@ -1837,8 +1837,8 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[Server] UrbanPulse Guardian AI active on port ${PORT}`);
+  app.listen(PORT, () => {
+    console.log(`[Server] UrbanPulse Guardian AI active on http://localhost:${PORT} and http://127.0.0.1:${PORT}`);
   });
 }
 
