@@ -1518,6 +1518,7 @@ export default function RoadScanner({
             <span className="px-2 py-0.5 bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800/50 rounded text-[9.5px] font-mono font-bold">
               [ Dashcam / Media Upload ]
             </span>
+          </div>
           <div className="flex items-center gap-2">
             <input
               ref={mediaFileInputRef}
