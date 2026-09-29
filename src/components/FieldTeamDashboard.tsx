@@ -693,9 +693,9 @@ export default function FieldTeamDashboard({
 
       {/* MUNICIPAL OVERSIGHT & DISPATCH NOTICE */}
       {isMunicipalMonitor && (
-        <div className="bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E3A8A] px-5 py-3 rounded-2xl flex items-center justify-between text-xs shadow-2xs">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-[#1E3A8A] px-5 py-3 rounded-2xl flex items-center justify-between text-xs shadow-2xs">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-blue-100 text-[#2563EB] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-blue-100 text-zinc-900 dark:text-zinc-100 flex items-center justify-center shrink-0">
               <ShieldAlert className="w-4 h-4" />
             </div>
             <div>
@@ -710,35 +710,35 @@ export default function FieldTeamDashboard({
       )}
 
       {/* FIELD TEAM IDENTITY & COMMAND STRIP */}
-      <div className="bg-gradient-to-r from-[#EFF6FF] via-[#F8FAFC] to-[#FFFFFF] text-[#172033] rounded-3xl p-6 shadow-xs border border-[#DBEAFE] flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div className="bg-gradient-to-r from-[#EFF6FF] via-[#F8FAFC] to-[#FFFFFF] text-slate-900 dark:text-slate-50 rounded-3xl p-6 shadow-xs border border-[#DBEAFE] flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-[#EFF6FF] border border-[#DBEAFE] flex items-center justify-center text-[#2563EB] shadow-xs shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-[#DBEAFE] flex items-center justify-center text-zinc-900 dark:text-zinc-100 shadow-xs shrink-0">
             <Wrench className="w-7 h-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE] font-extrabold">
+              <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-zinc-900 dark:text-zinc-100 border border-[#DBEAFE] font-extrabold">
                 {activeTeam.id}
               </span>
-              <span className="text-xs font-bold text-[#64748B]">
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
                 {activeTeam.district}
               </span>
               <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
                 availability === "AVAILABLE" 
-                  ? "bg-[#F0FDF4] text-[#16A34A] border-[#DCFCE7]" 
+                  ? "bg-[#F0FDF4] text-green-600 dark:text-green-400 border-[#DCFCE7]" 
                   : availability === "BUSY" 
-                  ? "bg-[#FFFBEB] text-[#F59E0B] border-[#FEF3C7]" 
-                  : "bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0]"
+                  ? "bg-[#FFFBEB] text-amber-500 dark:text-amber-400 border-[#FEF3C7]" 
+                  : "bg-slate-50/50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800"
               }`}>
                 ● {availability}
               </span>
             </div>
-            <h2 className="text-xl font-black text-[#172033] tracking-tight mt-1">{activeTeam.name}</h2>
-            <p className="text-xs text-[#64748B] font-medium flex items-center gap-2 mt-0.5">
-              <span>Lead: <strong className="text-[#172033]">{activeTeam.lead}</strong></span>
+            <h2 className="text-xl font-black text-slate-900 dark:text-slate-50 tracking-tight mt-1">{activeTeam.name}</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2 mt-0.5">
+              <span>Lead: <strong className="text-slate-900 dark:text-slate-50">{activeTeam.lead}</strong></span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <Radio className={`w-3 h-3 ${gpsActive ? "text-[#16A34A] animate-pulse" : "text-[#94A3B8]"}`} />
+                <Radio className={`w-3 h-3 ${gpsActive ? "text-green-600 dark:text-green-400 animate-pulse" : "text-slate-400 dark:text-slate-500"}`} />
                 {gpsActive ? "Live Vehicle GPS Active" : "District GPS Simulated"}
               </span>
             </p>
@@ -748,7 +748,7 @@ export default function FieldTeamDashboard({
         {/* CONTROLS: AVAILABILITY & TEAM SWITCHER */}
         <div className="flex items-center gap-3 flex-wrap">
           {/* Availability Segmented Buttons */}
-          <div className="bg-white p-1 rounded-2xl border border-[#E2E8F0] shadow-xs flex items-center gap-1">
+          <div className="bg-white dark:bg-slate-900 p-1 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center gap-1">
             {(["AVAILABLE", "BUSY", "OFFLINE"] as const).map(st => (
               <button
                 key={st}
@@ -760,7 +760,7 @@ export default function FieldTeamDashboard({
                       : st === "BUSY" 
                       ? "bg-[#F59E0B] text-white shadow-xs" 
                       : "bg-[#64748B] text-white shadow-xs"
-                    : "text-[#64748B] hover:text-[#172033]"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50"
                 }`}
               >
                 {st === "AVAILABLE" ? "Available" : st === "BUSY" ? "On Site" : "Off Duty"}
@@ -772,7 +772,7 @@ export default function FieldTeamDashboard({
           <select
             value={selectedTeamId}
             onChange={(e) => setSelectedTeamId(e.target.value)}
-            className="bg-white border border-[#E2E8F0] text-[#172033] text-xs font-bold rounded-xl px-3 py-2 focus:outline-hidden focus:border-[#2563EB] cursor-pointer shadow-xs"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-50 text-xs font-bold rounded-xl px-3 py-2 focus:outline-hidden focus:border-[#2563EB] cursor-pointer shadow-xs"
           >
             {DEFAULT_FIELD_TEAMS.map(t => (
               <option key={t.id} value={t.id}>{t.id} - {t.name}</option>
@@ -801,8 +801,8 @@ export default function FieldTeamDashboard({
               onClick={() => setActiveTab(tab.id as FieldTab)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs shrink-0 transition-all cursor-pointer ${
                 isActive
-                  ? "bg-blue-600 text-white shadow-sm"
-                  : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                  ? "bg-zinc-100 text-zinc-900 border border-zinc-200 shadow-sm dark:bg-zinc-800 dark:text-zinc-50 dark:border-zinc-700 shadow-sm"
+                  : "bg-white dark:bg-slate-900 text-slate-600 hover:bg-slate-100 border border-slate-200"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -824,31 +824,31 @@ export default function FieldTeamDashboard({
         <div className="flex flex-col gap-6">
           {/* Key Metric Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 shadow-2xs">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Assigned</span>
               <p className="text-2xl font-black text-slate-800 mt-1">{stats.assigned}</p>
               <span className="text-[10px] text-slate-500 font-medium">Awaiting crew action</span>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-blue-200 bg-blue-50/30 shadow-2xs">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-blue-200 bg-blue-50/30 shadow-2xs">
               <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider block">In Progress</span>
               <p className="text-2xl font-black text-blue-700 mt-1">{stats.inProgress}</p>
               <span className="text-[10px] text-blue-600 font-medium">Travel / on-site active</span>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-2xs">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-2xs">
               <span className="text-[11px] font-bold text-amber-600 uppercase tracking-wider block">Sign-off Pending</span>
               <p className="text-2xl font-black text-amber-700 mt-1">{stats.reviewPending}</p>
               <span className="text-[10px] text-amber-600 font-medium">In municipal queue</span>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-rose-200 bg-rose-50/30 shadow-2xs">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-rose-200 bg-rose-50/30 shadow-2xs">
               <span className="text-[11px] font-bold text-rose-600 uppercase tracking-wider block">Critical</span>
               <p className="text-2xl font-black text-rose-700 mt-1">{stats.critical}</p>
               <span className="text-[10px] text-rose-600 font-medium">High risk hazards</span>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-rose-200 shadow-2xs">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-rose-200 shadow-2xs">
               <span className="text-[11px] font-bold text-rose-600 uppercase tracking-wider block">Overdue SLA</span>
               <p className={`text-2xl font-black mt-1 ${stats.overdue > 0 ? "text-rose-600 animate-pulse" : "text-slate-800"}`}>
                 {stats.overdue}
@@ -856,7 +856,7 @@ export default function FieldTeamDashboard({
               <span className="text-[10px] text-slate-500 font-medium">Past SLA window</span>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-2xs">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-2xs">
               <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-wider block">Resolved</span>
               <p className="text-2xl font-black text-emerald-700 mt-1">{stats.resolved}</p>
               <span className="text-[10px] text-emerald-600 font-medium">Verified & closed</span>
@@ -867,7 +867,7 @@ export default function FieldTeamDashboard({
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             {/* Urgent Tasks Queue */}
-            <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs flex flex-col gap-4">
+            <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 shadow-2xs flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-extrabold text-base text-slate-800">Priority Work Orders</h3>
@@ -905,7 +905,7 @@ export default function FieldTeamDashboard({
                             setSelectedTask(task);
                             setIsTaskDetailsOpen(true);
                           }}
-                          className="p-4 rounded-2xl border border-slate-200 hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white"
+                          className="p-4 rounded-2xl border border-slate-200 hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900"
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             {task.image ? (
@@ -981,7 +981,7 @@ export default function FieldTeamDashboard({
 
                   <button
                     onClick={() => setActiveTab("map")}
-                    className="w-full py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-2.5 bg-white dark:bg-slate-900/10 hover:bg-white dark:bg-slate-900/20 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Navigation className="w-4 h-4" />
                     <span>Open Navigation Map</span>
@@ -990,7 +990,7 @@ export default function FieldTeamDashboard({
               </div>
 
               {/* Safety Quick Check */}
-              <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-2xs flex items-center justify-between gap-3">
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 shadow-2xs flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0">
                     <AlertTriangle className="w-5 h-5" />
@@ -1019,7 +1019,7 @@ export default function FieldTeamDashboard({
       {activeTab === "tasks" && (
         <div className="flex flex-col gap-5">
           {/* Controls: Search & Filters */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               <input
@@ -1068,7 +1068,7 @@ export default function FieldTeamDashboard({
 
           {/* Task Cards Grid */}
           {filteredTasks.length === 0 ? (
-            <div className="bg-white p-12 text-center rounded-3xl border border-slate-200 shadow-2xs">
+            <div className="bg-white dark:bg-slate-900 p-12 text-center rounded-3xl border border-slate-200 shadow-2xs">
               <CheckCircle className="w-10 h-10 text-slate-300 mx-auto mb-2" />
               <p className="font-extrabold text-slate-700 text-sm">No matching tasks found</p>
               <p className="text-xs text-slate-400 mt-1">Try relaxing filters or check back when municipal dispatch assigns new orders.</p>
@@ -1084,7 +1084,7 @@ export default function FieldTeamDashboard({
                 return (
                   <div
                     key={task.id}
-                    className={`bg-white rounded-2xl border transition-all flex flex-col justify-between shadow-2xs hover:shadow-sm ${
+                    className={`bg-white dark:bg-slate-900 rounded-2xl border transition-all flex flex-col justify-between shadow-2xs hover:shadow-sm ${
                       isRework 
                         ? "border-amber-400 bg-amber-50/20" 
                         : isCritical 
@@ -1274,12 +1274,12 @@ export default function FieldTeamDashboard({
       {activeTab === "map" && (
         <div className="flex flex-col lg:flex-row gap-5">
           {/* Map Container */}
-          <div className="flex-1 bg-white rounded-3xl border border-slate-200 shadow-2xs overflow-hidden h-[540px] relative">
+          <div className="flex-1 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 shadow-2xs overflow-hidden h-[540px] relative">
             <div ref={mapContainerRef} className="w-full h-full z-0" />
             
             {/* Map Overlay Card for Selected Incident */}
             {selectedTask && (
-              <div className="absolute bottom-5 left-5 right-5 sm:right-auto sm:w-96 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200 shadow-xl z-[1000] flex flex-col gap-3">
+              <div className="absolute bottom-5 left-5 right-5 sm:right-auto sm:w-96 bg-white dark:bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200 shadow-xl z-[1000] flex flex-col gap-3">
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="text-[10px] font-bold uppercase text-blue-600">{selectedTask.category}</span>
@@ -1322,7 +1322,7 @@ export default function FieldTeamDashboard({
           </div>
 
           {/* Quick Route List */}
-          <div className="w-full lg:w-80 bg-white p-5 rounded-3xl border border-slate-200 shadow-2xs flex flex-col gap-4">
+          <div className="w-full lg:w-80 bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 shadow-2xs flex flex-col gap-4">
             <div>
               <h3 className="font-extrabold text-sm text-slate-800">Assigned Geolocation Queue</h3>
               <p className="text-xs text-slate-500">Tap an incident to center map & preview route</p>
@@ -1340,7 +1340,7 @@ export default function FieldTeamDashboard({
                     className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
                       isSelected 
                         ? "bg-blue-50 border-blue-500 shadow-xs" 
-                        : "bg-slate-50/70 border-slate-200 hover:bg-white"
+                        : "bg-slate-50/70 border-slate-200 hover:bg-white dark:bg-slate-900"
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -1361,7 +1361,7 @@ export default function FieldTeamDashboard({
       {/* 4. FIELD VERIFICATION VIEW */}
       {/* =================================================== */}
       {activeTab === "verify" && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs flex flex-col gap-6 max-w-3xl mx-auto">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs flex flex-col gap-6 max-w-3xl mx-auto">
           <div>
             <h3 className="text-lg font-black text-slate-900">On-Site Field Verification</h3>
             <p className="text-xs text-slate-500 mt-1">
@@ -1481,7 +1481,7 @@ export default function FieldTeamDashboard({
               </div>
 
               {verifyAiResult && (
-                <div className="p-3 bg-white rounded-xl border border-blue-200 text-xs flex flex-col gap-1">
+                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-blue-200 text-xs flex flex-col gap-1">
                   <div className="flex items-center justify-between">
                     <span className="font-extrabold text-blue-700">Classification: {verifyAiResult.classification}</span>
                     <span className="font-mono text-slate-500">Confidence: {verifyAiResult.confidence}%</span>
@@ -1521,7 +1521,7 @@ export default function FieldTeamDashboard({
       {/* 5. WORK & RESOLUTION VIEW */}
       {/* =================================================== */}
       {activeTab === "work" && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs flex flex-col gap-6 max-w-3xl mx-auto">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs flex flex-col gap-6 max-w-3xl mx-auto">
           <div>
             <h3 className="text-lg font-black text-slate-900">Record Repair & Submit Resolution</h3>
             <p className="text-xs text-slate-500 mt-1">
@@ -1654,7 +1654,7 @@ export default function FieldTeamDashboard({
       {/* 6. FIELD COPILOT AI VIEW */}
       {/* =================================================== */}
       {activeTab === "copilot" && (
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs flex flex-col gap-4 max-w-3xl mx-auto h-[600px]">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 shadow-2xs flex flex-col gap-4 max-w-3xl mx-auto h-[600px]">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
@@ -1682,7 +1682,7 @@ export default function FieldTeamDashboard({
                 <div
                   className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
                     msg.sender === "user"
-                      ? "bg-blue-600 text-white rounded-br-xs font-medium"
+                      ? "bg-zinc-100 text-zinc-900 border border-zinc-200 shadow-sm dark:bg-zinc-800 dark:text-zinc-50 dark:border-zinc-700 rounded-br-xs font-medium"
                       : "bg-slate-100 text-slate-800 rounded-bl-xs border border-slate-200"
                   }`}
                 >
@@ -1750,7 +1750,7 @@ export default function FieldTeamDashboard({
       {/* 7. SAFETY & SOS VIEW */}
       {/* =================================================== */}
       {activeTab === "safety" && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs flex flex-col gap-6 max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs flex flex-col gap-6 max-w-2xl mx-auto">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
               <AlertOctagon className="w-6 h-6" />
@@ -1846,7 +1846,7 @@ export default function FieldTeamDashboard({
       {/* 8. TEAM PROFILE VIEW */}
       {/* =================================================== */}
       {activeTab === "profile" && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs flex flex-col gap-6 max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs flex flex-col gap-6 max-w-2xl mx-auto">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-xl shadow-md">
               {activeTeam.id}
@@ -1908,7 +1908,7 @@ export default function FieldTeamDashboard({
       {/* =================================================== */}
       {isTaskDetailsOpen && selectedTask && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-[1200]">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 shadow-2xl p-6 flex flex-col gap-5">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 shadow-2xl p-6 flex flex-col gap-5">
             <div className="flex items-start justify-between border-b border-slate-100 pb-4">
               <div>
                 <div className="flex items-center gap-2">
@@ -2057,7 +2057,7 @@ export default function FieldTeamDashboard({
       {/* =================================================== */}
       {isReassignModalOpen && selectedTask && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-[1300]">
-          <div className="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 flex flex-col gap-4">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 flex flex-col gap-4">
             <div>
               <h3 className="text-base font-black text-slate-900">Request Task Reassignment</h3>
               <p className="text-xs text-slate-500 mt-0.5">

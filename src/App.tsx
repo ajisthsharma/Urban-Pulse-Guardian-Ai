@@ -24,22 +24,20 @@ import RewardsPortal from "./components/RewardsPortal";
 import CitizenEmergencySOS from "./components/CitizenEmergencySOS";
 import CitizenCopilot from "./components/CitizenCopilot";
 import CitizenHome from "./components/CitizenHome";
-import CitizenRoadRiskMap from "./components/CitizenRoadRiskMap";
-import CitizenMyReports from "./components/CitizenMyReports";
-import CitizenAlerts from "./components/CitizenAlerts";
-import CitizenProfile from "./components/CitizenProfile";
 import MunicipalHome from "./components/MunicipalHome";
 import MunicipalCopilot from "./components/MunicipalCopilot";
 import FooterEmergencyButton from "./components/FooterEmergencyButton";
 import FieldTeamDashboard from "./components/FieldTeamDashboard";
 import AdminPanel from "./components/AdminPanel";
 import { DispatchManagement } from "./components/DispatchManagement";
+
+import { Moon, Sun } from "lucide-react";
 import { 
   ShieldAlert, Layers, Search, Filter, Trash2, Eye, 
   MapPin, AlertOctagon, CheckSquare, Clock, ArrowRight, Save, User as UserIcon, Lock, Landmark, Sparkles, AlertCircle, Loader2, LogIn, UserPlus, Mail,
   Terminal, Activity, Columns, Bell, LogOut, RefreshCw, Menu, X, Check, Laptop, ChevronRight, ChevronDown, Compass, Wind, LayoutDashboard, BarChart3,
   Camera, Navigation, Award, AlertTriangle, ShieldCheck, FileText, Wrench, Shield,
-  Users, Briefcase, Server, Settings, Radio, Send, Moon, Sun
+  Users, Briefcase, Server, Settings, Radio, Send
 } from "lucide-react";
 
 
@@ -125,20 +123,34 @@ export default function App() {
 
   const [loadingReports, setLoadingReports] = useState(true);
   const [appOnline, setAppOnline] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("urbanpulse_theme") === "dark");
+  
+  
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark' || 
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDarkMode);
-    localStorage.setItem("urbanpulse_theme", isDarkMode ? "dark" : "light");
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
   }, [isDarkMode]);
-  
+
   // Sovereign Multi-City ready states
+
   const [selectedCityName, setSelectedCityName] = useState("New Delhi (NCR)");
   
   // High-fidelity sidebar terminal states
   const [activeTerminal, setActiveTerminal] = useState<"citizen" | "admin" | "field_team" | "split">("citizen");
   const [activeSubTab, setActiveSubTab] = useState<
-    "citizen-home" | "my-reports" | "municipal-home" | "command-center" | "infrastructure" | "dispatch-management" | "road-scanner" | "candidate-review" | "safe-route" | "rewards" | "emergency-sos" | "copilot" | "analytics" | "digital-twin" | "safety" | "traffic" | "environmental" | "emergency" | "field-operations" | "admin-panel" | "admin-users" | "admin-teams" | "admin-system" | "admin-audit" | "admin-settings" | "audit-logs" | "alerts" | "profile"
+    "citizen-home" | "my-reports" | "municipal-home" | "command-center" | "infrastructure" | "dispatch-management" | "road-scanner" | "candidate-review" | "safe-route" | "rewards" | "emergency-sos" | "copilot" | "analytics" | "digital-twin" | "safety" | "traffic" | "environmental" | "emergency" | "field-operations" | "admin-panel" | "admin-users" | "admin-teams" | "admin-system" | "admin-audit" | "admin-settings" | "audit-logs"
   >("citizen-home");
 
   // On mount and role change, reset to correct home
@@ -170,7 +182,8 @@ export default function App() {
     } else if (currentUser.role === "citizen") {
       const forbiddenForCitizen = [
         "field-operations", "command-center", "municipal-home", "dispatch-management", "admin-panel", 
-        "admin-users", "admin-teams", "admin-system", "admin-audit", "admin-settings", "audit-logs"
+        "admin-users", "admin-teams", "admin-system", "admin-audit", "admin-settings", "audit-logs",
+        "rewards", "copilot"
       ];
       if (forbiddenForCitizen.includes(activeSubTab)) {
         setActiveSubTab("citizen-home");
@@ -429,22 +442,22 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F5F7FB] flex flex-col md:flex-row font-sans transition-colors overflow-x-hidden text-[#172033]">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row font-sans transition-colors overflow-x-hidden text-slate-900 dark:text-slate-50">
       
       {/* LEFT SIDEBAR (Premium light civic-tech / smart city operations platform sidebar) */}
       {currentUser && (
-        <aside id="system-sidebar" className={`w-72 bg-gradient-to-b from-[#F0F5FD] via-[#F4F8FD] to-[#F8FAFD] border-r border-[#D9E3F0] text-[#475569] md:flex flex-col h-full fixed top-0 bottom-0 left-0 shrink-0 select-none z-[1100] transition-transform duration-300 overflow-y-auto shadow-[0_2px_12px_rgba(15,23,42,0.03)] ${
+        <aside id="system-sidebar" className={`w-72 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 md:flex flex-col h-full fixed top-0 bottom-0 left-0 shrink-0 select-none z-[1100] transition-transform duration-300 overflow-y-auto shadow-[0_2px_12px_rgba(15,23,42,0.03)] ${
           isSidebarMobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full md:translate-x-0"
         }`}>
           {/* Logo & Branding Grid */}
-          <div className="p-5 border-b border-[#D9E3F0] flex items-center justify-between bg-white/80 backdrop-blur-xs">
+          <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900/80 dark:bg-slate-900/80 backdrop-blur-xs">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-[#2563EB] flex items-center justify-center text-white shadow-xs">
                 <ShieldAlert className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="font-sans font-extrabold text-sm tracking-normal text-[#172033] leading-tight">URBANPULSE</h1>
-                <p className="text-[9.5px] font-extrabold text-[#2563EB] font-mono tracking-wider uppercase -mt-0.5">
+                <h1 className="font-sans font-extrabold text-sm tracking-normal text-slate-900 dark:text-slate-50 leading-tight">URBANPULSE</h1>
+                <p className="text-[9.5px] font-extrabold text-blue-600 dark:text-blue-400 font-mono tracking-wider uppercase -mt-0.5">
                   {currentUser.role === "admin" ? "MUNICIPAL DECK" : "CITIZEN NODE"}
                 </p>
               </div>
@@ -452,7 +465,7 @@ export default function App() {
             {/* Close button for Mobile */}
             <button 
               onClick={() => setIsSidebarMobileOpen(false)}
-              className="md:hidden p-1.5 rounded-lg text-[#64748B] hover:text-[#2563EB] hover:bg-[#E8F0FA] cursor-pointer"
+              className="md:hidden p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -461,7 +474,7 @@ export default function App() {
           
           {/* SECTION HEADER */}
           <div className="px-5 mb-2 mt-3.5">
-            <span className="text-[9.5px] font-extrabold tracking-wider text-[#64748B] uppercase block">
+            <span className="text-[9.5px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase block">
               {currentUser.role === "admin"
                 ? "ADMINISTRATIVE GOVERNANCE"
                 : currentUser.role === "municipal"
@@ -484,19 +497,13 @@ export default function App() {
       ]
     },
     {
-      title: "ROAD INTELLIGENCE",
+      title: "SAFETY",
       items: [
+        { id: "infrastructure", label: "Report Issue", desc: "Log urban hazards", icon: Activity },
         { id: "road-scanner", label: "AI Road Scanner", desc: "Dashcam hazard detection", icon: Camera },
         ...(activeScanSession && activeScanSession.candidates.length > 0 ? [{ id: "candidate-review", label: `Review Scans (${activeScanSession.candidates.length})`, desc: "Review & submit", icon: ShieldCheck }] : []),
-        { id: "infrastructure", label: "Report Issue", desc: "Log road hazards", icon: AlertCircle },
-        { id: "safety", label: "Road Risk Map", desc: "Nearby road hazard map", icon: MapPin },
-      ]
-    },
-    {
-      title: "ACTIVITY",
-      items: [
-        { id: "alerts", label: "Alerts", desc: "Civic alerts & updates", icon: Bell },
-        { id: "profile", label: "Profile", desc: "Citizen account details", icon: UserIcon },
+        { id: "safe-route", label: "Safe Route", desc: "Hazard-free navigation", icon: Navigation },
+        { id: "emergency-sos", label: "Emergency SOS", desc: "Critical infrastructure beacon", icon: AlertTriangle },
       ]
     }
   ];
@@ -609,7 +616,7 @@ export default function App() {
     <div className="flex flex-col gap-4">
       {activeGroups.map((group, groupIdx) => (
         <div key={groupIdx}>
-          <div className="text-[9.5px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5 px-3">{group.title}</div>
+          <div className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 px-3">{group.title}</div>
           <div className="flex flex-col gap-1">
             {group.items.map((item) => {
               const Icon = item.icon;
@@ -623,16 +630,16 @@ export default function App() {
                   }}
                   className={`w-full px-3.5 py-2.5 rounded-[12px] flex items-center justify-between text-left transition-all duration-150 cursor-pointer group border-l-[3.5px] ${
                     isActive
-                      ? "bg-[#E1EDFF] text-[#1D4ED8] border-[#2563EB] font-bold shadow-2xs"
-                      : "bg-transparent text-[#334155] hover:text-[#1D4ED8] hover:bg-[#E4EEFA] border-transparent font-medium"
+                      ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-[#2563EB] font-bold shadow-2xs"
+                      : "bg-transparent text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 border-transparent font-medium"
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <Icon className={`w-4 h-4 shrink-0 transition-colors ${
-                      isActive ? "text-[#2563EB]" : "text-[#64748B] group-hover:text-[#2563EB]"
+                      isActive ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:text-blue-400"
                     }`} />
                     <div className="min-w-0 truncate">
-                      <div className={`text-[12px] truncate ${isActive ? "text-[#1D4ED8] font-bold" : "text-[#334155] group-hover:text-[#1D4ED8]"}`}>
+                      <div className={`text-[12px] truncate ${isActive ? "text-blue-700 dark:text-blue-400 font-bold" : "text-slate-700 dark:text-slate-300 group-hover:text-blue-700 dark:text-blue-400"}`}>
                         {item.label}
                       </div>
                     </div>
@@ -648,16 +655,16 @@ export default function App() {
 })()}
 
             {/* REAL-TIME OVERLAY ALERTS FEED */}
-            <div className="mt-4 pt-3.5 border-t border-[#D9E3F0]">
+            <div className="mt-4 pt-3.5 border-t border-slate-200 dark:border-slate-800">
               <div className="flex items-center justify-between px-2 mb-2">
-                <span className="text-[9.5px] font-bold uppercase text-[#64748B] tracking-wider flex items-center gap-1.5">
-                  <Bell className="w-3.5 h-3.5 text-[#2563EB]" />
+                <span className="text-[9.5px] font-bold uppercase text-slate-500 dark:text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <Bell className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                   <span>Real-Time Alerts</span>
                 </span>
                 {notifications.filter(n => !n.read).length > 0 && (
                   <button 
                     onClick={handleMarkNotificationsRead}
-                    className="text-[9px] text-[#2563EB] hover:underline font-extrabold cursor-pointer"
+                    className="text-[9px] text-blue-600 dark:text-blue-400 hover:underline font-extrabold cursor-pointer"
                   >
                     Clear All
                   </button>
@@ -666,7 +673,7 @@ export default function App() {
 
               <div className="flex flex-col gap-1.5 max-h-[140px] overflow-y-auto pr-1">
                 {notifications.length === 0 ? (
-                  <div className="px-2.5 py-3 text-center text-[#94A3B8] font-mono text-[9.5px] border border-[#D9E3F0] rounded-[12px] bg-[#F8FAFC]">
+                  <div className="px-2.5 py-3 text-center text-slate-400 dark:text-slate-500 font-mono text-[9.5px] border border-slate-200 dark:border-slate-800 rounded-[12px] bg-slate-50/50 dark:bg-slate-900/50">
                     You're all caught up.
                   </div>
                 ) : (
@@ -678,22 +685,22 @@ export default function App() {
                         onClick={() => handleNotificationClick(notif)}
                         className={`p-2.5 rounded-[12px] text-left cursor-pointer transition-all border ${
                           isCritical
-                            ? "bg-[#FEF2F2] border-[#FECACA] text-[#991B1B]"
+                            ? "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/50 text-red-800 dark:text-red-300"
                             : !notif.read
-                            ? "bg-[#EFF6FF] border-[#BFDBFE] text-[#1E293B]"
-                            : "bg-[#F8FAFC] border-[#D9E3F0] text-[#64748B] hover:border-[#CBD5E1]"
+                            ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-slate-800 dark:text-slate-200"
+                            : "bg-slate-50/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:border-slate-700"
                         }`}
                       >
                         <div className="flex items-center justify-between text-[8.5px] font-mono">
-                          <span className={`font-bold uppercase flex items-center gap-1 ${isCritical ? "text-[#DC2626]" : "text-[#2563EB]"}`}>
-                            {isCritical ? <AlertTriangle className="w-2.5 h-2.5" /> : <Bell className="w-2.5 h-2.5 text-[#2563EB]" />}
+                          <span className={`font-bold uppercase flex items-center gap-1 ${isCritical ? "text-red-600 dark:text-red-400" : "text-blue-600 dark:text-blue-400"}`}>
+                            {isCritical ? <AlertTriangle className="w-2.5 h-2.5" /> : <Bell className="w-2.5 h-2.5 text-blue-600 dark:text-blue-400" />}
                             {isCritical ? "CRITICAL RISK" : "UPDATED"}
                           </span>
-                          <span className="text-[#94A3B8]">
+                          <span className="text-slate-400 dark:text-slate-500">
                             {getRelativeTime(notif.createdAt)}
                           </span>
                         </div>
-                        <p className="text-[10.5px] font-semibold text-[#172033] truncate mt-0.5">{notif.title}</p>
+                        <p className="text-[10.5px] font-semibold text-slate-900 dark:text-slate-50 truncate mt-0.5">{notif.title}</p>
                       </div>
                     );
                   })
@@ -703,7 +710,7 @@ export default function App() {
           </div>
 
           {/* ACTIVE ACCOUNT PROFILE TRAY */}
-          <div className="p-3.5 border-t border-[#D9E3F0] bg-[#EAF1FA] flex flex-col gap-2 shrink-0">
+          <div className="p-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col gap-2 shrink-0">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className={`w-8 h-8 rounded-xl ${
@@ -718,8 +725,8 @@ export default function App() {
                   {currentUser.fullName.split(" ").map(w => w[0]).join("").substring(0, 2)}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-[11.5px] font-extrabold text-[#172033] truncate leading-tight">{currentUser.fullName}</div>
-                  <div className="text-[9px] text-[#64748B] font-mono truncate flex items-center gap-1 mt-0.5">
+                  <div className="text-[11.5px] font-extrabold text-slate-900 dark:text-slate-50 truncate leading-tight">{currentUser.fullName}</div>
+                  <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono truncate flex items-center gap-1 mt-0.5">
                     <span className={`w-1.5 h-1.5 rounded-full ${
                       currentUser.role === "field_team" 
                         ? "bg-[#16A34A]" 
@@ -743,7 +750,7 @@ export default function App() {
               </div>
               <button
                 onClick={handleLogout}
-                className="p-1.5 text-[#64748B] hover:text-[#DC2626] hover:bg-[#DCE4EE]/70 rounded-lg transition-all cursor-pointer shrink-0"
+                className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-red-600 dark:text-red-400 hover:bg-slate-200/70 dark:hover:bg-slate-700/70 rounded-lg transition-all cursor-pointer shrink-0"
                 title="Logout Session"
               >
                 <LogOut className="w-4 h-4" />
@@ -763,15 +770,15 @@ export default function App() {
 
       {/* CORE WORKSPACE PANEL */}
       {currentUser ? (
-        <div className="flex-1 flex flex-col min-h-screen md:pl-72 bg-[#F5F7FB]">
+        <div className="flex-1 flex flex-col min-h-screen md:pl-72 bg-slate-50 dark:bg-slate-950">
           
           {/* TOP HORIZONTAL COMMAND HEADER (Desktop & Mobile) */}
-          <header className="bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 sm:px-6 py-2.5 sticky top-0 z-[1000] flex items-center justify-between gap-4 shadow-2xs">
+          <header className="bg-white dark:bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-2.5 sticky top-0 z-[1000] flex items-center justify-between gap-4 shadow-2xs">
             {/* Mobile Hamburger & Logo */}
             <div className="flex items-center gap-2.5 md:hidden">
               <button 
                 onClick={() => setIsSidebarMobileOpen(true)}
-                className="p-1.5 focus:outline-hidden hover:bg-[#F1F5F9] rounded-lg text-[#475569] cursor-pointer"
+                className="p-1.5 focus:outline-hidden hover:bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 cursor-pointer"
                 title="Open navigation menu"
               >
                 <Menu className="w-5 h-5" />
@@ -779,23 +786,23 @@ export default function App() {
               <div className="w-7 h-7 bg-[#2563EB] rounded-lg flex items-center justify-center text-white shadow-2xs">
                 <ShieldAlert className="w-4 h-4 text-white" />
               </div>
-              <span className="font-sans font-extrabold text-xs tracking-tight uppercase text-[#172033]">URBANPULSE</span>
+              <span className="font-sans font-extrabold text-xs tracking-tight uppercase text-slate-900 dark:text-slate-50">URBANPULSE</span>
             </div>
 
             {/* Desktop / Tablet Search Field */}
             <div className="flex-1 max-w-xl hidden sm:block relative">
               <div className="relative flex items-center">
-                <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 pointer-events-none" />
+                <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 pointer-events-none" />
                 <input
                   ref={searchInputRef}
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search reports, locations, citizens, or commands..."
-                  className="w-full bg-[#F8FAFC] hover:bg-[#F1F5F9] focus:bg-white text-xs text-[#0F172A] placeholder-[#94A3B8] font-medium pl-10 pr-20 py-2 rounded-xl border border-[#E2E8F0] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10 transition-all outline-hidden"
+                  className="w-full bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:bg-slate-800 focus:bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-50 placeholder-[#94A3B8] font-medium pl-10 pr-20 py-2 rounded-xl border border-slate-200 dark:border-slate-800 focus:border-[#2563EB] focus:ring-2 focus:ring-blue-600/10 dark:focus:ring-blue-400/20 transition-all outline-hidden"
                 />
                 <div className="absolute right-2.5 flex items-center gap-1 pointer-events-none">
-                  <kbd className="px-1.5 py-0.5 text-[9.5px] font-mono font-bold text-[#64748B] bg-white border border-[#CBD5E1] rounded shadow-2xs">
+                  <kbd className="px-1.5 py-0.5 text-[9.5px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded shadow-2xs">
                     Ctrl + K
                   </kbd>
                 </div>
@@ -803,8 +810,8 @@ export default function App() {
 
               {/* Search results dropdown if user searches */}
               {searchQuery.trim().length > 1 && (
-                <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-[#E2E8F0] rounded-xl shadow-xl p-2 z-50 max-h-72 overflow-y-auto">
-                  <div className="text-[10px] font-bold text-[#94A3B8] uppercase px-2 py-1 font-mono">
+                <div className="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-2 z-50 max-h-72 overflow-y-auto">
+                  <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase px-2 py-1 font-mono">
                     Matching System Records ({reports.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()) || r.address.toLowerCase().includes(searchQuery.toLowerCase()) || r.category.toLowerCase().includes(searchQuery.toLowerCase())).length})
                   </div>
                   {reports
@@ -817,13 +824,13 @@ export default function App() {
                           setSelectedReport(r);
                           setSearchQuery("");
                         }}
-                        className="p-2 hover:bg-[#EFF6FF] rounded-lg cursor-pointer transition text-left flex items-center justify-between text-xs"
+                        className="p-2 hover:bg-blue-50 dark:bg-blue-900/20 rounded-lg cursor-pointer transition text-left flex items-center justify-between text-xs"
                       >
                         <div className="min-w-0 pr-2">
-                          <p className="font-semibold text-[#0F172A] truncate">{r.title}</p>
-                          <p className="text-[11px] text-[#64748B] truncate">{r.address}</p>
+                          <p className="font-semibold text-slate-900 dark:text-slate-50 truncate">{r.title}</p>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{r.address}</p>
                         </div>
-                        <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-[#F1F5F9] text-[#2563EB] shrink-0">
+                        <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 shrink-0">
                           {r.category}
                         </span>
                       </div>
@@ -832,81 +839,82 @@ export default function App() {
               )}
             </div>
 
+            
             {/* Header Right Controls */}
             <div className="flex items-center gap-2 sm:gap-3">
+              {/* Theme Toggle */}
               <button
-                type="button"
-                onClick={() => setIsDarkMode((enabled) => !enabled)}
-                className="theme-toggle p-2 rounded-xl border border-[#CBD5E1] bg-white/80 hover:bg-[#EFF6FF] text-[#475569] transition-all cursor-pointer"
-                title={isDarkMode ? "Use light mode" : "Use dark mode"}
-                aria-label={isDarkMode ? "Use light mode" : "Use dark mode"}
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-1.5 sm:p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition-all shadow-2xs border border-slate-200 dark:border-slate-700"
+                title="Toggle Theme"
               >
                 {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
+
               {/* Unified Sovereign Jurisdiction Selector in Top Header */}
               <div ref={jurisdictionMenuRef} className="relative flex flex-col items-end text-right">
-                <span className="text-[7.5px] sm:text-[8px] font-mono font-bold text-[#64748B] uppercase tracking-wider leading-none mb-0.5 sm:mb-1">
+                <span className="text-[7.5px] sm:text-[8px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider leading-none mb-0.5 sm:mb-1">
                   SOVEREIGN JURISDICTION
                 </span>
                 <button
                   type="button"
                   id="global-jurisdiction-switcher"
                   onClick={() => setIsJurisdictionMenuOpen(prev => !prev)}
-                  className="flex items-center gap-1.5 sm:gap-2 bg-[#F0F6FE] hover:bg-[#E3EFFF] border border-[#CBD5E1] hover:border-[#93C5FD] px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl transition-all cursor-pointer shadow-2xs group text-left"
+                  className="flex items-center gap-1.5 sm:gap-2 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 border border-slate-300 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-700 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl transition-all cursor-pointer shadow-2xs group text-left"
                   title="Sovereign Jurisdiction: URBANPULSE CIVIC NETWORK"
                   aria-expanded={isJurisdictionMenuOpen}
                   aria-haspopup="true"
                 >
                   <div className="w-5 h-5 rounded-lg bg-[#2563EB]/10 flex items-center justify-center shrink-0">
-                    <Compass className="w-3.5 h-3.5 text-[#2563EB]" />
+                    <Compass className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold text-[#0F172A] group-hover:text-[#2563EB] transition-colors leading-tight">
+                    <span className="text-xs font-bold text-slate-900 dark:text-slate-50 group-hover:text-blue-600 dark:text-blue-400 transition-colors leading-tight">
                       URBANPULSE CIVIC NETWORK
                     </span>
-                    <span className="text-[9px] font-mono text-[#64748B] leading-none mt-0.5 hidden xs:block sm:block">
+                    <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 leading-none mt-0.5 hidden xs:block sm:block">
                       Multi-City Operations
                     </span>
                   </div>
-                  <ChevronDown className={`w-3.5 h-3.5 text-[#64748B] transition-transform duration-200 ml-0.5 ${isJurisdictionMenuOpen ? "rotate-180 text-[#2563EB]" : ""}`} />
+                  <ChevronDown className={`w-3.5 h-3.5 text-slate-500 dark:text-slate-400 transition-transform duration-200 ml-0.5 ${isJurisdictionMenuOpen ? "rotate-180 text-blue-600 dark:text-blue-400" : ""}`} />
                 </button>
 
                 {/* Unified Operational Network Dropdown Popover */}
                 {isJurisdictionMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-76 sm:w-80 bg-white rounded-2xl shadow-xl border border-[#CBD5E1] p-3.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-left">
-                    <div className="text-[9.5px] font-mono font-bold text-[#64748B] uppercase tracking-wider px-1 mb-2 flex items-center justify-between">
+                  <div className="absolute right-0 top-full mt-2 w-76 sm:w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-300 dark:border-slate-700 p-3.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-left">
+                    <div className="text-[9.5px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1 mb-2 flex items-center justify-between">
                       <span>Operational Network</span>
-                      <div className="flex items-center gap-1.5 text-[9px] text-[#16A34A] font-bold">
+                      <div className="flex items-center gap-1.5 text-[9px] text-green-600 dark:text-green-400 font-bold">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
                         <span>ONLINE</span>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl flex items-start gap-2.5">
+                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl flex items-start gap-2.5">
                       <div className="w-8 h-8 rounded-lg bg-[#2563EB] text-white flex items-center justify-center shrink-0 shadow-2xs font-bold">
                         <ShieldAlert className="w-4 h-4 text-white" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-[#0F172A]">URBANPULSE CIVIC NETWORK</span>
-                          <span className="text-[8.5px] font-mono font-bold text-[#16A34A] bg-[#DCFCE7] border border-[#BBF7D0] px-1.5 py-0.5 rounded">ACTIVE</span>
+                          <span className="text-xs font-bold text-slate-900 dark:text-slate-50">URBANPULSE CIVIC NETWORK</span>
+                          <span className="text-[8.5px] font-mono font-bold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 px-1.5 py-0.5 rounded">ACTIVE</span>
                         </div>
-                        <div className="text-[10.5px] text-[#2563EB] font-bold mt-0.5">Multi-City / Multi-Jurisdiction Operations</div>
-                        <div className="text-[9.5px] text-[#64748B] font-mono mt-1.5 pt-1.5 border-t border-[#DBEAFE] leading-relaxed">
+                        <div className="text-[10.5px] text-blue-600 dark:text-blue-400 font-bold mt-0.5">Multi-City / Multi-Jurisdiction Operations</div>
+                        <div className="text-[9.5px] text-slate-500 dark:text-slate-400 font-mono mt-1.5 pt-1.5 border-t border-[#DBEAFE] leading-relaxed">
                           Unified civic intelligence authority consolidating live sensor feeds, citizen incident reports, and squad dispatches across all metropolitan zones.
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-2.5 pt-2 border-t border-[#F1F5F9] px-1 flex items-center justify-between text-[9px] font-mono text-[#64748B]">
+                    <div className="mt-2.5 pt-2 border-t border-[#F1F5F9] px-1 flex items-center justify-between text-[9px] font-mono text-slate-500 dark:text-slate-400">
                       <span>Operational Scope:</span>
-                      <span className="font-bold text-[#2563EB]">National Unified Network</span>
+                      <span className="font-bold text-blue-600 dark:text-blue-400">National Unified Network</span>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="h-5 w-px bg-[#E2E8F0] hidden sm:block"></div>
+              <div className="h-5 w-px bg-slate-200 dark:bg-slate-700 hidden sm:block"></div>
 
               {/* Notification icon */}
               <button
@@ -914,7 +922,7 @@ export default function App() {
                   const unread = notifications.filter(n => !n.read);
                   if (unread.length > 0) handleMarkNotificationsRead();
                 }}
-                className="relative p-2 rounded-xl text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] border border-transparent hover:border-[#E2E8F0] transition-colors cursor-pointer"
+                className="relative p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800 border border-transparent hover:border-slate-200 dark:border-slate-800 transition-colors cursor-pointer"
                 title="System Notifications"
               >
                 <Bell className="w-4 h-4" />
@@ -923,13 +931,13 @@ export default function App() {
                 )}
               </button>
 
-              <div className="h-5 w-px bg-[#E2E8F0] hidden sm:block"></div>
+              <div className="h-5 w-px bg-slate-200 dark:bg-slate-700 hidden sm:block"></div>
 
               {/* Administrator Avatar & Profile Chip with Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setShowUserDropdown(prev => !prev)}
-                  className="flex items-center gap-2.5 p-1 sm:px-2 rounded-xl hover:bg-[#F8FAFC] border border-transparent hover:border-[#E2E8F0] transition-all cursor-pointer group"
+                  className="flex items-center gap-2.5 p-1 sm:px-2 rounded-xl hover:bg-slate-50/50 dark:bg-slate-900/50 border border-transparent hover:border-slate-200 dark:border-slate-800 transition-all cursor-pointer group"
                 >
                   <div className={`w-8 h-8 rounded-xl ${
                     currentUser.role === "admin" 
@@ -943,22 +951,22 @@ export default function App() {
                     {currentUser.fullName.split(" ").map(w => w[0]).join("").substring(0, 2)}
                   </div>
                   <div className="text-left hidden md:block">
-                    <div className="text-xs font-bold text-[#0F172A] group-hover:text-[#2563EB] transition-colors leading-tight">
+                    <div className="text-xs font-bold text-slate-900 dark:text-slate-50 group-hover:text-blue-600 dark:text-blue-400 transition-colors leading-tight">
                       {currentUser.fullName}
                     </div>
                     <div className="text-[9.5px] font-mono font-bold text-[#6D28D9] tracking-wider uppercase">
                       {currentUser.role === "admin" ? "SUPER ADMIN" : currentUser.role.toUpperCase()}
                     </div>
                   </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#0F172A] transition-colors hidden md:block" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:text-slate-50 transition-colors hidden md:block" />
                 </button>
 
                 {/* User Dropdown */}
                 {showUserDropdown && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-[#E2E8F0] p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                     <div className="px-3 py-2 border-b border-[#F1F5F9]">
-                      <p className="text-xs font-bold text-[#0F172A] truncate">{currentUser.fullName}</p>
-                      <p className="text-[11px] text-[#64748B] font-mono truncate">{currentUser.email}</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-slate-50 truncate">{currentUser.fullName}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">{currentUser.email}</p>
                       <span className="inline-block mt-1 px-2 py-0.5 bg-[#F5F3FF] text-[#6D28D9] text-[9.5px] font-mono font-bold rounded border border-[#DDD6FE]">
                         {currentUser.role === "admin" ? "SUPER ADMIN CLEARANCE" : currentUser.role.toUpperCase()}
                       </span>
@@ -972,9 +980,9 @@ export default function App() {
                               setActiveSubTab("admin-panel");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
-                            <Shield className="w-3.5 h-3.5 text-[#2563EB]" />
+                            <Shield className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                             <span>Admin Console</span>
                           </button>
                           <button
@@ -982,9 +990,9 @@ export default function App() {
                               setActiveSubTab("admin-users");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
-                            <Users className="w-3.5 h-3.5 text-[#64748B]" />
+                            <Users className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                             <span>User Management</span>
                           </button>
                         </>
@@ -996,9 +1004,9 @@ export default function App() {
                               setActiveSubTab("municipal-home");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
-                            <LayoutDashboard className="w-3.5 h-3.5 text-[#2563EB]" />
+                            <LayoutDashboard className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                             <span>City Overview</span>
                           </button>
                           <button
@@ -1006,9 +1014,9 @@ export default function App() {
                               setActiveSubTab("dispatch-management");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
-                            <Radio className="w-3.5 h-3.5 text-[#2563EB]" />
+                            <Radio className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                             <span>Dispatch Management</span>
                           </button>
                           <button
@@ -1016,9 +1024,9 @@ export default function App() {
                               setActiveSubTab("command-center");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
-                            <ShieldAlert className="w-3.5 h-3.5 text-[#F59E0B]" />
+                            <ShieldAlert className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                             <span>Command Center</span>
                           </button>
                         </>
@@ -1030,9 +1038,9 @@ export default function App() {
                               setActiveSubTab("field-operations");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
-                            <Wrench className="w-3.5 h-3.5 text-[#16A34A]" />
+                            <Wrench className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
                             <span>Field Operations Deck</span>
                           </button>
                           <button
@@ -1040,7 +1048,7 @@ export default function App() {
                               setActiveSubTab("copilot");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
                             <Sparkles className="w-3.5 h-3.5 text-[#6366F1]" />
                             <span>Field Copilot AI</span>
@@ -1054,9 +1062,9 @@ export default function App() {
                               setActiveSubTab("citizen-home");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
-                            <LayoutDashboard className="w-3.5 h-3.5 text-[#2563EB]" />
+                            <LayoutDashboard className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                             <span>Citizen Overview</span>
                           </button>
                           <button
@@ -1064,9 +1072,9 @@ export default function App() {
                               setActiveSubTab("my-reports");
                               setShowUserDropdown(false);
                             }}
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-[#334155] hover:bg-[#F8FAFC] hover:text-[#2563EB] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:bg-slate-900/50 hover:text-blue-600 dark:text-blue-400 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                           >
-                            <FileText className="w-3.5 h-3.5 text-[#64748B]" />
+                            <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                             <span>My Reports</span>
                           </button>
                         </>
@@ -1079,7 +1087,7 @@ export default function App() {
                           setShowUserDropdown(false);
                           handleLogout();
                         }}
-                        className="w-full text-left px-3 py-2 text-xs font-semibold text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                        className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-900/20 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                         <span>Sign Out</span>
@@ -1093,7 +1101,7 @@ export default function App() {
 
           {/* Workspace Area */}
           <main className="flex-1 p-4 sm:p-6 lg:p-7 flex flex-col gap-6">
-            <div className="bg-white border border-[#E2E8F0] p-5 rounded-2xl shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-5 text-left transition-colors">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-5 text-left transition-colors">
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <span className={`w-2.5 h-2.5 rounded-full ${
@@ -1101,7 +1109,7 @@ export default function App() {
                       ? "bg-[#2563EB] animate-pulse"
                       : activeTerminal === 'split' ? 'bg-[#7C3AED]' : activeTerminal === 'admin' ? 'bg-[#F59E0B]' : 'bg-[#2563EB]'
                   }`}></span>
-                  <h1 className="text-xl font-sans font-extrabold text-[#172033] tracking-tight flex items-center gap-2 flex-wrap">
+                  <h1 className="text-xl font-sans font-extrabold text-slate-900 dark:text-slate-50 tracking-tight flex items-center gap-2 flex-wrap">
                     <span>
                       {activeSubTab === "citizen-home" && "Citizen Safety Dashboard"}
                       {activeSubTab === "my-reports" && "My Submitted Reports"}
@@ -1118,25 +1126,22 @@ export default function App() {
                       {activeSubTab === "admin-settings" && "Platform Settings & Governance Policies"}
                       {activeSubTab === "audit-logs" && "Platform Audit Log Ledger"}
                       {activeSubTab === "infrastructure" && (
-                        currentUser.role === "citizen" ? "REPORT A ROAD ISSUE" :
                         activeTerminal === "citizen" ? "Citizen Volunteer Dashboard" :
                         activeTerminal === "admin" ? "Municipal Commander Terminal" : ""
                       )}
-                      {activeSubTab === "safety" && (currentUser.role === "citizen" ? "Road Risk Map" : "Urban Heatmap Grid & AI Risk Diagnostics")}
-                      {activeSubTab === "alerts" && "Civic Alerts & Notices"}
-                      {activeSubTab === "profile" && "Citizen Profile & Clearance"}
                       {activeSubTab === "copilot" && "AI Guardian Command Advisor"}
+                      {activeSubTab === "safety" && "Urban Heatmap Grid & AI Risk Diagnostics"}
                       {activeSubTab === "traffic" && "Smart Traffic Control Center"}
                       {activeSubTab === "environmental" && "Clean Air Control Centre"}
                       {activeSubTab === "emergency" && "Emergency Services Control Center"}
                       {activeSubTab === "field-operations" && "Field Operations & Maintenance Deck"}
                     </span>
-                    <span className="text-xs bg-[#EFF6FF] text-[#2563EB] px-2.5 py-0.5 rounded-full font-bold border border-[#DBEAFE] font-mono">
+                    <span className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2.5 py-0.5 rounded-full font-bold border border-[#DBEAFE] font-mono">
                       Civic Network Active
                     </span>
                   </h1>
                 </div>
-                <p className="text-[12px] text-[#64748B] mt-1.5 max-w-3xl leading-relaxed font-sans">
+                <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1.5 max-w-3xl leading-relaxed font-sans">
                   {activeSubTab === "citizen-home" && `Welcome to your UrbanPulse safety and reporting dashboard for municipal operations.`}
                   {activeSubTab === "my-reports" && `Track the real-time remediation status, dispatch assignments, and resolution notes for your submitted issues.`}
                   {activeSubTab === "municipal-home" && `High-level command overview for UrbanPulse municipal operations across active metropolitan domains.`}
@@ -1153,68 +1158,50 @@ export default function App() {
                   {activeSubTab === "analytics" && `Advanced telemetry logs tracking issue growth percentages, department performance indices, and specific ward standings across metropolitan sectors.`}
                   {activeSubTab === "digital-twin" && `Interactive 5-Layer vector city hologram displaying real-time infrastructure, traffic speed, safety, AQI smog, and composite risk parameters mapped live.`}
                   {activeSubTab === "infrastructure" && (
-                    currentUser.role === "citizen" ? "Upload evidence and let UrbanPulse AI analyze, assess and route the incident." :
                     activeTerminal === "citizen" ? `Take photos, input hazard parameters, and witness instant AI categorization mapped across active metropolitan sectors.` :
                     activeTerminal === "admin" ? `Filter municipal reports down to wards, examine high confidence diagnostic scores, and assign utility dispatch fleets.` :
                     ""
                   )}
                   {activeSubTab === "copilot" && `Chat live with UrbanPulse's real-time AI co-pilot. Obtain diagnostics, ask questions about regional hazards, or request simulated response priorities.`}
-                  {activeSubTab === "safety" && (currentUser.role === "citizen" ? "Live spatial visualization of reported road hazards categorized by risk severity." : "GIS mapping system with localized micro-overlays, assessing probabilities of structural faults, dark streets, and water retention across municipal domains.")}
-                  {activeSubTab === "alerts" && "Broadcast advisories, safety alerts, and updates on your submitted road issues."}
-                  {activeSubTab === "profile" && "Your citizen identity, civic participation records, and reporting history."}
+                  {activeSubTab === "safety" && `GIS mapping system with localized micro-overlays, assessing probabilities of structural faults, dark streets, and water retention across municipal domains.`}
                   {activeSubTab === "traffic" && `Volume telemetry capturing traffic flow speeds, road obstructions, and proposing lane adjustments and dynamic speed controls.`}
                   {activeSubTab === "environmental" && `Monitoring atmospherics and smog indicators, with real-time AQI feedback and particulate density tracking across sectors.`}
                   {activeSubTab === "emergency" && `Continuous transit routing, determining hazard bypass coordinates and dispatcher assignment priorities for hospital responder lanes.`}
                 </p>
 
                 {/* TRUST & TRANSPARENCY DECK (AI parameters, data sources, last updated) */}
-                {currentUser.role !== "citizen" ? (
-                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-2 text-[10px] font-mono font-medium text-[#64748B] border-t border-[#F1F5F9] items-center">
-                    <div className="flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
-                      <span>AI Engine: <strong className="text-[#172033]">Gemini 3.5-Flash Verified</strong> (98.4% Confidence Threshold)</span>
-                    </div>
-                    <span className="text-[#CBD5E1]">|</span>
-                    <div>
-                      <span>Data Streams: <strong className="text-[#172033]">GPS Lock, Municipal GIS & Citizen Mesh</strong></span>
-                    </div>
-                    <span className="text-[#CBD5E1]">|</span>
-                    <div>
-                      <span>Telemetry Sync: <strong className="text-[#2563EB] font-bold">Consolidated</strong></span>
-                    </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-2 text-[10px] font-mono font-medium text-slate-500 dark:text-slate-400 border-t border-[#F1F5F9] items-center">
+                  <div className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
+                    <span>AI Engine: <strong className="text-slate-900 dark:text-slate-50">Gemini 3.5-Flash Verified</strong> (98.4% Confidence Threshold)</span>
                   </div>
-                ) : (
-                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-2 text-[11px] font-medium text-[#64748B] border-t border-[#F1F5F9] items-center">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
-                      <span className="text-[#0F172A] font-medium">Citizen Road Safety Portal</span>
-                    </div>
-                    <span className="text-[#CBD5E1]">|</span>
-                    <div>
-                      <span>Domain: <strong className="text-[#2563EB]">{selectedCityName}</strong></span>
-                    </div>
+                  <span className="text-[#CBD5E1]">|</span>
+                  <div>
+                    <span>Data Streams: <strong className="text-slate-900 dark:text-slate-50">GPS Lock, Municipal GIS & Citizen Mesh</strong></span>
                   </div>
-                )}
+                  <span className="text-[#CBD5E1]">|</span>
+                  <div>
+                    <span>Telemetry Sync: <strong className="text-blue-600 dark:text-blue-400 font-bold">Consolidated</strong></span>
+                  </div>
+                </div>
               </div>
 
               {/* Controls and Selectors panel */}
-              {currentUser.role !== "citizen" && (
-                <div className="flex flex-row xl:flex-col items-end gap-2.5 shrink-0 self-start sm:self-auto flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold p-1 px-2.5 bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] rounded-lg shrink-0 select-none uppercase tracking-wide">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
-                      <span>Unified Network Active</span>
-                    </div>
+              <div className="flex flex-row xl:flex-col items-end gap-2.5 shrink-0 self-start sm:self-auto flex-wrap">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold p-1 px-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-[#1E40AF] rounded-lg shrink-0 select-none uppercase tracking-wide">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
+                    <span>Unified Network Active</span>
+                  </div>
 
-                    <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold p-1 px-2.5 bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] rounded-lg shrink-0 select-none uppercase tracking-wide">
-                      <span>Deck:</span>
-                      <span className="text-[#2563EB] font-bold">
-                        {activeSubTab === "infrastructure" ? `${activeTerminal} suite` : activeSubTab}
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold p-1 px-2.5 bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 rounded-lg shrink-0 select-none uppercase tracking-wide">
+                    <span>Deck:</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-bold">
+                      {activeSubTab === "infrastructure" ? `${activeTerminal} suite` : activeSubTab}
+                    </span>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
 
             {/* ROAD SCANNER DASHCAM & VISION ANALYSIS */}
@@ -1264,7 +1251,7 @@ export default function App() {
                     setUserCivicPoints((pts) => pts + awardedPoints);
                     setActiveScanSession(null);
                     syncOperationalDatasets(currentUser.email, currentUser.role);
-                    setActiveSubTab("rewards");
+                    setActiveSubTab("my-reports");
                   }}
                   onDiscardSession={() => {
                     setActiveScanSession(null);
@@ -1306,12 +1293,70 @@ export default function App() {
             {activeSubTab === "my-reports" && (
               <RoleGuard allowedRoles={["citizen"]}>
                 <div className="w-full">
-                  <CitizenMyReports
-                    reports={reports}
-                    currentUserEmail={currentUser.email}
-                    onSelectReport={(rep) => setSelectedReport(rep)}
-                    onNavigateToReport={() => setActiveSubTab("infrastructure")}
-                  />
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs text-left">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 gap-3 mb-6">
+                      <div>
+                        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-50 font-sans">My Submitted Reports</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Track real-time status and remediation progress for all civic hazards you have logged.</p>
+                      </div>
+                      <span className="text-xs font-bold font-mono px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-[#DBEAFE] rounded-full self-start sm:self-auto">
+                        {reports.filter(r => r.reporterEmail === currentUser.email).length} Total Submissions
+                      </span>
+                    </div>
+
+                    {reports.filter(r => r.reporterEmail === currentUser.email).length === 0 ? (
+                      <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3">
+                          <FileText className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 mb-1">No reports lodged yet</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">You have not submitted any infrastructure incidents. Use the Report Issue desk or AI Road Scanner to file hazards.</p>
+                        <button
+                          onClick={() => setActiveSubTab("infrastructure")}
+                          className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
+                        >
+                          Report a Problem
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {reports.filter(r => r.reporterEmail === currentUser.email).map((rep) => (
+                          <div
+                            key={rep.id}
+                            onClick={() => setSelectedReport(rep)}
+                            className="bg-slate-50/50 dark:bg-slate-900/50 hover:bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-[#2563EB] p-4.5 rounded-2xl transition-all cursor-pointer shadow-3xs hover:shadow-xs flex flex-col justify-between gap-3 group"
+                          >
+                            <div>
+                              <div className="flex items-center justify-between gap-2 mb-2">
+                                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                                  rep.status === "Resolved" ? "bg-[#F0FDF4] text-green-600 dark:text-green-400 border-[#DCFCE7]" :
+                                  rep.status === "In Progress" ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-[#DBEAFE]" :
+                                  "bg-[#FFFBEB] text-[#D97706] border-[#FEF3C7]"
+                                }`}>
+                                  ● {rep.status}
+                                </span>
+                                <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                                  {getRelativeTime(rep.createdAt)}
+                                </span>
+                              </div>
+                              <h4 className="text-xs font-bold text-slate-900 dark:text-slate-50 group-hover:text-blue-600 dark:text-blue-400 transition-colors line-clamp-1">
+                                {rep.title}
+                              </h4>
+                              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                                {rep.description}
+                              </p>
+                            </div>
+                            <div className="pt-2.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[10.5px] text-slate-500 dark:text-slate-400">
+                              <span className="truncate max-w-[150px] font-medium">{rep.location}</span>
+                              <span className="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                                Details →
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </RoleGuard>
             )}
@@ -1496,48 +1541,11 @@ export default function App() {
             )}
 
             {activeSubTab === "safety" && (
-              currentUser.role === "citizen" ? (
-                <div className="w-full">
-                  <CitizenRoadRiskMap
-                    reports={reports}
-                    onSelectReport={(rep) => setSelectedReport(rep)}
-                  />
-                </div>
-              ) : (
-                <FutureModules 
-                  forcedTab="predictive" 
-                  reports={reports} 
-                  onReportUpdated={() => syncOperationalDatasets(currentUser!.email, currentUser!.role)}
-                />
-              )
-            )}
-
-            {/* CITIZEN ALERTS WORKSPACE */}
-            {activeSubTab === "alerts" && (
-              <div className="w-full">
-                <CitizenAlerts
-                  notifications={notifications}
-                  reports={reports}
-                  onMarkRead={handleMarkNotificationsRead}
-                  onSelectReport={(rep) => setSelectedReport(rep)}
-                />
-              </div>
-            )}
-
-            {/* CITIZEN PROFILE WORKSPACE */}
-            {activeSubTab === "profile" && (
-              <div className="w-full">
-                <CitizenProfile
-                  currentUser={{
-                    fullName: currentUser.fullName,
-                    email: currentUser.email,
-                    role: currentUser.role
-                  }}
-                  reports={reports}
-                  onLogout={handleLogout}
-                  onNavigateToReports={() => setActiveSubTab("my-reports")}
-                />
-              </div>
+              <FutureModules 
+                forcedTab="predictive" 
+                reports={reports} 
+                onReportUpdated={() => syncOperationalDatasets(currentUser!.email, currentUser!.role)}
+              />
             )}
 
             {activeSubTab === "traffic" && (
@@ -1566,27 +1574,9 @@ export default function App() {
 
             {/* DEFAULT CORE WORKSPACE PANELS */}
             {activeSubTab === "infrastructure" && (
-              currentUser.role === "citizen" ? (
-                <div className="w-full">
-                  <CitizenUpload
-                    onReportCreated={(newRep) => {
-                      setReports(prev => [newRep, ...prev]);
-                      setSelectedReport(newRep);
-                      syncOperationalDatasets(currentUser.email, currentUser.role);
-                    }}
-                    onViewReportDetails={(rep) => {
-                      setSelectedReport(rep);
-                      setActiveSubTab("my-reports");
-                    }}
-                    currentUserEmail={currentUser.email}
-                    existingReports={reports}
-                    onNavigateToMyReports={() => setActiveSubTab("my-reports")}
-                  />
-                </div>
-              ) : (
-                <div className="flex flex-col gap-6 w-full">
-                  <AIInsightsPanel reports={reports} />
-                  {activeTerminal === "split" ? (
+              <div className="flex flex-col gap-6 w-full">
+                <AIInsightsPanel reports={reports} />
+                {activeTerminal === "split" ? (
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start h-full">
                 
                 {/* SPLIT COLUMN 1: Citizen Volunteer Simulator Console */}
@@ -1612,7 +1602,7 @@ export default function App() {
                   />
 
                   {/* Citizen Map specifically styled */}
-                  <div className="bg-white p-4.5 border border-slate-200 shadow-3xs rounded-xl flex flex-col gap-3">
+                  <div className="bg-white dark:bg-slate-900 p-4.5 border border-slate-200 shadow-3xs rounded-xl flex flex-col gap-3">
                     <div>
                       <h4 className="font-display font-bold text-xs text-slate-800">Visual Wards overlay</h4>
                       <p className="text-[10px] text-slate-400">Delhi NCR volunteer submission tracking.</p>
@@ -1627,7 +1617,7 @@ export default function App() {
                   </div>
 
                   {/* Citizen submitted table */}
-                  <div className="bg-white p-4.5 border border-slate-200 shadow-3xs rounded-xl">
+                  <div className="bg-white dark:bg-slate-900 p-4.5 border border-slate-200 shadow-3xs rounded-xl">
                     <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
                       <h4 className="font-display font-bold text-xs text-slate-800">Self Reported Submissions</h4>
                       <span className="text-[9px] font-bold bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">
@@ -1679,11 +1669,11 @@ export default function App() {
 
                   {/* Miniature stats specifically designed to fit nicely */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-3xs">
+                    <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 shadow-3xs">
                       <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Admin Registry Count</span>
                       <span className="text-xl font-display font-bold text-slate-800 mt-1 block">{reports.length}</span>
                     </div>
-                    <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-3xs">
+                    <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 shadow-3xs">
                       <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Crisis Risks Level</span>
                       <span className="text-xl font-display font-bold text-red-600 mt-1 block">
                         {reports.filter(r => r.severity >= 75 && r.status !== 'Resolved').length} Active
@@ -1692,7 +1682,7 @@ export default function App() {
                   </div>
 
                   {/* Dispatch Incident database */}
-                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-3xs">
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 shadow-3xs">
                     <div className="mb-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2 border-b border-slate-100">
                       <div>
                         <h4 className="font-display font-bold text-xs text-slate-800">Operational Dispatch Queue</h4>
@@ -1797,7 +1787,7 @@ export default function App() {
                   </div>
 
                   {/* Comprehensive Dispatch map */}
-                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-3xs flex flex-col gap-2">
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 shadow-3xs flex flex-col gap-2">
                     <div>
                       <h4 className="font-display font-medium text-xs text-slate-800">Dispatch GIS Heatmap Network</h4>
                       <p className="text-[9px] text-slate-400">Centers automatically on selected markers.</p>
@@ -1836,7 +1826,7 @@ export default function App() {
                 <div className="lg:col-span-7 flex flex-col gap-6">
                   
                   {/* Map overlay Card */}
-                  <div className="bg-white border border-slate-200 shadow-xs rounded-2xl p-5">
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 shadow-xs rounded-2xl p-5">
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h3 className="font-display font-semibold text-base text-slate-800 tracking-tight">Active Delhi NCR Incident Map</h3>
@@ -1854,7 +1844,7 @@ export default function App() {
                   </div>
 
                   {/* Volunteer submissions history list */}
-                  <div className="bg-white border border-slate-200 shadow-xs rounded-2xl p-5">
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 shadow-xs rounded-2xl p-5">
                     <div className="flex items-center justify-between mb-4 pb-2 border-b border-light-100">
                       <div>
                         <h4 className="font-display font-medium text-sm text-slate-800">Your Action Incident Trackers</h4>
@@ -1924,7 +1914,7 @@ export default function App() {
                   {/* Left Column (span 7): Command Incident queue list */}
                   <div className="lg:col-span-7 flex flex-col gap-4">
                     
-                    <div className="bg-white border border-gray-200 shadow-xs rounded-2xl p-5">
+                    <div className="bg-white dark:bg-slate-900 border border-gray-200 shadow-xs rounded-2xl p-5">
                       
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 border-b border-slate-100 pb-4">
                         <div>
@@ -1969,7 +1959,7 @@ export default function App() {
                               type="text"
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
-                              className="w-full bg-white border border-gray-200 rounded-lg pl-8.5 pr-3 py-1.5 text-xs text-slate-800 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-150 focus:outline-hidden"
+                              className="w-full bg-white dark:bg-slate-900 border border-gray-200 rounded-lg pl-8.5 pr-3 py-1.5 text-xs text-slate-800 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-150 focus:outline-hidden"
                               placeholder="ID, Title, Ward..."
                             />
                             <Search className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-gray-400" />
@@ -1983,7 +1973,7 @@ export default function App() {
                             id="source-filter-select"
                             value={sourceFilter}
                             onChange={(e) => setSourceFilter(e.target.value)}
-                            className="w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
+                            className="w-full bg-white dark:bg-slate-900 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
                           >
                             <option value="All">🌐 All Sources</option>
                             <option value="ROAD_SCANNER">📷 AI Road Scanner</option>
@@ -1998,7 +1988,7 @@ export default function App() {
                             id="category-filter-select"
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
+                            className="w-full bg-white dark:bg-slate-900 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
                           >
                             <option value="All">🛡️ All Categories</option>
                             <option value="Pothole">🚧 Potholes</option>
@@ -2017,7 +2007,7 @@ export default function App() {
                             id="status-filter-select"
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
+                            className="w-full bg-white dark:bg-slate-900 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
                           >
                             <option value="All">🚦 All Statuses</option>
                             <option value="Pending">🔴 Pending</option>
@@ -2034,7 +2024,7 @@ export default function App() {
                             id="risk-filter-select"
                             value={riskLevelFilter}
                             onChange={(e) => setRiskLevelFilter(e.target.value)}
-                            className="w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
+                            className="w-full bg-white dark:bg-slate-900 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
                           >
                             <option value="All">⚡ All Risk Levels</option>
                             <option value="Low">🟢 Low Risk</option>
@@ -2050,7 +2040,7 @@ export default function App() {
                             id="area-filter-select"
                             value={areaFilter}
                             onChange={(e) => setAreaFilter(e.target.value)}
-                            className="w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
+                            className="w-full bg-white dark:bg-slate-900 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-hidden font-medium"
                           >
                             <option value="All">📍 All Wards</option>
                             <option value="Saket">Saket District</option>
@@ -2154,7 +2144,7 @@ export default function App() {
                       )}
 
                       {/* Main dispatch Table database */}
-                      <div className="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-3xs">
+                      <div className="overflow-x-auto border border-slate-200 rounded-xl bg-white dark:bg-slate-900 shadow-3xs">
                         <table className="w-full text-left border-collapse text-[11px]">
                           <thead>
                             <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold font-sans">
@@ -2349,7 +2339,7 @@ export default function App() {
                   {/* Right Column (span 5): Geographic dispatch overlays */}
                   <div className="lg:col-span-5 flex flex-col gap-4">
                     
-                    <div className="bg-white border border-gray-200 shadow-xs rounded-2xl p-5">
+                    <div className="bg-white dark:bg-slate-900 border border-gray-200 shadow-xs rounded-2xl p-5">
                       <div className="mb-3.5">
                         <h4 className="font-display font-semibold text-base text-slate-800">Operational Geographic Dispatch Overlay</h4>
                         <p className="text-[11px] text-gray-400 mt-0.5">Live map with auto-adjusting telemetry positioning. Centering is updated automatically upon registry selections.</p>
@@ -2371,11 +2361,10 @@ export default function App() {
               </div>
               )}
               </div>
-              )
             )}
 
             {/* SHARED AI EXTRAPOLATION MODULE */}
-            {activeSubTab === "infrastructure" && currentUser.role !== "citizen" && (
+            {activeSubTab === "infrastructure" && (
               <div className="mt-2 border-t border-slate-200/60 pt-5">
                 <FutureModules 
                   reports={reports} 
@@ -2387,37 +2376,35 @@ export default function App() {
           </main>
 
           {/* SYSTEM OPERATIONS FOOTER WITH QUICK-ACTION EMERGENCY BUTTON */}
-          <footer id="footer-system" className="bg-white border-t border-[#E2E8F0] py-5 text-[#64748B] text-[10.5px] font-medium leading-relaxed z-10 shrink-0">
+          <footer id="footer-system" className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-5 text-slate-500 dark:text-slate-400 text-[10.5px] font-medium leading-relaxed z-10 shrink-0">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] border border-[#DBEAFE] flex items-center justify-center text-[#2563EB] shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-[#DBEAFE] flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                   <ShieldAlert className="w-4.5 h-4.5" />
                 </div>
                 <div className="text-left">
-                  <span className="font-sans font-bold text-[#172033] tracking-widest uppercase block">URBANPULSE GUARDIAN NET</span>
-                  <span className="text-[9.5px] text-[#64748B]">NCR Delhi Hub: WGS-84 / Ind Core System • <strong className="text-[#16A34A]">ACTIVE</strong></span>
+                  <span className="font-sans font-bold text-slate-900 dark:text-slate-50 tracking-widest uppercase block">URBANPULSE GUARDIAN NET</span>
+                  <span className="text-[9.5px] text-slate-500 dark:text-slate-400">NCR Delhi Hub: WGS-84 / Ind Core System • <strong className="text-green-600 dark:text-green-400">ACTIVE</strong></span>
                 </div>
               </div>
 
               {/* QUICK-ACTION EMERGENCY SOS BUTTON */}
-              {currentUser.role !== "citizen" && (
-                <div className="flex items-center gap-3">
-                  <FooterEmergencyButton 
-                    currentUser={currentUser}
-                    onReportCreated={(newRep) => {
-                      setSelectedReport(newRep);
-                      if (currentUser) {
-                        syncOperationalDatasets(currentUser.email, currentUser.role);
-                      }
-                    }}
-                    onOpenReportDetails={(rep) => setSelectedReport(rep)}
-                  />
-                </div>
-              )}
+              <div className="flex items-center gap-3">
+                <FooterEmergencyButton 
+                  currentUser={currentUser}
+                  onReportCreated={(newRep) => {
+                    setSelectedReport(newRep);
+                    if (currentUser) {
+                      syncOperationalDatasets(currentUser.email, currentUser.role);
+                    }
+                  }}
+                  onOpenReportDetails={(rep) => setSelectedReport(rep)}
+                />
+              </div>
 
-              <div className="text-[9.5px] text-[#94A3B8] text-center md:text-right">
-                <p className="text-[#64748B]">AI Operating System Build v4.2.0 • 24/7 Dispatch</p>
-                <p className="text-[#94A3B8]">National Emergency Response (112) Integrated</p>
+              <div className="text-[9.5px] text-slate-400 dark:text-slate-500 text-center md:text-right">
+                <p className="text-slate-500 dark:text-slate-400">AI Operating System Build v4.2.0 • 24/7 Dispatch</p>
+                <p className="text-slate-400 dark:text-slate-500">National Emergency Response (112) Integrated</p>
               </div>
             </div>
           </footer>
@@ -2431,7 +2418,7 @@ export default function App() {
           <div className="absolute inset-0 opacity-[0.03] bg-slate-900" style={{ backgroundImage: "radial-gradient(#0f172a 1px, transparent 1px)", backgroundSize: "24px 24px" }}></div>
           <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-blue-100/40 to-transparent"></div>
 
-          <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/80 border border-slate-200/80 w-full max-w-[460px] p-6 sm:p-8 relative z-10 flex flex-col items-center">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl shadow-slate-200/80 border border-slate-200/80 w-full max-w-[460px] p-6 sm:p-8 relative z-10 flex flex-col items-center">
             
             {/* Branding launcher icon & header */}
             <div className="flex items-center gap-3 mb-6 w-full justify-center">
@@ -2460,7 +2447,7 @@ export default function App() {
                 }}
                 className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   isLoginView
-                    ? "bg-white text-slate-900 shadow-md border border-slate-200/80 font-black"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 shadow-md border border-slate-200/80 font-black"
                     : "bg-transparent text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -2487,7 +2474,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* 2. ROLE SELECTOR TABS (Sign In: Citizen, Municipal, Admin) */}
+            {/* 2. ROLE SELECTOR TABS (Sign In: Citizen, Field Team, Municipal) */}
             {isLoginView ? (
               <div className="flex w-full gap-2 mb-5">
                 <button
@@ -2522,7 +2509,7 @@ export default function App() {
                   }`}
                 >
                   <Wrench className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Municipal</span>
+                  <span>Field Team</span>
                 </button>
                 <button
                   type="button"
@@ -2539,7 +2526,7 @@ export default function App() {
                   }`}
                 >
                   <Landmark className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Admin</span>
+                  <span>Command</span>
                 </button>
               </div>
             ) : (
@@ -2608,7 +2595,7 @@ export default function App() {
                       type="text"
                       value={fullNameInput}
                       onChange={(e) => setFullNameInput(e.target.value)}
-                      className="w-full bg-white border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-semibold"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-semibold"
                       placeholder={authRoleInput === "field_team" ? "Vikram Singh (Crew Lead)" : authRoleInput === "admin" ? "Officer Rachel Chen" : "Ashish Singh"}
                       required
                     />
@@ -2627,7 +2614,7 @@ export default function App() {
                     type="email"
                     value={emailInput}
                     onChange={(e) => setEmailInput(e.target.value)}
-                    className="w-full bg-white border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-semibold"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-semibold"
                     placeholder={authRoleInput === "field_team" ? "fieldteam@urbanpulse.gov" : authRoleInput === "admin" ? "officer@urbanpulse.gov" : "yourname@gmail.com"}
                     required
                   />
@@ -2645,7 +2632,7 @@ export default function App() {
                     type="password"
                     value={passwordInput}
                     onChange={(e) => setPasswordInput(e.target.value)}
-                    className="w-full bg-white border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-medium tracking-widest"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-medium tracking-widest"
                     placeholder="••••••••"
                   />
                   <Lock className="absolute right-3.5 top-3 w-4 h-4 text-slate-400" />
@@ -2679,6 +2666,46 @@ export default function App() {
               </button>
             </form>
 
+            {/* QUICK DEMO CREDENTIAL BUTTONS */}
+            <div className="mt-4 pt-3 border-t border-slate-200/70 flex flex-col gap-1.5">
+              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest text-center">Quick Demo Preset Logins:</span>
+              <div className="grid grid-cols-3 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthRoleInput("citizen");
+                    setEmailInput("citizen@urbanpulse.org");
+                    setPasswordInput("citizen123456");
+                  }}
+                  className="py-1 px-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 text-[9.5px] font-bold rounded-lg transition-colors border border-blue-200/80 cursor-pointer"
+                >
+                  Citizen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthRoleInput("field_team");
+                    setEmailInput("fieldteam@urbanpulse.gov");
+                    setPasswordInput("field123456");
+                  }}
+                  className="py-1 px-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[9.5px] font-bold rounded-lg transition-colors border border-emerald-200/80 cursor-pointer"
+                >
+                  Field Crew
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthRoleInput("admin");
+                    setEmailInput("officer@urbanpulse.gov");
+                    setPasswordInput("admin123456");
+                  }}
+                  className="py-1 px-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9.5px] font-bold rounded-lg transition-colors border border-amber-200/80 cursor-pointer"
+                >
+                  Municipal
+                </button>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3 w-full my-4 text-slate-400">
               <div className="flex-1 h-px bg-slate-200"></div>
               <span className="text-[10px] uppercase font-black tracking-widest text-slate-400">
@@ -2693,7 +2720,7 @@ export default function App() {
               type="button"
               onClick={handleGoogleLogin}
               disabled={isSubmittingAuth}
-              className="w-full bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 font-bold py-2.5 px-4 rounded-xl border border-slate-300 shadow-3xs hover:shadow-sm transition-all flex items-center justify-center gap-3 text-xs cursor-pointer disabled:opacity-50 mb-3"
+              className="w-full bg-white dark:bg-slate-900 hover:bg-slate-50 active:bg-slate-100 text-slate-800 font-bold py-2.5 px-4 rounded-xl border border-slate-300 shadow-3xs hover:shadow-sm transition-all flex items-center justify-center gap-3 text-xs cursor-pointer disabled:opacity-50 mb-3"
             >
               {isSubmittingAuth ? (
                 <Loader2 className="w-4 h-4 animate-spin text-slate-500" />

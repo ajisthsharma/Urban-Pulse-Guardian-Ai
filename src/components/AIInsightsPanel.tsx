@@ -75,7 +75,7 @@ export default function AIInsightsPanel({ reports, onSelectSector }: AIInsightsP
   ];
 
   return (
-    <div className="bg-white border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col gap-4 text-left" id="ai-insights-panel">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col gap-4 text-left" id="ai-insights-panel">
       
       {/* Header section */}
       <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
@@ -142,7 +142,7 @@ export default function AIInsightsPanel({ reports, onSelectSector }: AIInsightsP
               key={ins.id}
               className={`p-3 rounded-xl border border-slate-200/70 border-l-4 ${ins.color} flex items-start gap-3 transition-all hover:shadow-2xs`}
             >
-              <div className={`p-1.5 rounded-lg bg-white shadow-3xs ${ins.iconColor} mt-0.5 shrink-0`}>
+              <div className={`p-1.5 rounded-lg bg-white dark:bg-slate-900 shadow-3xs ${ins.iconColor} mt-0.5 shrink-0`}>
                 <Icon className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
@@ -150,7 +150,7 @@ export default function AIInsightsPanel({ reports, onSelectSector }: AIInsightsP
                   <span className={`text-[9px] font-extrabold uppercase tracking-widest ${ins.iconColor}`}>
                     {ins.tag}
                   </span>
-                  <span className="text-[9px] font-mono font-bold text-slate-500 bg-white/80 px-1.5 py-0.2 rounded border border-slate-200/50">
+                  <span className="text-[9px] font-mono font-bold text-slate-500 bg-white dark:bg-slate-900/80 dark:bg-slate-900/80 px-1.5 py-0.2 rounded border border-slate-200/50">
                     {ins.metric}
                   </span>
                 </div>

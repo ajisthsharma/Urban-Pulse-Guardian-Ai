@@ -1248,20 +1248,20 @@ export default function RoadScanner({
   return (
     <div id="road-scanner-container" className="space-y-4 text-left">
       {/* 1. TOP HEADER & SOURCE SELECTOR BAR */}
-      <div className="bg-gradient-to-r from-[#EFF6FF] to-[#FFFFFF] border border-[#DBEAFE] rounded-2xl p-4 text-[#172033] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-[#EFF6FF] to-[#FFFFFF] border border-[#DBEAFE] rounded-2xl p-4 text-slate-900 dark:text-slate-50 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] flex items-center justify-center text-[#2563EB] shadow-2xs">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-[#DBEAFE] flex items-center justify-center text-zinc-900 dark:text-zinc-100 shadow-2xs">
               <Camera className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-black tracking-tight text-[#172033]">AI ROAD SCANNER</h1>
-                <span className="px-2 py-0.5 bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE] rounded text-[9.5px] font-mono font-bold uppercase tracking-wider">
+                <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-slate-50">AI ROAD SCANNER</h1>
+                <span className="px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-zinc-900 dark:text-zinc-100 border border-[#DBEAFE] rounded text-[9.5px] font-mono font-bold uppercase tracking-wider">
                   Automated Dashcam Pipeline
                 </span>
               </div>
-              <p className="text-xs text-[#64748B] mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Autonomous dashcam vision, temporal hazard tracking, and 5-meter spatial deduplication.
               </p>
             </div>
@@ -1282,7 +1282,7 @@ export default function RoadScanner({
           <button
             onClick={onSwitchToManual}
             id="switch-manual-report-btn"
-            className="px-3.5 py-2 bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] hover:text-[#172033] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="px-3.5 py-2 bg-white dark:bg-slate-900 hover:bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <Upload className="w-3.5 h-3.5" />
             <span>Manual Photo Report</span>
@@ -1291,17 +1291,17 @@ export default function RoadScanner({
       </div>
 
       {/* SOURCE SELECTOR BAR */}
-      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-[#172033] shadow-xs">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-slate-900 dark:text-slate-50 shadow-xs">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono font-bold uppercase text-[#64748B] tracking-wider">CAMERA SOURCE:</span>
-          <div className="flex items-center bg-[#F8FAFC] p-1 rounded-xl border border-[#E2E8F0] gap-1">
+          <span className="text-[11px] font-mono font-bold uppercase text-slate-500 dark:text-slate-400 tracking-wider">CAMERA SOURCE:</span>
+          <div className="flex items-center bg-slate-50/50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-200 dark:border-slate-800 gap-1">
             <button
               onClick={() => handleSelectSource("VEHICLE_DASHCAM")}
               id="select-source-vehicle-dashcam"
               className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 source === "VEHICLE_DASHCAM" 
                   ? "bg-[#2563EB] text-white shadow-xs" 
-                  : "text-[#64748B] hover:text-[#172033] hover:bg-white"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900"
               }`}
             >
               <Car className="w-3.5 h-3.5" />
@@ -1313,7 +1313,7 @@ export default function RoadScanner({
               className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 source === "PHONE_CAMERA" 
                   ? "bg-[#2563EB] text-white shadow-xs" 
-                  : "text-[#64748B] hover:text-[#172033] hover:bg-white"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900"
               }`}
             >
               <Smartphone className="w-3.5 h-3.5" />
@@ -1325,7 +1325,7 @@ export default function RoadScanner({
               className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 source === "RECORDED_VIDEO" 
                   ? "bg-[#2563EB] text-white shadow-xs" 
-                  : "text-[#64748B] hover:text-[#172033] hover:bg-white"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900"
               }`}
             >
               <Film className="w-3.5 h-3.5" />
@@ -1335,15 +1335,15 @@ export default function RoadScanner({
         </div>
 
         {/* Source Details & Diagnostics */}
-        <div className="text-xs text-[#64748B] font-mono">
+        <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">
           {source === "VEHICLE_DASHCAM" && (
-            <span className="flex items-center gap-1.5 text-[#2563EB]">
+            <span className="flex items-center gap-1.5 text-zinc-900 dark:text-zinc-100">
               <Car className="w-3.5 h-3.5" />
               <span>Primary Source: USB/UVC Dashcam & Wi-Fi Stream Ready</span>
             </span>
           )}
           {source === "PHONE_CAMERA" && (
-            <span className="flex items-center gap-1.5 text-[#16A34A]">
+            <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400">
               <Smartphone className="w-3.5 h-3.5" />
               <span>Fallback: Mobile Dashboard Mount Camera</span>
             </span>
@@ -1358,17 +1358,17 @@ export default function RoadScanner({
 
       {/* DASHCAM SETUP & PROTOCOL COMPATIBILITY PANEL (Shown when Vehicle Dashcam is active) */}
       {source === "VEHICLE_DASHCAM" && !isScanning && (
-        <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#475569] space-y-2">
+        <div className="bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-600 dark:text-slate-400 space-y-2">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2 text-[#172033] font-bold">
-              <Car className="w-4 h-4 text-[#2563EB]" />
+            <div className="flex items-center gap-2 text-slate-900 dark:text-slate-50 font-bold">
+              <Car className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
               <span>Vehicle Dashcam Hardware Interface</span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setDashcamMode("DEVICE")}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                  dashcamMode === "DEVICE" ? "bg-[#2563EB] text-white shadow-2xs" : "bg-white text-[#64748B] border border-[#E2E8F0]"
+                  dashcamMode === "DEVICE" ? "bg-[#2563EB] text-white shadow-2xs" : "bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800"
                 }`}
               >
                 USB / UVC Capture
@@ -1376,7 +1376,7 @@ export default function RoadScanner({
               <button
                 onClick={() => setDashcamMode("NETWORK")}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                  dashcamMode === "NETWORK" ? "bg-[#2563EB] text-white shadow-2xs" : "bg-white text-[#64748B] border border-[#E2E8F0]"
+                  dashcamMode === "NETWORK" ? "bg-[#2563EB] text-white shadow-2xs" : "bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800"
                 }`}
               >
                 Wi-Fi / RTSP Stream
@@ -1386,11 +1386,11 @@ export default function RoadScanner({
 
           {dashcamMode === "DEVICE" ? (
             <div className="flex items-center gap-2 pt-1">
-              <span className="text-[#64748B] shrink-0">Select Video Device:</span>
+              <span className="text-slate-500 dark:text-slate-400 shrink-0">Select Video Device:</span>
               <select
                 value={selectedDeviceId}
                 onChange={(e) => setSelectedDeviceId(e.target.value)}
-                className="bg-white border border-[#CBD5E1] text-[#172033] rounded-lg px-2.5 py-1 text-xs focus:ring-1 focus:ring-[#2563EB] max-w-sm"
+                className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-50 rounded-lg px-2.5 py-1 text-xs focus:ring-1 focus:ring-[#2563EB] max-w-sm"
               >
                 {availableVideoDevices.length === 0 && <option value="">No external dashcam found (default camera selected)</option>}
                 {availableVideoDevices.map(d => (
@@ -1402,13 +1402,13 @@ export default function RoadScanner({
             </div>
           ) : (
             <div className="flex items-center gap-2 pt-1 flex-wrap">
-              <span className="text-[#64748B] shrink-0">Stream URL:</span>
+              <span className="text-slate-500 dark:text-slate-400 shrink-0">Stream URL:</span>
               <input
                 type="text"
                 value={dashcamStreamUrl}
                 onChange={(e) => setDashcamStreamUrl(e.target.value)}
                 placeholder="http://192.168.1.254:8080/mjpeg"
-                className="bg-white border border-[#CBD5E1] text-[#172033] rounded-lg px-2.5 py-1 text-xs flex-1 min-w-[200px]"
+                className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-50 rounded-lg px-2.5 py-1 text-xs flex-1 min-w-[200px]"
               />
               <button
                 onClick={() => {
@@ -1422,24 +1422,24 @@ export default function RoadScanner({
             </div>
           )}
 
-          <div className="text-[10.5px] text-[#64748B] leading-relaxed pt-1 border-t border-[#E2E8F0]">
-            <span className="font-bold text-[#172033]">Compatibility Note:</span> Supports standard Wi-Fi Dashcam streams (HTTP/MJPEG or WebRTC URLs) and UVC USB-connected dashcams. For standard dashcams with SD-card-only recording, select 'Recorded Video' to analyze clips.
+          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 leading-relaxed pt-1 border-t border-slate-200 dark:border-slate-800">
+            <span className="font-bold text-slate-900 dark:text-slate-50">Compatibility Note:</span> Supports standard Wi-Fi Dashcam streams (HTTP/MJPEG or WebRTC URLs) and UVC USB-connected dashcams. For standard dashcams with SD-card-only recording, select 'Recorded Video' to analyze clips.
           </div>
         </div>
       )}
 
       {/* RECORDED VIDEO DEMO OPTIONS */}
       {source === "RECORDED_VIDEO" && !isScanning && (
-        <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#475569] flex items-center justify-between flex-wrap gap-2">
+        <div className="bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-600 dark:text-slate-400 flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <Film className="w-4 h-4 text-[#7C3AED]" />
-            <span className="font-bold text-[#172033]">Pre-recorded Dashcam Highway Feed</span>
+            <span className="font-bold text-slate-900 dark:text-slate-50">Pre-recorded Dashcam Highway Feed</span>
             <span className="px-2 py-0.5 bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE] rounded text-[9.5px] font-mono font-bold">
               [ Recorded Dashcam Video / Demo Source ]
             </span>
           </div>
-          <div className="text-[11px] text-[#64748B]">
-            Realistic road surface simulation ready. Press <span className="text-[#172033] font-bold">"Start Live Scan"</span> to begin continuous playback.
+          <div className="text-[11px] text-slate-500 dark:text-slate-400">
+            Realistic road surface simulation ready. Press <span className="text-slate-900 dark:text-slate-50 font-bold">"Start Live Scan"</span> to begin continuous playback.
           </div>
         </div>
       )}
@@ -1533,7 +1533,7 @@ export default function RoadScanner({
               >
                 {/* High-tech HUD tag above the box */}
                 <div className="absolute -top-7 left-0 bg-red-600 text-white font-mono text-[9px] font-black px-2 py-0.5 rounded-t whitespace-nowrap shadow-md flex items-center gap-1.5 uppercase">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-white dark:bg-slate-900 animate-ping"></span>
                   <span>🔴 {activeOverlayBox.category}</span>
                   <span>•</span>
                   <span>{activeOverlayBox.confidence}% CONF</span>
@@ -1669,40 +1669,40 @@ export default function RoadScanner({
         <div className="lg:col-span-4 space-y-4">
           
           {/* Live Metrics Grid */}
-          <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 space-y-3.5 text-[#172033] shadow-xs">
-            <h3 className="text-xs font-bold text-[#64748B] uppercase tracking-wider font-mono flex items-center justify-between">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3.5 text-slate-900 dark:text-slate-50 shadow-xs">
+            <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono flex items-center justify-between">
               <span>SCANNER TELEMETRY</span>
               <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse"></span>
             </h3>
 
             <div className="grid grid-cols-2 gap-2.5">
-              <div className="bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
-                <span className="text-[10px] text-[#64748B] uppercase font-mono block">Extracted Frames</span>
-                <span className="text-xl font-mono font-black text-[#16A34A]">{extractedFramesCount}</span>
+              <div className="bg-slate-50/50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono block">Extracted Frames</span>
+                <span className="text-xl font-mono font-black text-green-600 dark:text-green-400">{extractedFramesCount}</span>
               </div>
-              <div className="bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
-                <span className="text-[10px] text-[#64748B] uppercase font-mono block">FPS / Speed</span>
-                <span className="text-base font-mono font-bold text-[#2563EB]">{liveFps} FPS / {currentGps?.speed ?? 35} km/h</span>
+              <div className="bg-slate-50/50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono block">FPS / Speed</span>
+                <span className="text-base font-mono font-bold text-zinc-900 dark:text-zinc-100">{liveFps} FPS / {currentGps?.speed ?? 35} km/h</span>
               </div>
-              <div className="bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
-                <span className="text-[10px] text-[#64748B] uppercase font-mono block">Auto Incidents</span>
-                <span className="text-xl font-mono font-black text-[#16A34A]">{autoIncidents.length}</span>
+              <div className="bg-slate-50/50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono block">Auto Incidents</span>
+                <span className="text-xl font-mono font-black text-green-600 dark:text-green-400">{autoIncidents.length}</span>
               </div>
-              <div className="bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
-                <span className="text-[10px] text-[#64748B] uppercase font-mono block">5m Dedup Merged</span>
+              <div className="bg-slate-50/50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono block">5m Dedup Merged</span>
                 <span className="text-xl font-mono font-black text-[#7C3AED]">{diagStats.mergedDuplicatesCount}</span>
               </div>
             </div>
 
             {/* Dev Pipeline Diagnostics Breakdown */}
-            <div className="pt-2 border-t border-[#E2E8F0] space-y-1.5 text-[10.5px] font-mono text-[#64748B]">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1.5 text-[10.5px] font-mono text-slate-500 dark:text-slate-400">
               <div className="text-[10px] uppercase font-bold text-[#7C3AED] flex items-center justify-between">
                 <span>PIPELINE DIAGNOSTICS</span>
                 <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
-                  diagStats.aiStatus === "ERROR" ? "bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]" :
-                  diagStats.aiStatus === "RATE_LIMITED" ? "bg-[#FFFBEB] text-[#F59E0B] border border-[#FDE68A]" :
-                  diagStats.aiStatus === "SUCCESS" ? "bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]" :
-                  "bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE]"
+                  diagStats.aiStatus === "ERROR" ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/50" :
+                  diagStats.aiStatus === "RATE_LIMITED" ? "bg-[#FFFBEB] text-amber-500 dark:text-amber-400 border border-[#FDE68A]" :
+                  diagStats.aiStatus === "SUCCESS" ? "bg-[#F0FDF4] text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800" :
+                  "bg-blue-50 dark:bg-blue-900/20 text-zinc-900 dark:text-zinc-100 border border-[#DBEAFE]"
                 }`}>
                   AI: {diagStats.aiStatus}
                 </span>
@@ -1711,19 +1711,19 @@ export default function RoadScanner({
               <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-1 border-t border-[#F1F5F9]">
                 <div className="flex justify-between">
                   <span>Model:</span>
-                  <span className="text-[#172033] font-bold">{diagStats.geminiModel || "gemini-3.8-flash"}</span>
+                  <span className="text-slate-900 dark:text-slate-50 font-bold">{diagStats.geminiModel || "gemini-3.8-flash"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Dedup Radius:</span>
-                  <span className="text-[#16A34A] font-bold">5.0 meters</span>
+                  <span className="text-green-600 dark:text-green-400 font-bold">5.0 meters</span>
                 </div>
                 <div className="flex justify-between">
                   <span>AI Calls:</span>
-                  <span className="text-[#172033] font-bold">{diagStats.geminiRequests} (P:{diagStats.geminiSuccess}/F:{diagStats.geminiFailed})</span>
+                  <span className="text-slate-900 dark:text-slate-50 font-bold">{diagStats.geminiRequests} (P:{diagStats.geminiSuccess}/F:{diagStats.geminiFailed})</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Test Status:</span>
-                  <span className={`font-bold ${diagStats.testStatus === "PASS" ? "text-[#16A34A]" : diagStats.testStatus === "FAIL" ? "text-[#DC2626]" : "text-[#64748B]"}`}>
+                  <span className={`font-bold ${diagStats.testStatus === "PASS" ? "text-green-600 dark:text-green-400" : diagStats.testStatus === "FAIL" ? "text-red-600 dark:text-red-400" : "text-slate-500 dark:text-slate-400"}`}>
                     {diagStats.testStatus}
                   </span>
                 </div>
@@ -1732,11 +1732,11 @@ export default function RoadScanner({
               <div className="space-y-1 pt-1 border-t border-[#F1F5F9]">
                 <div className="flex justify-between">
                   <span>Raw AI Detections:</span>
-                  <span className="text-[#172033] font-bold">{diagStats.rawDetectionsCount}</span>
+                  <span className="text-slate-900 dark:text-slate-50 font-bold">{diagStats.rawDetectionsCount}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Temporal Confirmed:</span>
-                  <span className="text-[#16A34A] font-bold">{diagStats.temporalConfirmedCount}</span>
+                  <span className="text-green-600 dark:text-green-400 font-bold">{diagStats.temporalConfirmedCount}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Spatial Deduplicated (&lt;5m):</span>
@@ -1744,46 +1744,46 @@ export default function RoadScanner({
                 </div>
                 <div className="flex justify-between">
                   <span>Auto-Submitted Incidents:</span>
-                  <span className="text-[#16A34A] font-bold">{diagStats.autoReportedCount}</span>
+                  <span className="text-green-600 dark:text-green-400 font-bold">{diagStats.autoReportedCount}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* AUTOMATIC INCIDENTS STREAM */}
-          <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 text-[#172033] shadow-xs flex flex-col h-[320px]">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-slate-900 dark:text-slate-50 shadow-xs flex flex-col h-[320px]">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-bold text-[#64748B] uppercase tracking-wider font-mono">
+              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono">
                 AUTO-REPORTED INCIDENTS ({autoIncidents.length})
               </h3>
               {autoIncidents.length > 0 && (
-                <span className="text-[10px] font-mono font-bold text-[#16A34A] bg-[#F0FDF4] px-1.5 py-0.5 rounded border border-[#BBF7D0]">Municipal Queued</span>
+                <span className="text-[10px] font-mono font-bold text-green-600 dark:text-green-400 bg-[#F0FDF4] px-1.5 py-0.5 rounded border border-green-200 dark:border-green-800">Municipal Queued</span>
               )}
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
               {autoIncidents.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-4 text-[#94A3B8]">
-                  <Activity className="w-6 h-6 mb-2 opacity-50 text-[#94A3B8]" />
+                <div className="h-full flex flex-col items-center justify-center text-center p-4 text-slate-400 dark:text-slate-500">
+                  <Activity className="w-6 h-6 mb-2 opacity-50 text-slate-400 dark:text-slate-500" />
                   <p className="text-xs font-medium">No incidents confirmed or auto-reported yet.</p>
-                  <p className="text-[11px] text-[#94A3B8] mt-1">Start scan to begin continuous detection.</p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Start scan to begin continuous detection.</p>
                 </div>
               ) : (
                 autoIncidents.map((inc) => (
                   <div
                     key={inc.id}
-                    className="p-2.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-center justify-between text-xs transition-all hover:border-[#CBD5E1]"
+                    className="p-2.5 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs transition-all hover:border-slate-300 dark:border-slate-700"
                   >
                     <div className="flex items-center gap-2.5">
                       <div className="w-2.5 h-2.5 rounded-full bg-[#DC2626] animate-pulse"></div>
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-[#172033]">{inc.hazardType}</span>
-                          <span className="text-[9px] font-mono bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0] px-1 rounded font-bold">
+                          <span className="font-bold text-slate-900 dark:text-slate-50">{inc.hazardType}</span>
+                          <span className="text-[9px] font-mono bg-[#F0FDF4] text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800 px-1 rounded font-bold">
                             {inc.workflowState}
                           </span>
                         </div>
-                        <span className="text-[10px] text-[#64748B] font-mono block mt-0.5">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono block mt-0.5">
                           {inc.estimatedSize} • {inc.sourceCamera}
                         </span>
                         {inc.observationsCount > 1 && (
@@ -1795,13 +1795,13 @@ export default function RoadScanner({
                     </div>
 
                     <div className="text-right font-mono">
-                      <span className="text-[11px] font-bold text-[#DC2626] block">
+                      <span className="text-[11px] font-bold text-red-600 dark:text-red-400 block">
                         {inc.severity}% Sev
                       </span>
-                      <span className="text-[9.5px] text-[#16A34A] font-bold block">
+                      <span className="text-[9.5px] text-green-600 dark:text-green-400 font-bold block">
                         {inc.confidence}% Conf
                       </span>
-                      <span className="text-[9px] text-[#94A3B8]">{inc.timestamp}</span>
+                      <span className="text-[9px] text-slate-400 dark:text-slate-500">{inc.timestamp}</span>
                     </div>
                   </div>
                 ))

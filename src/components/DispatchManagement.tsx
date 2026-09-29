@@ -359,7 +359,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 text-[#172033]">
+    <div className="w-full flex flex-col gap-6 text-slate-900 dark:text-slate-50">
       
       {/* 1. MUNICIPAL DISPATCH HEADER STRIP */}
       <div className="bg-gradient-to-r from-[#EFF6FF] via-[#F8FAFC] to-[#FFFFFF] rounded-3xl p-6 border border-[#DBEAFE] shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -372,27 +372,27 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
               <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#DBEAFE] text-[#1E40AF] font-extrabold uppercase tracking-wider">
                 MUNICIPAL DISPATCH MANAGEMENT
               </span>
-              <span className="text-xs text-[#64748B] font-medium">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 Real-Time Fleet Coordination & SLA Governance
               </span>
             </div>
-            <h1 className="text-2xl font-black text-[#172033] font-sans mt-1">
+            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50 font-sans mt-1">
               Field Team Dispatch & Availability Control
             </h1>
-            <p className="text-xs text-[#64748B] mt-0.5 max-w-2xl">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-2xl">
               Assign and reassign available field teams to pending hazards, track live response SLAs, monitor active squad workloads, and inspect completed field evidence.
             </p>
           </div>
         </div>
 
         {/* Live Officer Badge */}
-        <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-[#E2E8F0] shadow-2xs self-start lg:self-auto">
+        <div className="flex items-center gap-3 bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs self-start lg:self-auto">
           <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs shrink-0">
             <UserCheck className="w-4 h-4" />
           </div>
           <div className="text-left min-w-0">
-            <div className="text-[10px] font-mono text-[#64748B] uppercase font-bold">Dispatching Officer</div>
-            <div className="text-xs font-extrabold text-[#172033] truncate">{currentUserName || "Director Rachel Chen"}</div>
+            <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase font-bold">Dispatching Officer</div>
+            <div className="text-xs font-extrabold text-slate-900 dark:text-slate-50 truncate">{currentUserName || "Director Rachel Chen"}</div>
           </div>
         </div>
       </div>
@@ -457,15 +457,15 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             tabFilter === "ALL" 
               ? "bg-blue-50/80 border-blue-300 ring-2 ring-blue-500/20 shadow-xs" 
-              : "bg-white border-[#E2E8F0] hover:border-slate-300"
+              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300"
           }`}
         >
-          <div className="flex items-center justify-between text-[#64748B] mb-1">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Total Reports</span>
-            <Layers className="w-4 h-4 text-[#2563EB]" />
+            <Layers className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
           </div>
-          <div className="text-2xl font-black text-[#172033] font-mono">{stats.total}</div>
-          <div className="text-[10.5px] text-[#64748B] mt-0.5">All incidents</div>
+          <div className="text-2xl font-black text-slate-900 dark:text-slate-50 font-mono">{stats.total}</div>
+          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">All incidents</div>
         </div>
 
         <div 
@@ -473,7 +473,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             tabFilter === "UNASSIGNED" 
               ? "bg-amber-50/80 border-amber-300 ring-2 ring-amber-500/20 shadow-xs" 
-              : "bg-white border-[#E2E8F0] hover:border-slate-300"
+              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between text-amber-700 mb-1">
@@ -489,7 +489,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             tabFilter === "DISPATCHED" 
               ? "bg-indigo-50/80 border-indigo-300 ring-2 ring-indigo-500/20 shadow-xs" 
-              : "bg-white border-[#E2E8F0] hover:border-slate-300"
+              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between text-indigo-700 mb-1">
@@ -505,7 +505,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             tabFilter === "REVIEW" 
               ? "bg-purple-50/80 border-purple-300 ring-2 ring-purple-500/20 shadow-xs" 
-              : "bg-white border-[#E2E8F0] hover:border-slate-300"
+              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between text-purple-700 mb-1">
@@ -521,7 +521,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             tabFilter === "TEAMS" 
               ? "bg-emerald-50/80 border-emerald-300 ring-2 ring-emerald-500/20 shadow-xs" 
-              : "bg-white border-[#E2E8F0] hover:border-slate-300"
+              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between text-emerald-700 mb-1">
@@ -539,7 +539,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             tabFilter === "RESOLVED" 
               ? "bg-slate-100 border-slate-300 ring-2 ring-slate-500/20 shadow-xs" 
-              : "bg-white border-[#E2E8F0] hover:border-slate-300"
+              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between text-slate-700 mb-1">
@@ -554,20 +554,20 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
       {/* ========================================================================= */}
       {/* 4. REAL FIELD TEAM AVAILABILITY SECTION                                   */}
       {/* ========================================================================= */}
-      <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E2E8F0]">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#2563EB] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-xl bg-blue-100 text-zinc-900 dark:text-zinc-100 flex items-center justify-center font-bold">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-sm font-extrabold text-[#172033] uppercase tracking-wide flex items-center gap-2">
+              <h2 className="text-sm font-extrabold text-slate-900 dark:text-slate-50 uppercase tracking-wide flex items-center gap-2">
                 <span>Field Team Availability & Operational State</span>
                 <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
                   {stats.availableTeamsCount} Ready for Dispatch
                 </span>
               </h2>
-              <p className="text-xs text-[#64748B]">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Live operational status and active workload derived directly from Firestore team records and active task assignments.
               </p>
             </div>
@@ -579,7 +579,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 tabFilter === "TEAMS" 
                   ? "bg-[#2563EB] text-white" 
-                  : "bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0]"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:bg-slate-700"
               }`}
             >
               {tabFilter === "TEAMS" ? "Viewing Teams Table" : "View Full Team Roster"}
@@ -611,7 +611,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                 key={team.id}
                 className={`p-4 rounded-2xl border transition-all text-left flex flex-col justify-between gap-3 ${
                   isAvailable 
-                    ? "bg-[#F8FAFC] border-[#E2E8F0] hover:border-blue-300 hover:shadow-xs" 
+                    ? "bg-slate-50/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-blue-300 hover:shadow-xs" 
                     : isOnTask
                     ? "bg-amber-50/40 border-amber-200"
                     : "bg-slate-50 border-slate-200 opacity-90"
@@ -619,7 +619,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
               >
                 <div>
                   <div className="flex items-center justify-between gap-1 mb-2">
-                    <span className="font-mono text-xs font-black text-[#2563EB] bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
+                    <span className="font-mono text-xs font-black text-zinc-900 dark:text-zinc-100 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
                       {team.id}
                     </span>
                     <span className={`text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-md uppercase border ${statusBg}`}>
@@ -627,43 +627,43 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                     </span>
                   </div>
 
-                  <h3 className="text-xs font-black text-[#172033] line-clamp-1">{team.name}</h3>
-                  <p className="text-[11px] text-[#64748B] mt-0.5 font-medium">{team.lead}</p>
+                  <h3 className="text-xs font-black text-slate-900 dark:text-slate-50 line-clamp-1">{team.name}</h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">{team.lead}</p>
                   
-                  <div className="mt-2 text-[10.5px] text-[#475569] flex flex-col gap-1">
-                    <span className="flex items-center gap-1 truncate text-[#64748B]">
-                      <MapPin className="w-3 h-3 text-[#94A3B8] shrink-0" />
+                  <div className="mt-2 text-[10.5px] text-slate-600 dark:text-slate-400 flex flex-col gap-1">
+                    <span className="flex items-center gap-1 truncate text-slate-500 dark:text-slate-400">
+                      <MapPin className="w-3 h-3 text-slate-400 dark:text-slate-500 shrink-0" />
                       <span className="truncate">{team.district}</span>
                     </span>
-                    <span className="flex items-center gap-1 text-[#64748B]">
-                      <Phone className="w-3 h-3 text-[#94A3B8] shrink-0" />
+                    <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                      <Phone className="w-3 h-3 text-slate-400 dark:text-slate-500 shrink-0" />
                       <span>{team.phone}</span>
                     </span>
                   </div>
                 </div>
 
                 {/* Active Assignment / Workload Box */}
-                <div className="pt-2.5 border-t border-[#E2E8F0]/80 flex flex-col gap-1.5 text-[10.5px]">
+                <div className="pt-2.5 border-t border-slate-200 dark:border-slate-800/80 flex flex-col gap-1.5 text-[10.5px]">
                   <div className="flex items-center justify-between font-mono">
-                    <span className="text-[#64748B]">Active Load:</span>
+                    <span className="text-slate-500 dark:text-slate-400">Active Load:</span>
                     <strong className={team.activeTaskCount > 0 ? "text-amber-700 font-bold" : "text-emerald-700 font-bold"}>
                       {team.activeTaskCount} task(s)
                     </strong>
                   </div>
 
-                  <div className="text-[10px] text-[#475569] bg-white p-2 rounded-xl border border-[#E2E8F0] line-clamp-2">
+                  <div className="text-[10px] text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800 line-clamp-2">
                     {team.currentIncidentTitle ? (
                       <span className="font-semibold text-amber-900">
                         {team.currentIncidentTitle}
                       </span>
                     ) : (
-                      <span className="text-[#94A3B8] font-mono">No active task assigned</span>
+                      <span className="text-slate-400 dark:text-slate-500 font-mono">No active task assigned</span>
                     )}
                   </div>
 
                   <button
                     onClick={() => setTeamStatusModalTeam(team)}
-                    className="mt-1 w-full py-1 text-[10px] font-bold text-[#2563EB] hover:bg-blue-50 rounded-lg transition-colors border border-blue-100 cursor-pointer"
+                    className="mt-1 w-full py-1 text-[10px] font-bold text-zinc-900 dark:text-zinc-100 hover:bg-blue-50 rounded-lg transition-colors border border-blue-100 cursor-pointer"
                   >
                     Adjust Availability
                   </button>
@@ -675,7 +675,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
       </div>
 
       {/* 5. FILTER & SEARCH CONTROL STRIP */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-[#E2E8F0] shadow-2xs">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
         
         {/* Segmented Tab Buttons */}
         <div className="flex items-center gap-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
@@ -686,7 +686,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                 tabFilter === tab
                   ? "bg-[#2563EB] text-white shadow-2xs"
-                  : "text-[#64748B] hover:text-[#172033] hover:bg-[#F1F5F9]"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800"
               }`}
             >
               {tab === "ALL" && `All Incidents (${stats.total})`}
@@ -707,15 +707,15 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
               placeholder="Search ID, title, or area..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#172033] placeholder:text-[#94A3B8] focus:outline-hidden focus:border-[#2563EB]"
+              className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-50 placeholder:text-slate-400 dark:text-slate-500 focus:outline-hidden focus:border-[#2563EB]"
             />
-            <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-2.5 top-2.5" />
+            <Search className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 absolute left-2.5 top-2.5" />
           </div>
 
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-xs text-[#172033] font-semibold focus:outline-hidden focus:border-[#2563EB] cursor-pointer"
+            className="bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-50 font-semibold focus:outline-hidden focus:border-[#2563EB] cursor-pointer"
           >
             <option value="ALL">All Categories</option>
             <option value="Pothole">Pothole</option>
@@ -728,7 +728,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
           <select
             value={selectedPriority}
             onChange={(e) => setSelectedPriority(e.target.value)}
-            className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-xs text-[#172033] font-semibold focus:outline-hidden focus:border-[#2563EB] cursor-pointer"
+            className="bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-50 font-semibold focus:outline-hidden focus:border-[#2563EB] cursor-pointer"
           >
             <option value="ALL">All Priorities</option>
             <option value="Critical">Critical (P1)</option>
@@ -744,11 +744,11 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
       {/* ========================================================================= */}
       {tabFilter === "TEAMS" ? (
         /* SQUAD ROSTER TABLE VIEW */
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs overflow-hidden">
-          <div className="p-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+          <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#2563EB]" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#475569]">
+              <Users className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 Registered Field Teams Roster & Status ({computedTeams.length})
               </h3>
             </div>
@@ -756,7 +756,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#F8FAFC] text-[#64748B] font-mono uppercase text-[10px] border-b border-[#E2E8F0]">
+              <thead className="bg-slate-50/50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 font-mono uppercase text-[10px] border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="py-3 px-4">Team ID & Name</th>
                   <th className="py-3 px-4">Supervisor Lead</th>
@@ -777,13 +777,13 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                   return (
                     <tr key={team.id} className="hover:bg-[#F8FAFD] transition-colors">
                       <td className="py-3 px-4">
-                        <div className="font-extrabold text-[#172033]">{team.name}</div>
-                        <div className="text-[10px] font-mono text-[#2563EB]">{team.id}</div>
+                        <div className="font-extrabold text-slate-900 dark:text-slate-50">{team.name}</div>
+                        <div className="text-[10px] font-mono text-zinc-900 dark:text-zinc-100">{team.id}</div>
                       </td>
-                      <td className="py-3 px-4 text-[#334155] font-medium">{team.lead}</td>
+                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300 font-medium">{team.lead}</td>
                       <td className="py-3 px-4">
-                        <div className="text-[#172033] font-semibold">{team.category}</div>
-                        <div className="text-[10.5px] text-[#64748B]">{team.district}</div>
+                        <div className="text-slate-900 dark:text-slate-50 font-semibold">{team.category}</div>
+                        <div className="text-[10.5px] text-slate-500 dark:text-slate-400">{team.district}</div>
                       </td>
                       <td className="py-3 px-4">
                         <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-md uppercase ${
@@ -799,16 +799,16 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                         {team.currentIncidentTitle ? (
                           <span className="text-amber-900 font-bold">{team.currentIncidentTitle}</span>
                         ) : (
-                          <span className="text-[#94A3B8]">No active task</span>
+                          <span className="text-slate-400 dark:text-slate-500">No active task</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-[#64748B] text-[11px]">
+                      <td className="py-3 px-4 text-slate-500 dark:text-slate-400 text-[11px]">
                         {team.lastOperationalStatus}
                       </td>
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={() => setTeamStatusModalTeam(team)}
-                          className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-[#2563EB] font-bold rounded-lg transition-colors border border-blue-200 text-[11px] cursor-pointer"
+                          className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-zinc-900 dark:text-zinc-100 font-bold rounded-lg transition-colors border border-blue-200 text-[11px] cursor-pointer"
                         >
                           Modify Status
                         </button>
@@ -822,26 +822,26 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
         </div>
       ) : (
         /* INCIDENTS QUEUE LIST VIEW */
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs overflow-hidden">
-          <div className="p-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+          <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-[#2563EB]" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#475569]">
+              <Wrench className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 Incident Dispatch & SLA Ledger ({filteredReports.length})
               </h3>
             </div>
-            <span className="text-[11px] font-mono text-[#64748B]">
+            <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
               Showing matching work orders
             </span>
           </div>
 
           {filteredReports.length === 0 ? (
             <div className="p-12 text-center flex flex-col items-center justify-center">
-              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#2563EB] flex items-center justify-center mb-3">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-zinc-900 dark:text-zinc-100 flex items-center justify-center mb-3">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-sm font-bold text-[#172033]">No Incidents in Current Filter</h4>
-              <p className="text-xs text-[#64748B] max-w-sm mt-1">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-slate-50">No Incidents in Current Filter</h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mt-1">
                 All work orders for this view have been processed or no matching reports match your query.
               </p>
             </div>
@@ -865,7 +865,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                     {/* Top Line: ID, Priority, SLA Pill, Status */}
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-mono text-xs font-black text-[#172033] bg-[#E2E8F0]/70 px-2.5 py-0.5 rounded-md">
+                        <span className="font-mono text-xs font-black text-slate-900 dark:text-slate-50 bg-slate-200 dark:bg-slate-700/70 px-2.5 py-0.5 rounded-md">
                           #{rep.id.slice(-6).toUpperCase()}
                         </span>
                         
@@ -881,7 +881,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                           {priority} Priority
                         </span>
 
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#EEF2F6] text-[#475569]">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#EEF2F6] text-slate-600 dark:text-slate-400">
                           {rep.category}
                         </span>
 
@@ -915,29 +915,29 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                     {/* Middle Line: Title, Location & Description */}
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-extrabold text-[#172033] line-clamp-1">{rep.title}</h4>
-                        <p className="text-xs text-[#64748B] line-clamp-1 mt-0.5">{rep.description}</p>
+                        <h4 className="text-sm font-extrabold text-slate-900 dark:text-slate-50 line-clamp-1">{rep.title}</h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">{rep.description}</p>
                         
-                        <div className="flex items-center gap-3 text-[11px] text-[#64748B] mt-1.5 flex-wrap">
+                        <div className="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 flex-wrap">
                           <span className="flex items-center gap-1">
-                            <MapPin className="w-3.5 h-3.5 text-[#94A3B8]" />
+                            <MapPin className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                             <span>{rep.location}</span>
                           </span>
                           <span>•</span>
-                          <span>Reporter: <strong className="text-[#334155]">{rep.reporterEmail || "Citizen"}</strong></span>
+                          <span>Reporter: <strong className="text-slate-700 dark:text-slate-300">{rep.reporterEmail || "Citizen"}</strong></span>
                           <span>•</span>
                           <span>Reported: {new Date(rep.createdAt).toLocaleDateString()}</span>
                         </div>
                       </div>
 
                       {/* Assigned Squad Info Pill */}
-                      <div className="bg-[#F1F5F9] p-3 rounded-2xl border border-[#E2E8F0] shrink-0 text-left min-w-[200px]">
-                        <div className="text-[10px] font-mono font-bold uppercase text-[#64748B]">Assigned Field Squad</div>
-                        <div className="text-xs font-black text-[#172033] mt-0.5 truncate">
+                      <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shrink-0 text-left min-w-[200px]">
+                        <div className="text-[10px] font-mono font-bold uppercase text-slate-500 dark:text-slate-400">Assigned Field Squad</div>
+                        <div className="text-xs font-black text-slate-900 dark:text-slate-50 mt-0.5 truncate">
                           {rep.assignedTo || "None (Unassigned)"}
                         </div>
                         {rep.assignment?.assignedAt ? (
-                          <div className="text-[10px] text-[#2563EB] font-mono mt-0.5">
+                          <div className="text-[10px] text-zinc-900 dark:text-zinc-100 font-mono mt-0.5">
                             Dispatched: {new Date(rep.assignment.assignedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         ) : (
@@ -962,13 +962,13 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                     )}
 
                     {/* Action Buttons Row */}
-                    <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-3 flex-wrap">
+                    <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 flex-wrap">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => onSelectReport(rep)}
-                          className="px-3 py-1.5 bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#334155] text-xs font-bold rounded-xl border border-[#CBD5E1] transition-all cursor-pointer flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 transition-all cursor-pointer flex items-center gap-1.5"
                         >
-                          <Eye className="w-3.5 h-3.5 text-[#64748B]" />
+                          <Eye className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                           <span>Inspect Details</span>
                         </button>
                       </div>
@@ -1000,7 +1000,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                         {isAssigned && rep.status !== "Resolved" && !isPendingSignOff && (
                           <button
                             onClick={() => handleOpenAssignModal(rep)}
-                            className="px-3.5 py-1.5 bg-white hover:bg-[#F8FAFC] text-[#2563EB] border border-[#BFDBFE] text-xs font-bold rounded-xl transition-all shadow-2xs cursor-pointer flex items-center gap-1.5"
+                            className="px-3.5 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-50/50 dark:bg-slate-900/50 text-zinc-900 dark:text-zinc-100 border border-blue-200 dark:border-blue-800 text-xs font-bold rounded-xl transition-all shadow-2xs cursor-pointer flex items-center gap-1.5"
                           >
                             <RotateCcw className="w-3.5 h-3.5" />
                             <span>Reassign Team</span>
@@ -1021,25 +1021,25 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
       {/* ========================================================================= */}
       {assignModalReport && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-[2000] overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 border border-[#E2E8F0] shadow-2xl flex flex-col gap-5 text-left my-8 animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-xl w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col gap-5 text-left my-8 animate-fadeIn">
             
-            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-blue-100 text-[#2563EB] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-2xl bg-blue-100 text-zinc-900 dark:text-zinc-100 flex items-center justify-center font-bold">
                   <Send className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-[#172033] font-sans">
+                  <h3 className="text-base font-black text-slate-900 dark:text-slate-50 font-sans">
                     {assignModalReport.assignedTo ? "Reassign Field Team" : "Assign Tasks to Field Teams"}
                   </h3>
-                  <p className="text-xs text-[#64748B]">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Incident #{assignModalReport.id.slice(-6).toUpperCase()} • {assignModalReport.category}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setAssignModalReport(null)}
-                className="p-1.5 rounded-xl text-[#64748B] hover:text-[#172033] hover:bg-[#F1F5F9] cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1056,10 +1056,10 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
             {/* Target Squad Selector with Availability Checks */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-extrabold text-[#334155] uppercase tracking-wider block">
+                <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
                   Select Available Field Team *
                 </label>
-                <span className="text-[10.5px] font-mono text-[#64748B]">
+                <span className="text-[10.5px] font-mono text-slate-500 dark:text-slate-400">
                   Only AVAILABLE teams can be dispatched
                 </span>
               </div>
@@ -1083,12 +1083,12 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                         isSelected
                           ? "bg-blue-50 border-[#2563EB] ring-2 ring-blue-500/20 shadow-2xs cursor-pointer"
                           : isAvailable
-                          ? "bg-[#F8FAFC] border-[#E2E8F0] hover:border-slate-300 cursor-pointer"
+                          ? "bg-slate-50/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 cursor-pointer"
                           : "bg-slate-100/70 border-slate-200 opacity-60 cursor-not-allowed"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-1">
-                        <span className="font-mono text-xs font-black text-[#172033]">{team.name}</span>
+                        <span className="font-mono text-xs font-black text-slate-900 dark:text-slate-50">{team.name}</span>
                         <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase ${
                           isAvailable ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-700"
                         }`}>
@@ -1096,12 +1096,12 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                         </span>
                       </div>
 
-                      <div className="text-[11px] text-[#64748B]">
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
                         <div>Lead: <strong>{team.lead}</strong> • {team.district}</div>
                       </div>
 
-                      <div className="text-[10px] font-mono pt-1 border-t border-[#E2E8F0] flex items-center justify-between">
-                        <span className="text-[#64748B]">
+                      <div className="text-[10px] font-mono pt-1 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">
                           {isMatch ? "⭐ Recommended Specialty" : team.category}
                         </span>
                         <span className={team.activeTaskCount > 0 ? "text-amber-700 font-bold" : "text-emerald-700 font-bold"}>
@@ -1117,7 +1117,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
             {/* Priority & SLA Settings */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-extrabold text-[#334155] uppercase tracking-wider block mb-1.5">
+                <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                   Priority Clearance
                 </label>
                 <select
@@ -1127,7 +1127,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                     setAssignPriority(p);
                     setCustomSlaHours(p === "Critical" ? 4 : p === "High" ? 12 : p === "Medium" ? 24 : 48);
                   }}
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-bold text-[#172033] focus:outline-hidden focus:border-[#2563EB] cursor-pointer"
+                  className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 dark:text-slate-50 focus:outline-hidden focus:border-[#2563EB] cursor-pointer"
                 >
                   <option value="Critical">Critical (P1) - 4 Hour SLA</option>
                   <option value="High">High (P2) - 12 Hour SLA</option>
@@ -1137,7 +1137,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
               </div>
 
               <div>
-                <label className="text-xs font-extrabold text-[#334155] uppercase tracking-wider block mb-1.5">
+                <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                   SLA Target Window (Hours)
                 </label>
                 <input
@@ -1146,7 +1146,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                   max="168"
                   value={customSlaHours}
                   onChange={(e) => setCustomSlaHours(Number(e.target.value) || 24)}
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-bold text-[#172033] focus:outline-hidden focus:border-[#2563EB]"
+                  className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 dark:text-slate-50 focus:outline-hidden focus:border-[#2563EB]"
                 />
               </div>
             </div>
@@ -1154,7 +1154,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
             {/* Reassign Reason (if reassigning) */}
             {assignModalReport.assignedTo && (
               <div>
-                <label className="text-xs font-extrabold text-[#334155] uppercase tracking-wider block mb-1.5">
+                <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                   Reassignment Justification *
                 </label>
                 <input
@@ -1162,14 +1162,14 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                   placeholder="e.g. Previous squad overloaded; specialized heavy machinery needed"
                   value={reassignReason}
                   onChange={(e) => setReassignReason(e.target.value)}
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#172033] focus:outline-hidden focus:border-[#2563EB]"
+                  className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-50 focus:outline-hidden focus:border-[#2563EB]"
                 />
               </div>
             )}
 
             {/* Dispatch Instructions */}
             <div>
-              <label className="text-xs font-extrabold text-[#334155] uppercase tracking-wider block mb-1.5">
+              <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                 Dispatch Instructions / Work Order Notes
               </label>
               <textarea
@@ -1177,16 +1177,16 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                 placeholder="Specify special equipment, detour requirements, safety advisories..."
                 value={dispatchInstructions}
                 onChange={(e) => setDispatchInstructions(e.target.value)}
-                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#172033] focus:outline-hidden focus:border-[#2563EB] resize-none"
+                className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-900 dark:text-slate-50 focus:outline-hidden focus:border-[#2563EB] resize-none"
               />
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E8F0]">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setAssignModalReport(null)}
-                className="px-4 py-2 text-xs font-bold text-[#64748B] hover:text-[#172033] hover:bg-[#F1F5F9] rounded-xl transition-all cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800 rounded-xl transition-all cursor-pointer"
               >
                 Cancel
               </button>
@@ -1218,25 +1218,25 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
       {/* ========================================================================= */}
       {reviewModalReport && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-[2000] overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 border border-[#E2E8F0] shadow-2xl flex flex-col gap-5 text-left my-8 animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col gap-5 text-left my-8 animate-fadeIn">
             
-            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-[#172033] font-sans">
+                  <h3 className="text-base font-black text-slate-900 dark:text-slate-50 font-sans">
                     Municipal Sign-Off & Resolution Review
                   </h3>
-                  <p className="text-xs text-[#64748B]">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Incident #{reviewModalReport.id.slice(-6).toUpperCase()} • Submitted by {reviewModalReport.resolution?.submittedBy || reviewModalReport.assignedTo}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setReviewModalReport(null)}
-                className="p-1.5 rounded-xl text-[#64748B] hover:text-[#172033] hover:bg-[#F1F5F9] cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1251,16 +1251,16 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
 
             {/* Evidence Comparison: Before vs After */}
             <div>
-              <span className="text-xs font-extrabold text-[#334155] uppercase tracking-wider block mb-2">
+              <span className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-2">
                 Field Evidence Comparison (Before vs After)
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-3 flex flex-col gap-2">
-                  <div className="flex items-center justify-between text-[11px] font-mono font-bold text-[#64748B]">
+                <div className="bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400">
                     <span>BEFORE REPAIR</span>
                     <span className="text-amber-700">Initial Hazard</span>
                   </div>
-                  <div className="h-40 rounded-xl bg-slate-200 overflow-hidden border border-[#E2E8F0] flex items-center justify-center">
+                  <div className="h-40 rounded-xl bg-slate-200 overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center">
                     {reviewModalReport.resolution?.beforeEvidence?.[0] || reviewModalReport.image ? (
                       <img
                         src={reviewModalReport.resolution?.beforeEvidence?.[0] || reviewModalReport.image || ""}
@@ -1268,17 +1268,17 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-xs text-[#94A3B8] font-mono">No initial photo</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">No initial photo</span>
                     )}
                   </div>
                 </div>
 
-                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-3 flex flex-col gap-2">
-                  <div className="flex items-center justify-between text-[11px] font-mono font-bold text-[#64748B]">
+                <div className="bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400">
                     <span>AFTER RESOLUTION</span>
                     <span className="text-emerald-700">Field Squad Evidence</span>
                   </div>
-                  <div className="h-40 rounded-xl bg-slate-200 overflow-hidden border border-[#E2E8F0] flex items-center justify-center">
+                  <div className="h-40 rounded-xl bg-slate-200 overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center">
                     {reviewModalReport.resolution?.afterEvidence?.[0] ? (
                       <img
                         src={reviewModalReport.resolution.afterEvidence[0]}
@@ -1286,7 +1286,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-xs text-[#94A3B8] font-mono">No resolution photo</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">No resolution photo</span>
                     )}
                   </div>
                 </div>
@@ -1294,25 +1294,25 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
             </div>
 
             {/* Field Resolution Summary */}
-            <div className="bg-[#F1F5F9] p-4 rounded-2xl border border-[#E2E8F0] flex flex-col gap-1.5 text-xs">
-              <div className="flex items-center justify-between font-mono text-[11px] text-[#64748B]">
-                <span>Action Taken: <strong className="text-[#172033]">{reviewModalReport.resolution?.action || "Repair completed"}</strong></span>
+            <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1.5 text-xs">
+              <div className="flex items-center justify-between font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                <span>Action Taken: <strong className="text-slate-900 dark:text-slate-50">{reviewModalReport.resolution?.action || "Repair completed"}</strong></span>
                 <span>Submitted: {reviewModalReport.resolution?.submittedAt ? new Date(reviewModalReport.resolution.submittedAt).toLocaleTimeString() : "Recent"}</span>
               </div>
-              <p className="text-xs text-[#334155]">
+              <p className="text-xs text-slate-700 dark:text-slate-300">
                 <strong>Crew Notes:</strong> {reviewModalReport.resolution?.notes || "Patch applied, debris cleared, asphalt compacted."}
               </p>
             </div>
 
             {/* Decision Mode Toggle */}
-            <div className="flex items-center gap-2 p-1 bg-[#F1F5F9] rounded-2xl border border-[#E2E8F0]">
+            <div className="flex items-center gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setIsRejecting(false)}
                 className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   !isRejecting 
                     ? "bg-emerald-600 text-white shadow-xs font-black" 
-                    : "text-[#64748B] hover:text-[#172033]"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50"
                 }`}
               >
                 <CheckCircle2 className="w-4 h-4" />
@@ -1325,7 +1325,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                 className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   isRejecting 
                     ? "bg-rose-600 text-white shadow-xs font-black" 
-                    : "text-[#64748B] hover:text-[#172033]"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50"
                 }`}
               >
                 <RotateCcw className="w-4 h-4" />
@@ -1336,14 +1336,14 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
             {/* Form based on decision */}
             {!isRejecting ? (
               <div>
-                <label className="text-xs font-extrabold text-[#334155] uppercase tracking-wider block mb-1.5">
+                <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                   Approval Officer Comments (Sent to Citizen & Field Team)
                 </label>
                 <input
                   type="text"
                   value={approvalComment}
                   onChange={(e) => setApprovalComment(e.target.value)}
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#172033] focus:outline-hidden focus:border-emerald-500 font-semibold"
+                  className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-50 focus:outline-hidden focus:border-emerald-500 font-semibold"
                 />
               </div>
             ) : (
@@ -1355,7 +1355,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                   <select
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
-                    className="w-full bg-[#F8FAFC] border border-rose-200 rounded-xl px-3 py-2 text-xs font-bold text-rose-900 focus:outline-hidden focus:border-rose-500 cursor-pointer"
+                    className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-rose-200 rounded-xl px-3 py-2 text-xs font-bold text-rose-900 focus:outline-hidden focus:border-rose-500 cursor-pointer"
                   >
                     <option value="Insufficient repair quality">Insufficient repair quality</option>
                     <option value="Debris not cleared from surrounding road">Debris not cleared from surrounding road</option>
@@ -1374,18 +1374,18 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                     placeholder="Specific corrections required before approval..."
                     value={rejectionNotes}
                     onChange={(e) => setRejectionNotes(e.target.value)}
-                    className="w-full bg-[#F8FAFC] border border-rose-200 rounded-xl p-3 text-xs text-rose-900 focus:outline-hidden focus:border-rose-500 resize-none"
+                    className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-rose-200 rounded-xl p-3 text-xs text-rose-900 focus:outline-hidden focus:border-rose-500 resize-none"
                   />
                 </div>
               </div>
             )}
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E8F0]">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setReviewModalReport(null)}
-                className="px-4 py-2 text-xs font-bold text-[#64748B] hover:text-[#172033] hover:bg-[#F1F5F9] rounded-xl transition-all cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800 rounded-xl transition-all cursor-pointer"
               >
                 Cancel
               </button>
@@ -1421,25 +1421,25 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
       {/* ========================================================================= */}
       {teamStatusModalTeam && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-[2000] overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-[#E2E8F0] shadow-2xl flex flex-col gap-4 text-left my-8 animate-fadeIn">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col gap-4 text-left my-8 animate-fadeIn">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
               <div>
-                <h3 className="text-base font-black text-[#172033] font-sans">
+                <h3 className="text-base font-black text-slate-900 dark:text-slate-50 font-sans">
                   Modify Squad Operational Availability
                 </h3>
-                <p className="text-xs text-[#64748B]">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {teamStatusModalTeam.name} ({teamStatusModalTeam.id})
                 </p>
               </div>
               <button
                 onClick={() => setTeamStatusModalTeam(null)}
-                className="p-1.5 rounded-xl text-[#64748B] hover:text-[#172033] hover:bg-[#F1F5F9] cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Select the new operational readiness status for this unit. Unavailable or Offline squads will be blocked from receiving new dispatch assignments.
             </p>
 
@@ -1451,12 +1451,12 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
                   className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
                     teamStatusModalTeam.availability === st 
                       ? "bg-blue-50 border-blue-500 font-bold text-blue-900 shadow-2xs" 
-                      : "bg-[#F8FAFC] border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#334155]"
+                      : "bg-slate-50/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
                   }`}
                 >
                   <div>
                     <div className="text-xs font-extrabold">{st}</div>
-                    <div className="text-[10px] text-[#64748B]">
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400">
                       {st === "AVAILABLE" && "Ready for immediate work order assignment"}
                       {st === "ON_TASK" && "Currently executing an assigned work order"}
                       {st === "OFFLINE" && "Squad off duty / shift ended"}
@@ -1472,7 +1472,7 @@ export const DispatchManagement: React.FC<DispatchManagementProps> = ({
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setTeamStatusModalTeam(null)}
-                className="px-4 py-2 text-xs font-bold text-[#64748B] hover:text-[#172033] hover:bg-[#F1F5F9] rounded-xl transition-all cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800 rounded-xl transition-all cursor-pointer"
               >
                 Close
               </button>
