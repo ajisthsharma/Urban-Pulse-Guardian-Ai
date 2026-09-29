@@ -5,9 +5,11 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { Report, MapReportPoint } from "../types";
 import { getValidMapPoints, getHeatmapPoints } from "../utils/geoAnalytics";
+import { createOsmTileLayer, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "../utils/mapConfig";
 import { 
   Sparkles, X, AlertTriangle, ShieldCheck, Layers, Filter, 
-  Flame, MapPin, Camera, FileText, CheckCircle, Clock, Eye, AlertCircle
+  Flame, MapPin, Camera, FileText, CheckCircle, Clock, Eye, AlertCircle,
+  Navigation, Loader2, Info
 } from "lucide-react";
 
 interface SimpleMapProps {
@@ -32,12 +34,17 @@ export default function SimpleMap({
   const markersRef = useRef<{ [key: string]: L.Marker }>({});
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const heatCirclesRef = useRef<L.Circle[]>([]);
+  const userLocationMarkerRef = useRef<L.Marker | null>(null);
 
   // Filter & Display States
   const [viewMode, setViewMode] = useState<"markers" | "heatmap" | "both">(initialViewMode);
   const [clusteringEnabled, setClusteringEnabled] = useState(true);
   const [sourceFilter, setSourceFilter] = useState<string>("All");
   const [statusFilter, setStatusFilter] = useState<string>("All");
+
+  // Geolocation state
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationNotice, setLocationNotice] = useState<string | null>(null);
 
   // Normalized valid points
   const validMapPoints = getValidMapPoints(reports, {
@@ -50,21 +57,28 @@ export default function SimpleMap({
     statusFilter
   });
 
-  // Initialize Map
+  // Determine fallback center: prefer props, then first valid report, then DEFAULT_MAP_CENTER
+  const initialCenter: [number, number] =
+    centerLatitude && centerLongitude && centerLatitude !== 0 && centerLongitude !== 0
+      ? [centerLatitude, centerLongitude]
+      : validMapPoints.length > 0 && validMapPoints[0].latitude && validMapPoints[0].longitude
+      ? [validMapPoints[0].latitude, validMapPoints[0].longitude]
+      : DEFAULT_MAP_CENTER;
+
+  // Initialize Map with OpenStreetMap canonical tile layer
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [centerLatitude, centerLongitude],
-      zoom: 12,
-      zoomControl: false
+      center: initialCenter,
+      zoom: DEFAULT_MAP_ZOOM,
+      zoomControl: false,
+      attributionControl: true
     });
 
-    const tileUrl = import.meta.env.VITE_MAP_TILE_URL || "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
-    L.tileLayer(tileUrl, {
-      maxZoom: 20,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
-    }).addTo(map);
+    // Official OpenStreetMap tile layer with compliant attribution & error handling
+    const osmLayer = createOsmTileLayer();
+    osmLayer.addTo(map);
 
     L.control.zoom({
       position: "bottomright"
@@ -83,6 +97,92 @@ export default function SimpleMap({
       }
     };
   }, []);
+
+  // Responsive container resize observer to prevent grey/blank tiles
+  useEffect(() => {
+    const container = mapContainerRef.current;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize();
+      }
+    });
+
+    resizeObserver.observe(container);
+
+    const timer = setTimeout(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize();
+      }
+    }, 200);
+
+    return () => {
+      resizeObserver.disconnect();
+      clearTimeout(timer);
+    };
+  }, []);
+
+  // Handle "My Location" geolocation request
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      setLocationNotice("Geolocation is not supported by your browser.");
+      setTimeout(() => setLocationNotice(null), 4000);
+      return;
+    }
+
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setIsLocating(false);
+        const { latitude, longitude } = pos.coords;
+        const map = mapInstanceRef.current;
+        if (!map) return;
+
+        map.flyTo([latitude, longitude], 15, { animate: true, duration: 1.2 });
+
+        if (userLocationMarkerRef.current) {
+          userLocationMarkerRef.current.remove();
+        }
+
+        const userLocIcon = L.divIcon({
+          className: "user-loc-marker",
+          html: `
+            <div class="relative flex items-center justify-center">
+              <div class="w-8 h-8 rounded-full bg-blue-500/30 animate-ping absolute"></div>
+              <div class="w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow-lg"></div>
+            </div>
+          `,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+        });
+
+        const marker = L.marker([latitude, longitude], { icon: userLocIcon }).addTo(map);
+        marker.bindPopup(`
+          <div class="p-1 text-center font-sans">
+            <div class="text-[11px] font-bold text-slate-800">Your Current Location</div>
+            <div class="text-[9.5px] font-mono text-slate-500 mt-0.5">${latitude.toFixed(4)}, ${longitude.toFixed(4)}</div>
+          </div>
+        `).openPopup();
+
+        userLocationMarkerRef.current = marker;
+      },
+      (err) => {
+        setIsLocating(false);
+        let message = "Could not obtain device location.";
+        if (err.code === err.PERMISSION_DENIED) {
+          message = "Location permission denied in browser.";
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+          message = "Location information is unavailable.";
+        } else if (err.code === err.TIMEOUT) {
+          message = "Location request timed out.";
+        }
+        setLocationNotice(message);
+        setTimeout(() => setLocationNotice(null), 4000);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
 
   // Sync center coordinates or fly to selectedReport with cluster support
   useEffect(() => {
@@ -428,17 +528,45 @@ export default function SimpleMap({
           </select>
         </div>
 
+        {/* My Location Geolocation Button */}
+        <button
+          onClick={handleLocateMe}
+          disabled={isLocating}
+          className="bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer"
+          title="Locate my current position via GPS"
+        >
+          {isLocating ? (
+            <Loader2 className="w-3.5 h-3.5 text-blue-600 animate-spin" />
+          ) : (
+            <Navigation className="w-3.5 h-3.5 text-blue-600" />
+          )}
+          <span>{isLocating ? "Locating..." : "My Location"}</span>
+        </button>
+
       </div>
 
-      {/* TOP RIGHT: Active Telemetry Badge */}
+      {/* Geolocation Notification Toast */}
+      {locationNotice && (
+        <div className="absolute top-16 left-3 z-[1001] bg-slate-900/95 text-white text-[11px] font-medium px-3 py-1.5 rounded-lg shadow-lg border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-150">
+          <Info className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span>{locationNotice}</span>
+          <button onClick={() => setLocationNotice(null)} className="ml-1 text-slate-400 hover:text-white cursor-pointer">
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+      )}
+
+      {/* TOP RIGHT: Active Telemetry Badge with OpenStreetMap Attribution Indicator */}
       <div className="absolute top-3 right-3 z-[1000] hidden sm:flex items-center gap-2 bg-slate-900/90 backdrop-blur-md text-white px-3 py-1.5 rounded-lg shadow-md border border-slate-800 text-[10.5px] font-mono">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Delhi NCR GIS Core</span>
-        <span className="text-slate-400">|</span>
-        <span className="text-blue-300 font-bold">{validMapPoints.length} Valid Points</span>
+        <span className="text-emerald-400 font-bold">OpenStreetMap</span>
+        <span className="text-slate-500">|</span>
+        <span>Delhi NCR Core</span>
+        <span className="text-slate-500">|</span>
+        <span className="text-blue-300 font-bold">{validMapPoints.length} Points</span>
         {clusteringEnabled && (viewMode === "markers" || viewMode === "both") && (
           <>
-            <span className="text-slate-400">|</span>
+            <span className="text-slate-500">|</span>
             <span className="text-emerald-300 font-bold">Clustering Active</span>
           </>
         )}

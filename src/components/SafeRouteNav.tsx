@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import L from "leaflet";
+import { createOsmTileLayer, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "../utils/mapConfig";
 import { 
   Navigation, ShieldCheck, AlertTriangle, MapPin, 
   Sparkles, Compass, Info, Route, Car, Bike, Footprints, Activity
@@ -83,23 +84,27 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
   
   const [statusMsg, setStatusMsg] = useState("IDLE");
 
-  // Initialize Map
+  // Initialize Map with OpenStreetMap canonical tile layer
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [28.6139, 77.2090],
-      zoom: 12,
-      zoomControl: false
+      center: DEFAULT_MAP_CENTER,
+      zoom: DEFAULT_MAP_ZOOM,
+      zoomControl: false,
+      attributionControl: true
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      maxZoom: 20,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
-    }).addTo(map);
+    const osmLayer = createOsmTileLayer();
+    osmLayer.addTo(map);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
     mapInstanceRef.current = map;
+
+    // Invalidate map size on layout/panel changes
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
 
     return () => {
       if (mapInstanceRef.current) {

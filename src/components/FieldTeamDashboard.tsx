@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import L from "leaflet";
+import { createOsmTileLayer } from "../utils/mapConfig";
 import { 
   Report, 
   FieldTaskStatus, 
@@ -249,13 +250,12 @@ export default function FieldTeamDashboard({
       const map = L.map(mapContainerRef.current, {
         center: [crewLocation.latitude, crewLocation.longitude],
         zoom: 13,
-        zoomControl: false
+        zoomControl: false,
+        attributionControl: true
       });
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
-      }).addTo(map);
+      const osmLayer = createOsmTileLayer();
+      osmLayer.addTo(map);
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
       mapInstanceRef.current = map;
@@ -263,6 +263,11 @@ export default function FieldTeamDashboard({
 
     const map = mapInstanceRef.current;
     if (!map) return;
+
+    // Invalidate map size so OSM tiles render cleanly without grey borders
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
 
     // Clear existing markers
     map.eachLayer((layer) => {

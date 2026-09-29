@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import L from "leaflet";
+import { createOsmTileLayer, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "../utils/mapConfig";
 import { Report } from "../types";
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend 
@@ -170,19 +171,24 @@ export default function FutureModules({ forcedTab, reports, onReportUpdated }: F
       return;
     }
 
-    // Standard high-quality light grey map
+    // Standard OpenStreetMap canonical tile layer
     const map = L.map(mapContainerRef.current, {
-      center: [28.58, 77.22],
-      zoom: 11,
-      zoomControl: false
+      center: DEFAULT_MAP_CENTER,
+      zoom: DEFAULT_MAP_ZOOM,
+      zoomControl: false,
+      attributionControl: true
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      maxZoom: 20
-    }).addTo(map);
+    const osmLayer = createOsmTileLayer();
+    osmLayer.addTo(map);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
     mapInstanceRef.current = map;
+
+    // Invalidate map size on tab switch
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
 
     return () => {
       if (mapInstanceRef.current) {
