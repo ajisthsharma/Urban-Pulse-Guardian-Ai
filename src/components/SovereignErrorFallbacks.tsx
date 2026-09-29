@@ -29,7 +29,7 @@ export default function SovereignErrorFallback({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-8 text-center flex flex-col items-center justify-center max-w-sm mx-auto shadow-2xs font-sans">
+    <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-8 text-center flex flex-col items-center justify-center max-w-sm mx-auto shadow-2xs font-sans">
       <div className="mb-4">
         {getIcon()}
       </div>

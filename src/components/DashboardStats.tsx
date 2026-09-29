@@ -18,21 +18,21 @@ export default function DashboardStats({ reports }: DashboardStatsProps) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       
       {/* Total Reports Card */}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-start justify-between min-h-[110px]">
+      <div className="bg-white dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs flex items-start justify-between min-h-[110px]">
         <div>
-          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Reports</span>
-          <div className="font-display font-bold text-3xl text-slate-900 dark:text-slate-50 mt-1">{total}</div>
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider">Total Reports</span>
+          <div className="font-display font-bold text-3xl text-slate-900 dark:text-white mt-1">{total}</div>
         </div>
-        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-zinc-900 dark:text-zinc-100 rounded-xl border border-[#DBEAFE]">
+        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-slate-900 dark:text-white rounded-xl border border-[#DBEAFE]">
           <Database className="w-5 h-5" />
         </div>
       </div>
 
       {/* Pending Reports Card */}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-start justify-between min-h-[110px]">
+      <div className="bg-white dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs flex items-start justify-between min-h-[110px]">
         <div>
-          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active Queue</span>
-          <div className="font-display font-bold text-3xl text-slate-900 dark:text-slate-50 mt-1">{pending}</div>
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider">Active Queue</span>
+          <div className="font-display font-bold text-3xl text-slate-900 dark:text-white mt-1">{pending}</div>
           <div className="flex items-center gap-1.5 text-[11px] text-amber-500 dark:text-amber-400 mt-2 font-medium">
             <Clock className="w-3.5 h-3.5" />
             <span>Avg dispatch response: 18m</span>
@@ -44,9 +44,9 @@ export default function DashboardStats({ reports }: DashboardStatsProps) {
       </div>
 
       {/* High-Risk Issues Card */}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-start justify-between min-h-[110px]">
+      <div className="bg-white dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs flex items-start justify-between min-h-[110px]">
         <div>
-          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active Critical Risks</span>
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider">Active Critical Risks</span>
           <div className="font-display text-3xl text-red-600 dark:text-red-400 font-bold mt-1">{activeHighRisk}</div>
           <div className="flex items-center gap-1.5 text-[11px] text-red-600 dark:text-red-400 mt-2 font-medium">
             <AlertTriangle className="w-3.5 h-3.5 animate-pulse" />
@@ -59,16 +59,16 @@ export default function DashboardStats({ reports }: DashboardStatsProps) {
       </div>
 
       {/* Resolved Reports Card */}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-start justify-between min-h-[110px]">
+      <div className="bg-white dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs flex items-start justify-between min-h-[110px]">
         <div>
-          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Resolution Efficiency</span>
-          <div className="font-display font-bold text-3xl text-slate-900 dark:text-slate-50 mt-1">{resolvedRate}%</div>
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider">Resolution Efficiency</span>
+          <div className="font-display font-bold text-3xl text-slate-900 dark:text-white mt-1">{resolvedRate}%</div>
           <div className="flex items-center gap-1.5 text-[11px] text-green-600 dark:text-green-400 mt-2 font-medium">
             <CheckCircle className="w-3.5 h-3.5" />
             <span>{resolved} issues corrected</span>
           </div>
         </div>
-        <div className="p-3 bg-[#F0FDF4] text-green-600 dark:text-green-400 rounded-xl border border-[#DCFCE7]">
+        <div className="p-3 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 dark:text-green-400 rounded-xl border border-[#DCFCE7]">
           <CheckCircle className="w-5 h-5" />
         </div>
       </div>

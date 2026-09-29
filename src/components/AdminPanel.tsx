@@ -225,7 +225,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       )}
 
       {/* Admin Header Banner / Hero Registry Card */}
-      <div className="bg-gradient-to-r from-[#EFF6FF] via-[#F0F7FF] to-[#E6F0FA] text-slate-900 dark:text-slate-50 rounded-2xl p-6 sm:p-7 shadow-xs border border-blue-200 dark:border-blue-800 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-blue-50 dark:from-slate-900 via-[#F0F7FF] to-[#E6F0FA] text-slate-900 dark:text-white rounded-2xl p-6 sm:p-7 shadow-xs border border-blue-200 dark:border-blue-800 relative overflow-hidden">
         {/* Subtle Civic / Delhi Cityscape Illustration on Right */}
         <div className="absolute right-0 top-0 bottom-0 w-[420px] md:w-[500px] lg:w-[560px] pointer-events-none overflow-hidden select-none opacity-85">
           <svg
@@ -341,16 +341,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div className="max-w-2xl">
               <div className="flex items-center gap-2.5 flex-wrap mb-2">
-                <span className="text-zinc-900 dark:text-zinc-100 text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5">
-                  <ShieldAlert className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                <span className="text-slate-900 dark:text-white text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5">
+                  <ShieldAlert className="w-4 h-4 text-slate-900 dark:text-white" />
                   <span>URBANPULSE PLATFORM GOVERNANCE</span>
                 </span>
-                <span className="bg-[#EDE9FE] text-[#6D28D9] border border-[#DDD6FE] px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wide">
+                <span className="bg-[#EDE9FE] text-[#6D28D9] border border-violet-200 dark:border-violet-800/50 px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wide">
                   SUPER ADMIN CLEARANCE
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 font-display">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display">
                 Platform Administration & System Registry
               </h1>
               <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed font-sans max-w-xl">
@@ -362,9 +362,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="flex items-center gap-2 bg-white dark:bg-slate-900 hover:bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-50 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-300 dark:border-slate-700 shadow-2xs cursor-pointer disabled:opacity-50"
+                className="flex items-center gap-2 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-300 dark:border-slate-700 shadow-2xs cursor-pointer disabled:opacity-50"
               >
-                <RefreshCw className={`w-3.5 h-3.5 text-zinc-900 dark:text-zinc-100 ${refreshing ? "animate-spin" : ""}`} />
+                <RefreshCw className={`w-3.5 h-3.5 text-slate-900 dark:text-white ${refreshing ? "animate-spin" : ""}`} />
                 <span>{refreshing ? "Syncing..." : "Sync Registry"}</span>
               </button>
             </div>
@@ -377,7 +377,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === "overview"
                   ? "bg-[#2563EB] text-white shadow-xs font-bold"
-                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900/60 font-semibold"
+                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-white dark:bg-slate-800/60/60 font-semibold"
               }`}
             >
               <Activity className="w-3.5 h-3.5" />
@@ -388,7 +388,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === "users"
                   ? "bg-[#2563EB] text-white shadow-xs font-bold"
-                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900/60 font-semibold"
+                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-white dark:bg-slate-800/60/60 font-semibold"
               }`}
             >
               <Users className="w-3.5 h-3.5" />
@@ -399,7 +399,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === "teams"
                   ? "bg-[#2563EB] text-white shadow-xs font-bold"
-                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900/60 font-semibold"
+                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-white dark:bg-slate-800/60/60 font-semibold"
               }`}
             >
               <Briefcase className="w-3.5 h-3.5" />
@@ -410,7 +410,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === "system"
                   ? "bg-[#2563EB] text-white shadow-xs font-bold"
-                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900/60 font-semibold"
+                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-white dark:bg-slate-800/60/60 font-semibold"
               }`}
             >
               <Server className="w-3.5 h-3.5" />
@@ -421,7 +421,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === "audit"
                   ? "bg-[#2563EB] text-white shadow-xs font-bold"
-                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900/60 font-semibold"
+                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-white dark:bg-slate-800/60/60 font-semibold"
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
@@ -432,7 +432,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               className={`px-4 py-2.5 rounded-xl transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === "settings"
                   ? "bg-[#2563EB] text-white shadow-xs font-bold"
-                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-slate-50 hover:bg-white dark:bg-slate-900/60 font-semibold"
+                  : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-white dark:bg-slate-800/60/60 font-semibold"
               }`}
             >
               <Settings className="w-3.5 h-3.5" />
@@ -453,18 +453,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-zinc-900 dark:text-zinc-100 flex items-center justify-center font-bold shadow-2xs">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-slate-900 dark:text-white flex items-center justify-center font-bold shadow-2xs">
                       <Users className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Registered Citizens</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-100">Registered Citizens</span>
                   </div>
-                  <BarChart2 className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                  <BarChart2 className="w-4 h-4 text-slate-900 dark:text-white" />
                 </div>
-                <p className="text-3xl font-black text-slate-900 dark:text-slate-50 mt-3 font-display">
+                <p className="text-3xl font-black text-slate-900 dark:text-white mt-3 font-display">
                   {users.filter(u => u.role === "citizen").length || 13}
                 </p>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1.5 font-medium">
+              <div className="text-[11px] text-slate-500 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
                 <span className="text-green-600 dark:text-green-400 font-bold">100% Active</span>
                 <span>• Civic mobile & web</span>
@@ -479,15 +479,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <div className="w-9 h-9 rounded-xl bg-purple-100 text-[#7C3AED] flex items-center justify-center font-bold shadow-2xs">
                       <ShieldAlert className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Municipal Officers</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-100">Municipal Officers</span>
                   </div>
-                  <BarChart2 className="w-4 h-4 text-[#7C3AED]" />
+                  <BarChart2 className="w-4 h-4 text-violet-600 dark:text-violet-400" />
                 </div>
-                <p className="text-3xl font-black text-slate-900 dark:text-slate-50 mt-3 font-display">
+                <p className="text-3xl font-black text-slate-900 dark:text-white mt-3 font-display">
                   {users.filter(u => u.role === "municipal").length || 3}
                 </p>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1.5 font-medium">
+              <div className="text-[11px] text-slate-500 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
                 <span>PWD, Power Grid & Sanitation</span>
               </div>
             </div>
@@ -500,15 +500,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <div className="w-9 h-9 rounded-xl bg-amber-100 text-[#D97706] flex items-center justify-center font-bold shadow-2xs">
                       <Briefcase className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Operational Field Squads</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-100">Operational Field Squads</span>
                   </div>
                   <BarChart2 className="w-4 h-4 text-[#D97706]" />
                 </div>
-                <p className="text-3xl font-black text-slate-900 dark:text-slate-50 mt-3 font-display">
+                <p className="text-3xl font-black text-slate-900 dark:text-white mt-3 font-display">
                   {teams.filter(t => t.active !== false).length || 5}
                 </p>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1.5 font-medium">
+              <div className="text-[11px] text-slate-500 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
                 <span className="text-green-600 dark:text-green-400 font-bold">{teams.filter(t => t.availability === "AVAILABLE").length || 5} Ready</span>
                 <span>• Rapid response fleet</span>
@@ -523,16 +523,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#059669] flex items-center justify-center font-bold shadow-2xs">
                       <Cpu className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">AI Neural Engine</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-100">AI Neural Engine</span>
                   </div>
                   <BarChart2 className="w-4 h-4 text-[#059669]" />
                 </div>
-                <p className="text-3xl font-black text-slate-900 dark:text-slate-50 mt-3 font-display">Gemini 2.5</p>
+                <p className="text-3xl font-black text-slate-900 dark:text-white mt-3 font-display">Gemini 2.5</p>
               </div>
               <div className="text-[11px] text-green-600 dark:text-green-400 font-medium mt-2 flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
                 <span className="font-bold">99.8% Availability</span>
-                <span className="text-slate-500 dark:text-slate-400">• 640ms Avg</span>
+                <span className="text-slate-500 dark:text-slate-300">• 640ms Avg</span>
               </div>
             </div>
           </div>
@@ -541,13 +541,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             {/* Left 8 Cols: Strict Architectural Role Separation Matrix */}
-            <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="lg:col-span-8 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#EEF5FF] text-zinc-900 dark:text-zinc-100 flex items-center justify-center font-bold">
-                    <Lock className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                  <div className="w-8 h-8 rounded-lg bg-[#EEF5FF] text-slate-900 dark:text-white flex items-center justify-center font-bold">
+                    <Lock className="w-4 h-4 text-slate-900 dark:text-white" />
                   </div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                     Strict Architectural Role Separation Matrix
                   </h2>
                 </div>
@@ -555,14 +555,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowMatrixModal(true)}
-                  className="px-3 py-1 bg-[#EEF5FF] hover:bg-[#DBEAFE] text-zinc-900 dark:text-zinc-100 border border-blue-200 dark:border-blue-800 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
+                  className="px-3 py-1 bg-[#EEF5FF] hover:bg-[#DBEAFE] text-slate-900 dark:text-white border border-blue-200 dark:border-blue-800 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
                 >
                   <span>VIEW MATRIX</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
 
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-300 leading-relaxed">
                 UrbanPulse Guardian enforces four mutually exclusive operational domains. Role crossing is blocked at both client route guards and backend database rules.
               </p>
 
@@ -571,9 +571,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 
                 {/* 1. Citizen Role */}
                 <div className="p-4 bg-[#EEF5FF]/70 border border-[#D6E6FE] rounded-xl text-xs space-y-2">
-                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-slate-50">
+                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-white">
                     <div className="flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-zinc-900 dark:text-zinc-100" />
+                      <Users className="w-3.5 h-3.5 text-slate-900 dark:text-white" />
                       <span>1. Citizen Role</span>
                     </div>
                     <span className="bg-[#DBEAFE] text-blue-700 dark:text-blue-400 text-[9.5px] px-2 py-0.5 rounded font-mono font-bold tracking-wider">
@@ -587,9 +587,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 {/* 2. Municipal Role */}
                 <div className="p-4 bg-[#F5F1FF]/70 border border-[#E5DEFF] rounded-xl text-xs space-y-2">
-                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-slate-50">
+                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-white">
                     <div className="flex items-center gap-2">
-                      <ShieldAlert className="w-3.5 h-3.5 text-[#7C3AED]" />
+                      <ShieldAlert className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
                       <span>2. Municipal Role</span>
                     </div>
                     <span className="bg-[#EDE9FE] text-[#6D28D9] text-[9.5px] px-2 py-0.5 rounded font-mono font-bold tracking-wider">
@@ -603,7 +603,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 {/* 3. Field Team Role */}
                 <div className="p-4 bg-[#FFF8EC]/70 border border-[#FEDCB0] rounded-xl text-xs space-y-2">
-                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-slate-50">
+                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-white">
                     <div className="flex items-center gap-2">
                       <Briefcase className="w-3.5 h-3.5 text-[#D97706]" />
                       <span>3. Field Team Role</span>
@@ -619,7 +619,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 {/* 4. Admin Role */}
                 <div className="p-4 bg-[#EFFAF5]/70 border border-[#CFEFE1] rounded-xl text-xs space-y-2">
-                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-slate-50">
+                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-white">
                     <div className="flex items-center gap-2">
                       <Lock className="w-3.5 h-3.5 text-[#059669]" />
                       <span>4. Admin Role</span>
@@ -636,10 +636,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {/* Right 4 Cols: Governance Actions */}
-            <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4 flex flex-col justify-between">
+            <div className="lg:col-span-4 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-xs space-y-4 flex flex-col justify-between">
               <div>
-                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2 mb-3.5">
-                  <Settings className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-3.5">
+                  <Settings className="w-4 h-4 text-slate-900 dark:text-white" />
                   <span>Governance Actions</span>
                 </h2>
 
@@ -648,20 +648,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveTab("users")}
-                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-[#2563EB] hover:bg-[#EEF5FF]/40 transition text-left group cursor-pointer shadow-2xs"
+                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-[#2563EB] hover:bg-[#EEF5FF]/40 transition text-left group cursor-pointer shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-[#EEF5FF] text-zinc-900 dark:text-zinc-100 flex items-center justify-center font-bold text-xs shrink-0">
+                      <div className="w-8 h-8 rounded-xl bg-[#EEF5FF] text-slate-900 dark:text-white flex items-center justify-center font-bold text-xs shrink-0">
                         <Users className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-50 group-hover:text-zinc-900 dark:text-zinc-100 transition-colors">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           Manage User Access
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400">Promote roles or deactivate accounts</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-300">Promote roles or deactivate accounts</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-zinc-900 dark:text-zinc-100 transition-transform group-hover:translate-x-0.5" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-transform group-hover:translate-x-0.5" />
                   </button>
 
                   {/* Action 2 */}
@@ -671,67 +671,67 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       setActiveTab("teams");
                       setShowCreateTeamModal(true);
                     }}
-                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-[#059669] hover:bg-[#EFFAF5]/40 transition text-left group cursor-pointer shadow-2xs"
+                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-[#059669] hover:bg-[#EFFAF5]/40 transition text-left group cursor-pointer shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-[#EFFAF5] text-[#059669] flex items-center justify-center font-bold text-xs shrink-0">
                         <Plus className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-50 group-hover:text-[#059669] transition-colors">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#059669] transition-colors">
                           Register Field Squad
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400">Add new dispatch crew to city fleet</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-300">Add new dispatch crew to city fleet</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-[#059669] transition-transform group-hover:translate-x-0.5" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-400 group-hover:text-[#059669] transition-transform group-hover:translate-x-0.5" />
                   </button>
 
                   {/* Action 3 */}
                   <button
                     type="button"
                     onClick={() => setActiveTab("audit")}
-                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-[#D97706] hover:bg-[#FFF8EC]/40 transition text-left group cursor-pointer shadow-2xs"
+                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-[#D97706] hover:bg-[#FFF8EC]/40 transition text-left group cursor-pointer shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-[#FFF8EC] text-[#D97706] flex items-center justify-center font-bold text-xs shrink-0">
                         <FileText className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-50 group-hover:text-[#D97706] transition-colors">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#D97706] transition-colors">
                           System Audit Logs
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400">View platform activity and security logs</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-300">View platform activity and security logs</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-[#D97706] transition-transform group-hover:translate-x-0.5" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-400 group-hover:text-[#D97706] transition-transform group-hover:translate-x-0.5" />
                   </button>
 
                   {/* Action 4 */}
                   <button
                     type="button"
                     onClick={() => setActiveTab("settings")}
-                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-[#7C3AED] hover:bg-[#F5F1FF]/40 transition text-left group cursor-pointer shadow-2xs"
+                    className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-[#7C3AED] hover:bg-[#F5F1FF]/40 transition text-left group cursor-pointer shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-[#F5F1FF] text-[#7C3AED] flex items-center justify-center font-bold text-xs shrink-0">
                         <Settings className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-50 group-hover:text-[#7C3AED] transition-colors">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#7C3AED] transition-colors">
                           Platform Settings
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400">Configure thresholds and integrations</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-300">Configure thresholds and integrations</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-[#7C3AED] transition-transform group-hover:translate-x-0.5" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-400 group-hover:text-[#7C3AED] transition-transform group-hover:translate-x-0.5" />
                   </button>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-300 font-mono">
                 <span>Current Administrator:</span>
-                <span className="font-semibold text-slate-900 dark:text-slate-50">{adminEmail}</span>
+                <span className="font-semibold text-slate-900 dark:text-white">{adminEmail}</span>
               </div>
             </div>
           </div>
@@ -739,40 +739,40 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {/* Live Platform Telemetry & Recent Activity Row */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Recent Administrative Events (8 cols) */}
-            <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="lg:col-span-8 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-zinc-900 dark:text-zinc-100 flex items-center justify-center font-bold">
-                    <FileText className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white flex items-center justify-center font-bold">
+                    <FileText className="w-4 h-4 text-slate-900 dark:text-white" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50">Recent Administrative Audit Events</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">Real-time immutable ledger of platform access & security boundaries</p>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Recent Administrative Audit Events</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-300">Real-time immutable ledger of platform access & security boundaries</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setActiveTab("audit")}
-                  className="text-xs font-bold text-zinc-900 dark:text-zinc-100 hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-bold text-slate-900 dark:text-white hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <span>View All Logs</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
 
-              <div className="divide-y divide-[#F1F5F9] border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-[#FAFCFF]">
+              <div className="divide-y divide-[#F1F5F9] border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-[#FAFCFF]">
                 {auditLogs.slice(0, 4).map((log) => (
-                  <div key={log.id} className="p-3 hover:bg-white dark:bg-slate-900 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                  <div key={log.id} className="p-3 hover:bg-white dark:bg-slate-800/60 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <span className="w-2 h-2 rounded-full bg-[#2563EB] shrink-0" />
                       <div className="min-w-0">
-                        <span className="font-semibold text-slate-900 dark:text-slate-50">{log.action}</span>
-                        <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate font-mono">Actor: {log.adminEmail || "system_governance"}</span>
+                        <span className="font-semibold text-slate-900 dark:text-white">{log.action}</span>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-300 block truncate font-mono">Actor: {log.adminEmail || "system_governance"}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0 text-[11px] font-mono">
-                      <span className="text-slate-400 dark:text-slate-500">{new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      <span className="px-2 py-0.5 rounded-full font-bold bg-blue-50 dark:bg-blue-900/20 text-zinc-900 dark:text-zinc-100 border border-[#DBEAFE] text-[10px]">
+                      <span className="text-slate-400 dark:text-slate-400">{new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      <span className="px-2 py-0.5 rounded-full font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 text-[10px]">
                         VERIFIED
                       </span>
                     </div>
@@ -782,19 +782,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {/* Operational Squad SLA & Readiness Status (4 cols) */}
-            <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4 flex flex-col justify-between">
+            <div className="lg:col-span-4 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-xs space-y-4 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#F0FDF4] text-green-600 dark:text-green-400 flex items-center justify-center font-bold">
+                    <div className="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 dark:text-green-400 flex items-center justify-center font-bold">
                       <Briefcase className="w-4 h-4 text-green-600 dark:text-green-400" />
                     </div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50">Squad Fleet Readiness</h3>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Squad Fleet Readiness</h3>
                   </div>
                   <button
                     type="button"
                     onClick={() => setActiveTab("teams")}
-                    className="text-xs font-bold text-zinc-900 dark:text-zinc-100 hover:underline cursor-pointer"
+                    className="text-xs font-bold text-slate-900 dark:text-white hover:underline cursor-pointer"
                   >
                     View All
                   </button>
@@ -802,12 +802,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 <div className="space-y-2.5">
                   {teams.slice(0, 3).map((t) => (
-                    <div key={t.id} className="p-2.5 bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between text-xs">
+                    <div key={t.id} className="p-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between text-xs">
                       <div>
-                        <div className="font-bold text-slate-900 dark:text-slate-50">{t.name}</div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400">{t.district} • {t.membersCount} crew members</div>
+                        <div className="font-bold text-slate-900 dark:text-white">{t.name}</div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-300">{t.district} • {t.membersCount} crew members</div>
                       </div>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#F0FDF4] text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 dark:text-green-400 border border-green-200 dark:border-green-800">
                         READY
                       </span>
                     </div>
@@ -815,7 +815,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-300">
                 <span>Dispatch SLA Target:</span>
                 <span className="font-bold text-green-600 dark:text-green-400">&lt; 45 Mins Ground Response</span>
               </div>
@@ -825,15 +825,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {/* Modal for View Matrix */}
           {showMatrixModal && (
             <div className="fixed inset-0 z-50 bg-[#0F172A]/50 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4 animate-in fade-in zoom-in-95 duration-200">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+              <div className="bg-white dark:bg-slate-800/60 rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4 animate-in fade-in zoom-in-95 duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
                   <div className="flex items-center gap-2">
-                    <Lock className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
-                    <h3 className="font-bold text-base text-slate-900 dark:text-slate-50">Security Domain & Route Separation Matrix</h3>
+                    <Lock className="w-5 h-5 text-slate-900 dark:text-white" />
+                    <h3 className="font-bold text-base text-slate-900 dark:text-white">Security Domain & Route Separation Matrix</h3>
                   </div>
                   <button
                     onClick={() => setShowMatrixModal(false)}
-                    className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-slate-50 hover:bg-slate-100 dark:bg-slate-800"
+                    className="p-1 rounded-lg text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-slate-100 dark:bg-slate-800"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -842,9 +842,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <p>
                     All routes in UrbanPulse Guardian strictly validate role claims directly from Firebase Authentication tokens before mounting views.
                   </p>
-                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+                  <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
                     <table className="w-full text-left">
-                      <thead className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">
+                      <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-500 dark:text-slate-300 uppercase">
                         <tr>
                           <th className="p-2.5">Domain</th>
                           <th className="p-2.5">Allowed Role</th>
@@ -854,25 +854,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       </thead>
                       <tbody className="divide-y divide-[#E2E8F0] font-mono text-[11px]">
                         <tr>
-                          <td className="p-2.5 font-sans font-semibold text-slate-900 dark:text-slate-50">Citizen Civic Portal</td>
-                          <td className="p-2.5 text-zinc-900 dark:text-zinc-100">citizen</td>
+                          <td className="p-2.5 font-sans font-semibold text-slate-900 dark:text-white">Citizen Civic Portal</td>
+                          <td className="p-2.5 text-slate-900 dark:text-white">citizen</td>
                           <td className="p-2.5 text-green-600 dark:text-green-400">Active</td>
                           <td className="p-2.5">Reports creation only</td>
                         </tr>
                         <tr>
-                          <td className="p-2.5 font-sans font-semibold text-slate-900 dark:text-slate-50">Municipal Operations Deck</td>
+                          <td className="p-2.5 font-sans font-semibold text-slate-900 dark:text-white">Municipal Operations Deck</td>
                           <td className="p-2.5 text-[#7C3AED]">municipal, admin</td>
                           <td className="p-2.5 text-green-600 dark:text-green-400">Active</td>
                           <td className="p-2.5">Incident triage & dispatch</td>
                         </tr>
                         <tr>
-                          <td className="p-2.5 font-sans font-semibold text-slate-900 dark:text-slate-50">Field Squad Operations</td>
+                          <td className="p-2.5 font-sans font-semibold text-slate-900 dark:text-white">Field Squad Operations</td>
                           <td className="p-2.5 text-[#D97706]">field_team, admin</td>
                           <td className="p-2.5 text-green-600 dark:text-green-400">Active</td>
                           <td className="p-2.5">Status & repair proof uploads</td>
                         </tr>
                         <tr>
-                          <td className="p-2.5 font-sans font-semibold text-slate-900 dark:text-slate-50">Platform Governance</td>
+                          <td className="p-2.5 font-sans font-semibold text-slate-900 dark:text-white">Platform Governance</td>
                           <td className="p-2.5 text-red-600 dark:text-red-400">admin</td>
                           <td className="p-2.5 text-green-600 dark:text-green-400">Active</td>
                           <td className="p-2.5">Global registry & credentials</td>
@@ -897,7 +897,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       {/* TAB 2: USER MANAGEMENT */}
       {activeTab === "users" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+        <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl shadow-xs overflow-hidden">
           <div className="p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-base font-bold text-slate-900">User Access Control & Identity</h2>
@@ -911,31 +911,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-lg text-xs font-semibold">
                 <button
                   onClick={() => setRoleFilter("ALL")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "ALL" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "ALL" ? "bg-white dark:bg-slate-800/60 text-slate-900 shadow-xs" : "text-slate-600"}`}
                 >
                   All
                 </button>
                 <button
                   onClick={() => setRoleFilter("citizen")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "citizen" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "citizen" ? "bg-white dark:bg-slate-800/60 text-slate-900 shadow-xs" : "text-slate-600"}`}
                 >
                   Citizens
                 </button>
                 <button
                   onClick={() => setRoleFilter("municipal")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "municipal" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "municipal" ? "bg-white dark:bg-slate-800/60 text-slate-900 shadow-xs" : "text-slate-600"}`}
                 >
                   Municipal
                 </button>
                 <button
                   onClick={() => setRoleFilter("field_team")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "field_team" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "field_team" ? "bg-white dark:bg-slate-800/60 text-slate-900 shadow-xs" : "text-slate-600"}`}
                 >
                   Field Team
                 </button>
                 <button
                   onClick={() => setRoleFilter("admin")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "admin" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "admin" ? "bg-white dark:bg-slate-800/60 text-slate-900 shadow-xs" : "text-slate-600"}`}
                 >
                   Admin
                 </button>
@@ -1058,7 +1058,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* TAB 3: TEAM MANAGEMENT */}
       {activeTab === "teams" && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 p-5 rounded-xl shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-800/60 border border-slate-200 p-5 rounded-xl shadow-xs">
             <div>
               <h2 className="text-base font-bold text-slate-900">Platform Field Squad Registry</h2>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -1092,7 +1092,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             {filteredTeams.map(t => (
               <div
                 key={t.id}
-                className={`bg-white dark:bg-slate-900 border rounded-xl p-5 shadow-xs transition relative flex flex-col justify-between ${
+                className={`bg-white dark:bg-slate-800/60 border rounded-xl p-5 shadow-xs transition relative flex flex-col justify-between ${
                   t.active !== false ? "border-slate-200" : "border-slate-300 opacity-60 bg-slate-50"
                 }`}
               >
@@ -1185,7 +1185,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Service 1: Firebase Auth */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
+            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
                   <Lock className="w-4 h-4 text-blue-600" />
@@ -1206,7 +1206,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {/* Service 2: Cloud Firestore */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
+            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
                   <Server className="w-4 h-4 text-purple-600" />
@@ -1227,7 +1227,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {/* Service 3: Gemini Vision AI */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
+            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
                   <Cpu className="w-4 h-4 text-emerald-600" />
@@ -1249,7 +1249,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           {/* System Rate Limits & SLA Config */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-6 shadow-xs space-y-4">
+          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl p-6 shadow-xs space-y-4">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <Clock className="w-4 h-4 text-blue-600" />
               <span>SLA Target Parameters by Priority Tier</span>
@@ -1282,7 +1282,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       {/* TAB 5: AUDIT TRAIL */}
       {activeTab === "audit" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+        <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl shadow-xs overflow-hidden">
           <div className="p-5 border-b border-slate-200 flex items-center justify-between">
             <div>
               <h2 className="text-base font-bold text-slate-900">Platform Security & Governance Ledger</h2>
@@ -1321,7 +1321,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       {/* TAB 6: SETTINGS */}
       {activeTab === "settings" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-6 shadow-xs space-y-6">
+        <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl p-6 shadow-xs space-y-6">
           <div>
             <h2 className="text-base font-bold text-slate-900">Global City Configuration</h2>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -1369,7 +1369,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* MODAL: EDIT USER ROLE */}
       {editingUser && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
+          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
             <h3 className="text-sm font-bold text-slate-900">
               Edit User Role & Clearance: {editingUser.fullName}
             </h3>
@@ -1425,7 +1425,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* MODAL: CREATE SQUAD */}
       {showCreateTeamModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-lg w-full space-y-4">
+          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-lg w-full space-y-4">
             <h3 className="text-sm font-bold text-slate-900">Provision New Field Operations Squad</h3>
             <p className="text-xs text-slate-500">
               Register a new operational crew into the city fleet registry.
@@ -1519,7 +1519,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* MODAL: EDIT TEAM */}
       {editingTeam && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
+          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
             <h3 className="text-sm font-bold text-slate-900">Configure Squad: {editingTeam.name}</h3>
 
             <div className="space-y-3 text-xs">

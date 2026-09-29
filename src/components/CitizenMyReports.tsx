@@ -154,7 +154,7 @@ export default function CitizenMyReports({
               className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
                 filterCategory === cat
                   ? "bg-[#172033] text-white shadow-2xs"
-                  : "bg-[#F8FAFC] text-[#64748B] hover:bg-[#F1F5F9]"
+                  : "bg-slate-50 dark:bg-slate-800/50 text-[#64748B] hover:bg-[#F1F5F9]"
               }`}
             >
               {cat}
@@ -208,7 +208,7 @@ export default function CitizenMyReports({
                         : rep.status === "In Progress"
                         ? "bg-[#EFF6FF] text-[#2563EB] border-[#BFDBFE]"
                         : rep.status === "Assigned"
-                        ? "bg-[#F5F3FF] text-[#7C3AED] border-[#DDD6FE]"
+                        ? "bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border-[#DDD6FE]"
                         : "bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]"
                     }`}>
                       ● {rep.status}
@@ -225,7 +225,7 @@ export default function CitizenMyReports({
 
                     <button
                       onClick={() => onSelectReport(rep)}
-                      className="px-3 py-1.5 bg-[#F8FAFC] hover:bg-[#EFF6FF] text-[#1D4ED8] border border-[#E2E8F0] hover:border-[#BFDBFE] rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                      className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800/50 hover:bg-[#EFF6FF] text-[#1D4ED8] border border-[#E2E8F0] hover:border-[#BFDBFE] rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5" />
                       <span>Details</span>
@@ -278,7 +278,7 @@ export default function CitizenMyReports({
                           stage.isCurrent
                             ? "bg-[#EFF6FF] border-[#2563EB] shadow-2xs"
                             : stage.isComplete
-                            ? "bg-[#F8FAFC] border-[#CBD5E1]"
+                            ? "bg-slate-50 dark:bg-slate-800/50 border-[#CBD5E1]"
                             : "bg-[#FAFAFA] border-[#F1F5F9] opacity-60"
                         }`}
                       >
