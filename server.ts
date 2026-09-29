@@ -459,6 +459,25 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+// Cross-Origin Resource Sharing (CORS) Middleware
+// Enables cross-origin requests from Vercel frontend deployments and local dev environments
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 // 2. API Rate Limiting Guards
 const generalLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
@@ -1189,6 +1208,8 @@ Respond ONLY with valid JSON matching:
 
 // B. ROAD SCANNER BATCHED FRAME ANALYSIS
 app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
+  const reqStartTime = Date.now();
+  const routeIdentifier = `${req.method} ${req.originalUrl || req.url}`;
   try {
     let rawFrames: any[] = [];
     if (Array.isArray(req.body.frames)) {
@@ -1197,7 +1218,10 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
       rawFrames = [{ frameIndex: req.body.frameIndex ?? 0, image: req.body.image, timestamp: req.body.timestamp }];
     }
 
+    console.log(`[Road Scanner AI] [Request: ${routeIdentifier}] IP: ${req.ip} | Origin: ${req.headers.origin || "direct"} | Raw frames count: ${rawFrames.length}`);
+
     if (!rawFrames || rawFrames.length === 0) {
+      console.warn(`[Road Scanner AI] [Status: 400] ${routeIdentifier} | Reason: No valid image frames provided in request.`);
       return res.status(400).json({
         detected: false,
         detections: [],
@@ -1209,6 +1233,7 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
     }
 
     if (!ai || !process.env.GEMINI_API_KEY) {
+      console.warn(`[Road Scanner AI] [Status: 401] ${routeIdentifier} | Reason: GEMINI_API_KEY missing on server.`);
       return res.status(401).json({
         detected: false,
         detections: [],
@@ -1242,6 +1267,7 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
     }
 
     if (validFrames.length === 0) {
+      console.warn(`[Road Scanner AI] [Status: 400] ${routeIdentifier} | Reason: All frame payloads were empty or corrupted.`);
       return res.status(400).json({
         detected: false,
         detections: [],
@@ -1470,7 +1496,7 @@ Respond strictly in structured JSON format matching this schema:
       })
       .filter(det => det.confidence >= MIN_DETECTION_CONFIDENCE);
 
-    console.log(`[Road Scanner AI] Batch Response Parsed | frames: ${validFrames.length} | raw: ${detectionsArray.length} | valid: ${normalizedDetections.length} | model: ${modelUsed}`);
+    console.log(`[Road Scanner AI] [Status: 200] ${routeIdentifier} | Processed ${validFrames.length} frame(s) in ${Date.now() - reqStartTime}ms | Model: ${modelUsed} | Detections: ${normalizedDetections.length}`);
 
     const isDetected = normalizedDetections.length > 0;
 
@@ -1488,7 +1514,7 @@ Respond strictly in structured JSON format matching this schema:
 
   } catch (err: any) {
     const classified = classifyGeminiError(err, ROAD_SCANNER_GEMINI_MODEL);
-    console.error("Batch frame analysis route failure:", classified);
+    console.error(`[Road Scanner AI] [Status: ${classified.httpStatus}] ${routeIdentifier} | Error State: ${classified.errorState} | Details: ${classified.message}`);
     return res.status(classified.httpStatus).json({ 
       detected: false, 
       detection: null, 
@@ -1503,9 +1529,10 @@ Respond strictly in structured JSON format matching this schema:
 });
 
 // Backward compatible single-frame endpoint forwarding to batch handler
-app.post("/api/scanner/analyze-frame", async (req: Request, res: Response) => {
+app.post("/api/scanner/analyze-frame", (req: Request, res: Response, next: NextFunction) => {
+  console.log(`[Road Scanner AI] [Forward: ${req.method} ${req.originalUrl || req.url} -> /api/scanner/analyze-batch]`);
   req.url = "/api/scanner/analyze-batch";
-  return app._router.handle(req, res);
+  return app._router.handle(req, res, next);
 });
 
 // Helper to build properly structured Gemini contents payload with strict role alternation

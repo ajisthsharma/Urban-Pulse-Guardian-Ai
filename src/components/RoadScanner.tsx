@@ -30,6 +30,7 @@ import {
   findNearbyExistingIncident 
 } from "../services/spatialClustering";
 import { uploadRoadScanEvidenceFrame } from "../services/storageService";
+import { getApiUrl } from "../utils/apiConfig";
 
 // Input source types
 export type ScannerInputSource = "VEHICLE_DASHCAM" | "PHONE_CAMERA" | "RECORDED_VIDEO";
@@ -682,7 +683,7 @@ export default function RoadScanner({
 
     // Post report automatically to `/api/reports`
     try {
-      const response = await fetch("/api/reports", {
+      const response = await fetch(getApiUrl("/api/reports"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -755,7 +756,7 @@ export default function RoadScanner({
       }));
       setAnalyzedFrameCount(c => c + 1);
 
-      const res = await fetch("/api/scanner/analyze-batch", {
+      const res = await fetch(getApiUrl("/api/scanner/analyze-batch"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
