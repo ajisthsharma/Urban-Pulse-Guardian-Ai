@@ -2436,7 +2436,7 @@ export default function App() {
             </div>
 
             {/* 1. PRIMARY MODE SWITCHER: SIGN IN vs SIGN UP */}
-            <div id="auth-mode-toggle" className="flex w-full p-1.5 bg-slate-100/80 rounded-2xl mb-5 border border-slate-200 shadow-inner">
+            <div id="auth-mode-toggle" className="flex w-full p-1.5 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl mb-5 border border-slate-200 dark:border-slate-700 shadow-inner">
               <button
                 type="button"
                 id="tab-mode-signin"
@@ -2447,7 +2447,7 @@ export default function App() {
                 }}
                 className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   isLoginView
-                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-md border border-slate-200/80 dark:border-slate-700 font-black"
+                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-md border border-slate-200/80 dark:border-slate-600 font-black"
                     : "bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white"
                 }`}
               >
@@ -2487,8 +2487,8 @@ export default function App() {
                   }}
                   className={`flex-1 py-2 px-2 text-[10.5px] font-bold uppercase tracking-wider rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                     authRoleInput === "citizen"
-                      ? "bg-blue-50 border-blue-300 text-blue-900 ring-2 ring-blue-500/20 shadow-xs"
-                      : "bg-slate-50/60 border-slate-200 text-slate-500 hover:bg-slate-100"
+                      ? "bg-blue-50 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-100 ring-2 ring-blue-500/20 dark:ring-blue-500/40 shadow-xs"
+                      : "bg-slate-50/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   <UserIcon className="w-3.5 h-3.5 text-blue-600" />
@@ -2504,8 +2504,8 @@ export default function App() {
                   }}
                   className={`flex-1 py-2 px-2 text-[10.5px] font-bold uppercase tracking-wider rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                     authRoleInput === "field_team"
-                      ? "bg-emerald-50 border-emerald-300 text-emerald-900 ring-2 ring-emerald-500/20 shadow-xs"
-                      : "bg-slate-50/60 border-slate-200 text-slate-500 hover:bg-slate-100"
+                      ? "bg-emerald-50 dark:bg-emerald-900/40 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-100 ring-2 ring-emerald-500/20 dark:ring-emerald-500/40 shadow-xs"
+                      : "bg-slate-50/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   <Wrench className="w-3.5 h-3.5 text-emerald-600" />
@@ -2521,8 +2521,8 @@ export default function App() {
                   }}
                   className={`flex-1 py-2 px-2 text-[10.5px] font-bold uppercase tracking-wider rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                     authRoleInput === "admin"
-                      ? "bg-amber-50 border-amber-300 text-amber-900 ring-2 ring-amber-500/20 shadow-xs"
-                      : "bg-slate-50/60 border-slate-200 text-slate-500 hover:bg-slate-100"
+                      ? "bg-amber-50 dark:bg-amber-900/40 border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-100 ring-2 ring-amber-500/20 dark:ring-amber-500/40 shadow-xs"
+                      : "bg-slate-50/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   <Landmark className="w-3.5 h-3.5 text-amber-600" />
@@ -2537,7 +2537,7 @@ export default function App() {
                   className={`flex-1 py-2 px-2 text-[10.5px] font-bold uppercase tracking-wider rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                     authRoleInput === "citizen"
                       ? "bg-blue-50 border-blue-300 text-blue-900 ring-2 ring-blue-500/20"
-                      : "bg-slate-50/60 border-slate-200 text-slate-500 hover:bg-slate-100"
+                      : "bg-slate-50/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   <UserIcon className="w-3.5 h-3.5 text-blue-600" />
@@ -2549,7 +2549,7 @@ export default function App() {
                   className={`flex-1 py-2 px-2 text-[10.5px] font-bold uppercase tracking-wider rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                     authRoleInput === "field_team"
                       ? "bg-emerald-50 border-emerald-300 text-emerald-900 ring-2 ring-emerald-500/20"
-                      : "bg-slate-50/60 border-slate-200 text-slate-500 hover:bg-slate-100"
+                      : "bg-slate-50/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   <Wrench className="w-3.5 h-3.5 text-emerald-600" />
@@ -2667,8 +2667,8 @@ export default function App() {
             </form>
 
             {/* QUICK DEMO CREDENTIAL BUTTONS */}
-            <div className="mt-4 pt-3 border-t border-slate-200/70 flex flex-col gap-1.5">
-              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest text-center">Quick Demo Preset Logins:</span>
+            <div className="mt-4 pt-3 border-t border-slate-200/70 dark:border-slate-700/70 flex flex-col gap-1.5">
+              <span className="text-[9px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">Quick Demo Preset Logins:</span>
               <div className="grid grid-cols-3 gap-1.5">
                 <button
                   type="button"
@@ -2677,7 +2677,7 @@ export default function App() {
                     setEmailInput("citizen@urbanpulse.org");
                     setPasswordInput("citizen123456");
                   }}
-                  className="py-1 px-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 text-[9.5px] font-bold rounded-lg transition-colors border border-blue-200/80 cursor-pointer"
+                  className="py-1 px-1.5 bg-blue-50 dark:bg-blue-900/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-800 dark:text-blue-200 text-[9.5px] font-bold rounded-lg transition-colors border border-blue-200/80 dark:border-blue-700/50 cursor-pointer"
                 >
                   Citizen
                 </button>
@@ -2688,7 +2688,7 @@ export default function App() {
                     setEmailInput("fieldteam@urbanpulse.gov");
                     setPasswordInput("field123456");
                   }}
-                  className="py-1 px-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[9.5px] font-bold rounded-lg transition-colors border border-emerald-200/80 cursor-pointer"
+                  className="py-1 px-1.5 bg-emerald-50 dark:bg-emerald-900/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 text-[9.5px] font-bold rounded-lg transition-colors border border-emerald-200/80 dark:border-emerald-700/50 cursor-pointer"
                 >
                   Field Crew
                 </button>
@@ -2699,7 +2699,7 @@ export default function App() {
                     setEmailInput("officer@urbanpulse.gov");
                     setPasswordInput("admin123456");
                   }}
-                  className="py-1 px-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9.5px] font-bold rounded-lg transition-colors border border-amber-200/80 cursor-pointer"
+                  className="py-1 px-1.5 bg-amber-50 dark:bg-amber-900/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-200 text-[9.5px] font-bold rounded-lg transition-colors border border-amber-200/80 dark:border-amber-700/50 cursor-pointer"
                 >
                   Municipal
                 </button>
