@@ -129,7 +129,7 @@ export default function RoadRiskIntelligenceView({
     if (!map) return;
 
     // Clear existing layers
-    Object.values(corridorLayersRef.current).forEach(layerGroup => {
+    Object.values(corridorLayersRef.current).forEach((layerGroup: L.LayerGroup) => {
       layerGroup.clearLayers();
       map.removeLayer(layerGroup);
     });
