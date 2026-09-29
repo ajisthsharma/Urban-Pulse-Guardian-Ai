@@ -64,7 +64,7 @@ export default function CitizenProfile({
         <div className="grid grid-cols-3 gap-3 text-xs">
           <div 
             onClick={onNavigateToReports}
-            className="bg-slate-50 dark:bg-slate-800/50 hover:bg-[#EFF6FF] border border-[#E2E8F0] hover:border-[#BFDBFE] p-4 rounded-xl transition-all cursor-pointer text-left"
+            className="bg-slate-50 dark:bg-[#111111]/50 hover:bg-[#EFF6FF] border border-[#E2E8F0] hover:border-[#BFDBFE] p-4 rounded-xl transition-all cursor-pointer text-left"
           >
             <span className="text-[10px] font-bold text-[#64748B] uppercase block">Total Reports</span>
             <span className="text-2xl font-black text-[#172033] block mt-1 font-mono">
@@ -73,7 +73,7 @@ export default function CitizenProfile({
             <span className="text-[10px] text-[#2563EB] font-bold mt-1 block">View in My Reports →</span>
           </div>
 
-          <div className="bg-slate-50 dark:bg-slate-800/50 border border-[#E2E8F0] p-4 rounded-xl text-left">
+          <div className="bg-slate-50 dark:bg-[#111111]/50 border border-[#E2E8F0] p-4 rounded-xl text-left">
             <span className="text-[10px] font-bold text-[#64748B] uppercase block">Remediated</span>
             <span className="text-2xl font-black text-[#16A34A] block mt-1 font-mono">
               {resolvedCount}
@@ -81,7 +81,7 @@ export default function CitizenProfile({
             <span className="text-[10px] text-[#64748B] mt-1 block">Issues fixed</span>
           </div>
 
-          <div className="bg-slate-50 dark:bg-slate-800/50 border border-[#E2E8F0] p-4 rounded-xl text-left">
+          <div className="bg-slate-50 dark:bg-[#111111]/50 border border-[#E2E8F0] p-4 rounded-xl text-left">
             <span className="text-[10px] font-bold text-[#64748B] uppercase block">In Field Queue</span>
             <span className="text-2xl font-black text-[#2563EB] block mt-1 font-mono">
               {inProgressCount}
@@ -91,7 +91,7 @@ export default function CitizenProfile({
         </div>
 
         {/* Account Details */}
-        <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-[#E2E8F0] space-y-2.5 text-xs text-[#475569]">
+        <div className="bg-slate-50 dark:bg-[#111111]/50 p-4 rounded-xl border border-[#E2E8F0] space-y-2.5 text-xs text-[#475569]">
           <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
             ACCOUNT CLEARANCE & METRICS
           </span>

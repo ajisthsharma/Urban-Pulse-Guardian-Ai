@@ -142,37 +142,37 @@ export default function CitizenCopilot({
                 AI Powered • Gemini 3.5
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-zinc-300 mt-0.5">
               Personalized neighborhood safety diagnostics, report tracking, and commuter guidance.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl text-xs font-mono shadow-2xs">
+        <div className="flex items-center gap-2 bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl text-xs font-mono shadow-2xs">
           <ShieldCheck className="w-4 h-4 text-green-600 dark:text-green-400" />
-          <span className="text-slate-500 dark:text-slate-300">Privacy Shield:</span>
+          <span className="text-slate-500 dark:text-zinc-300">Privacy Shield:</span>
           <span className="text-green-600 dark:text-green-400 font-bold">Isolated to Citizen Profile</span>
         </div>
       </div>
 
       {/* CHAT THREAD CARD */}
-      <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xs overflow-hidden flex flex-col h-[600px]">
+      <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col h-[600px]">
         {/* Thread Status Subheader */}
-        <div className="bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 px-5 py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-700">
+        <div className="bg-slate-50 dark:bg-[#111111]/50 text-slate-600 dark:text-zinc-400 px-5 py-3 flex items-center justify-between border-b border-slate-200 dark:border-white/10">
           <div className="flex items-center gap-2 text-xs">
             <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
             <span className="font-semibold text-slate-900 dark:text-white">Delhi NCR Civic Safety Channel</span>
             <span className="text-[#CBD5E1]">•</span>
-            <span className="text-slate-500 dark:text-slate-300 text-[11px]">User: {currentUserEmail || "Volunteer"}</span>
+            <span className="text-slate-500 dark:text-zinc-300 text-[11px]">User: {currentUserEmail || "Volunteer"}</span>
           </div>
 
-          <div className="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-300 font-mono">
+          <div className="flex items-center gap-3 text-[11px] text-slate-500 dark:text-zinc-300 font-mono">
             <span>My Reports: <strong className="text-slate-900 dark:text-white">{userReports.length}</strong></span>
           </div>
         </div>
 
         {/* Message Stream */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-slate-50 dark:bg-slate-800/50 flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-slate-50 dark:bg-[#111111]/50 flex flex-col gap-4">
           {messages.map((m) => (
             <div
               key={m.id}
@@ -191,7 +191,7 @@ export default function CitizenCopilot({
               <div className={`p-4 rounded-2xl text-xs leading-relaxed ${
                 m.role === "user"
                   ? "bg-[#2563EB] text-white rounded-tr-xs shadow-2xs"
-                  : "bg-white dark:bg-slate-800/60 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-tl-xs shadow-2xs"
+                  : "bg-white dark:bg-[#0A0A0A] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 rounded-tl-xs shadow-2xs"
               }`}>
                 <div className="space-y-2 whitespace-pre-wrap">
                   {m.content.split("\n\n").map((para, idx) => {
@@ -267,7 +267,7 @@ export default function CitizenCopilot({
               key={idx}
               disabled={sending}
               onClick={() => handleSend(chip)}
-              className="text-[11px] font-medium bg-white dark:bg-slate-800/60 hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-3xs disabled:opacity-50"
+              className="text-[11px] font-medium bg-white dark:bg-[#0A0A0A] hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-3xs disabled:opacity-50"
             >
               {chip}
             </button>
@@ -280,7 +280,7 @@ export default function CitizenCopilot({
             e.preventDefault();
             handleSend(inputVal);
           }}
-          className="p-3 bg-white dark:bg-slate-800/60 border-t border-slate-200 flex gap-2 items-center"
+          className="p-3 bg-white dark:bg-[#0A0A0A] border-t border-slate-200 flex gap-2 items-center"
         >
           <input
             type="text"
@@ -288,7 +288,7 @@ export default function CitizenCopilot({
             onChange={(e) => setInputVal(e.target.value)}
             placeholder="Ask about neighborhood safety, road hazards, or your submitted tickets..."
             disabled={sending}
-            className="flex-1 bg-slate-50 text-xs text-slate-800 rounded-xl px-4 py-3 border border-slate-200 focus:outline-none focus:bg-white dark:bg-slate-800/60 focus:border-blue-500 transition-all placeholder:text-slate-400"
+            className="flex-1 bg-slate-50 text-xs text-slate-800 rounded-xl px-4 py-3 border border-slate-200 focus:outline-none focus:bg-white dark:bg-[#0A0A0A] focus:border-blue-500 transition-all placeholder:text-slate-400"
           />
           <button
             type="submit"

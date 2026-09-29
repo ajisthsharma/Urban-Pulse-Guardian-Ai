@@ -349,7 +349,7 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-slate-900 dark:to-slate-800 border border-[#DBEAFE] rounded-2xl p-5 md:p-6 text-slate-900 dark:text-white shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-[#0A0A0A] dark:to-black border border-[#DBEAFE] rounded-2xl p-5 md:p-6 text-slate-900 dark:text-white shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-[#DBEAFE] flex items-center justify-center text-slate-900 dark:text-white shrink-0 shadow-2xs">
             <Compass className="w-6 h-6" />
@@ -363,18 +363,18 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
                 Hazard-Aware Routing Engine
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-zinc-300 mt-0.5">
               Dynamically evaluates road surface degradation, active potholes, and lighting outages to calculate safer commuter corridors.
             </p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1.5">
-          <div className="flex items-center gap-2 text-xs font-mono bg-white dark:bg-slate-800/60 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+          <div className="flex items-center gap-2 text-xs font-mono bg-white dark:bg-[#0A0A0A] px-3.5 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-2xs">
             <Activity className="w-4 h-4 text-green-600 dark:text-green-400" />
-            <span className="text-slate-500 dark:text-slate-300">Status:</span>
+            <span className="text-slate-500 dark:text-zinc-300">Status:</span>
             <span className="text-green-600 dark:text-green-400 font-bold">{statusMsg}</span>
           </div>
-          <span className="text-[9px] text-slate-400 dark:text-slate-400 font-mono">
+          <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-mono">
             {activeReportsCount > 0 ? `${activeReportsCount} Live Hazards Tracked Globally` : "No active UrbanPulse hazards detected."}
           </span>
         </div>
@@ -382,13 +382,13 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">        
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 space-y-3 text-slate-900 dark:text-white shadow-xs">
+          <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl p-4 space-y-3 text-slate-900 dark:text-white shadow-xs">
             <div className="space-y-2">
-              <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#111111]/50 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10">
                 <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
                 <div className="w-full flex items-center gap-2">
                   <div className="flex-1">
-                    <span className="text-[9.5px] text-slate-500 dark:text-slate-300 uppercase font-mono block">Origin</span>
+                    <span className="text-[9.5px] text-slate-500 dark:text-zinc-300 uppercase font-mono block">Origin</span>
                     <input
                       type="text"
                       value={originStr}
@@ -400,17 +400,17 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
                   <button 
                     onClick={useCurrentLocation}
                     title="Use My Current Location"
-                    className="p-1.5 bg-white dark:bg-slate-800/60 hover:bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:text-white rounded-lg transition-colors cursor-pointer shadow-2xs"
+                    className="p-1.5 bg-white dark:bg-[#0A0A0A] hover:bg-slate-100 dark:bg-[#111111] border border-slate-200 dark:border-white/10 text-slate-500 dark:text-zinc-300 hover:text-slate-900 dark:text-white rounded-lg transition-colors cursor-pointer shadow-2xs"
                   >
                     <Compass className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#111111]/50 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10">
                 <Navigation className="w-4 h-4 text-slate-900 dark:text-white shrink-0" />
                 <div className="w-full">
-                  <span className="text-[9.5px] text-slate-500 dark:text-slate-300 uppercase font-mono block">Destination</span>
+                  <span className="text-[9.5px] text-slate-500 dark:text-zinc-300 uppercase font-mono block">Destination</span>
                   <input
                     type="text"
                     value={destinationStr}
@@ -423,13 +423,13 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
             </div>
 
             <div className="flex items-center justify-between pt-1">
-              <span className="text-[10px] text-slate-500 dark:text-slate-300 font-mono uppercase">Travel Mode:</span>
-              <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-800/50 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+              <span className="text-[10px] text-slate-500 dark:text-zinc-300 font-mono uppercase">Travel Mode:</span>
+              <div className="flex items-center gap-1 bg-slate-50 dark:bg-[#111111]/50 p-1 rounded-xl border border-slate-200 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setTravelMode("driving")}
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                    travelMode === "driving" ? "bg-[#2563EB] text-white shadow-2xs" : "text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:text-white"
+                    travelMode === "driving" ? "bg-[#2563EB] text-white shadow-2xs" : "text-slate-500 dark:text-zinc-300 hover:text-slate-900 dark:text-white"
                   }`}
                 >
                   <Car className="w-3.5 h-3.5" />
@@ -439,7 +439,7 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
                   type="button"
                   onClick={() => setTravelMode("cycling")}
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                    travelMode === "cycling" ? "bg-[#2563EB] text-white shadow-2xs" : "text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:text-white"
+                    travelMode === "cycling" ? "bg-[#2563EB] text-white shadow-2xs" : "text-slate-500 dark:text-zinc-300 hover:text-slate-900 dark:text-white"
                   }`}
                 >
                   <Bike className="w-3.5 h-3.5" />
@@ -449,7 +449,7 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
                   type="button"
                   onClick={() => setTravelMode("foot")}
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                    travelMode === "foot" ? "bg-[#2563EB] text-white shadow-2xs" : "text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:text-white"
+                    travelMode === "foot" ? "bg-[#2563EB] text-white shadow-2xs" : "text-slate-500 dark:text-zinc-300 hover:text-slate-900 dark:text-white"
                   }`}
                 >
                   <Footprints className="w-3.5 h-3.5" />
@@ -485,7 +485,7 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
                   className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                     isSelected
                       ? (isRecommended ? "bg-[#F0FDF4] border-[#16A34A] shadow-xs ring-2 ring-[#16A34A]/20" : "bg-blue-50 dark:bg-blue-900/20 border-[#2563EB] shadow-xs ring-2 ring-[#2563EB]/20")
-                      : "bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:border-slate-700 shadow-2xs"
+                      : "bg-white dark:bg-[#0A0A0A] border-slate-200 dark:border-white/10 hover:border-slate-300 dark:border-white/10 shadow-2xs"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -494,14 +494,14 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
                         <span className={`px-2 py-0.5 border rounded text-[9px] font-mono font-bold ${
                           isRecommended && isSelected ? "bg-green-100 dark:bg-green-900/30 text-[#15803D] border-green-200 dark:border-green-800" 
                           : isSelected ? "bg-[#DBEAFE] text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800" 
-                          : "bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-300 border-slate-200 dark:border-slate-700"
+                          : "bg-slate-50 dark:bg-[#111111]/50 text-slate-500 dark:text-zinc-300 border-slate-200 dark:border-white/10"
                         }`}>
                           {isRecommended ? "RECOMMENDED" : "ALTERNATIVE"}
                         </span>
-                        <h4 className={`text-xs font-bold ${isSelected ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400"}`}>{rt.name}</h4>
+                        <h4 className={`text-xs font-bold ${isSelected ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-zinc-400"}`}>{rt.name}</h4>
                       </div>
                       <div className="flex items-center gap-3 mt-2 text-xs font-mono">
-                        <span className={`font-bold ${isSelected ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400"}`}>{rt.durationMinutes} min</span>
+                        <span className={`font-bold ${isSelected ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-zinc-400"}`}>{rt.durationMinutes} min</span>
                         <span className="text-[#CBD5E1]">•</span>
                         <span className="text-slate-500">{rt.distanceKm} km</span>
                         <span className="text-slate-400">•</span>
@@ -535,7 +535,7 @@ export default function SafeRouteNav({ reports }: SafeRouteNavProps) {
           </div>
 
           {currentSelectedRoute && (
-            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-4 shadow-xs space-y-3">
+            <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-2xl p-4 shadow-xs space-y-3">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" />

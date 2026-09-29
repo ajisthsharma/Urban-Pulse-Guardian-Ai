@@ -32,7 +32,7 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
   const totalReportsCount = reports.length;
 
   return (
-    <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-6 shadow-sm text-left flex flex-col gap-6" id="digital-twin-workspace">
+    <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-2xl p-6 shadow-sm text-left flex flex-col gap-6" id="digital-twin-workspace">
       
       {/* Title & Info */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-2 border-b border-slate-100">
@@ -70,7 +70,7 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
         <div className="lg:col-span-8 bg-slate-50 border border-slate-200 rounded-2xl p-4.5 relative overflow-hidden flex flex-col items-center">
           
           {/* Layer HUD overlay details */}
-          <div className="absolute top-4 left-4 bg-white dark:bg-slate-800/60/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 p-2.5 px-4 rounded-xl shadow-3xs max-w-sm z-10 text-left">
+          <div className="absolute top-4 left-4 bg-white dark:bg-[#0A0A0A]/95 dark:bg-black/95 backdrop-blur-md border border-slate-200 p-2.5 px-4 rounded-xl shadow-3xs max-w-sm z-10 text-left">
             <span className="text-[9px] font-bold text-blue-600 uppercase tracking-wider block">ACTIVE SCHEMATIC DATASET</span>
             <span className="text-xs font-black text-slate-850 block mt-0.5">{layersInfo[activeLayer].title}</span>
             <span className="text-[10px] text-slate-550 block mt-0.5 leading-relaxed">{layersInfo[activeLayer].desc}</span>
@@ -87,7 +87,7 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
           <div className="w-full max-w-lg aspect-square sm:aspect-video relative my-4 flex items-center justify-center">
             
             <svg 
-              className="w-full h-full bg-white dark:bg-slate-800/60 border border-slate-200 rounded-xl shadow-inner cursor-crosshair select-none" 
+              className="w-full h-full bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-xl shadow-inner cursor-crosshair select-none" 
               viewBox="0 0 500 360"
             >
               <defs>
@@ -216,7 +216,7 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
                       x={w.cx} 
                       y={w.cy - 12} 
                       textAnchor="middle" 
-                      className="text-[8.5px] font-mono font-bold text-slate-850 bg-white dark:bg-slate-800/60/70 select-none"
+                      className="text-[8.5px] font-mono font-bold text-slate-850 bg-white dark:bg-[#0A0A0A]/70 select-none"
                     >
                       {w.name.split(" ")[0]}
                     </text>
@@ -229,7 +229,7 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
         </div>
 
         {/* Console control panel deck (Col-4) */}
-        <div className="lg:col-span-4 bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-5 flex flex-col gap-4 shadow-sm text-left">
+        <div className="lg:col-span-4 bg-white dark:bg-[#0A0A0A] border border-slate-200 rounded-2xl p-5 flex flex-col gap-4 shadow-sm text-left">
           
           {/* Layer switcher menu */}
           <div>
@@ -270,7 +270,7 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
                     <LayerIcon className={`w-4 h-4 shrink-0 ${isLayerActive ? "text-blue-600" : "text-slate-400"}`} />
                     <span className="text-xs tracking-medium font-sans">{info.title.replace(" Layer", "")}</span>
                   </div>
-                  <span className={`text-[8.5px] font-mono uppercase bg-white dark:bg-slate-800/60 border px-1.5 py-0.5 rounded ${
+                  <span className={`text-[8.5px] font-mono uppercase bg-white dark:bg-[#0A0A0A] border px-1.5 py-0.5 rounded ${
                     isLayerActive ? "border-blue-300 text-blue-600 font-extrabold" : "border-slate-200 text-slate-400"
                   }`}>
                     {isLayerActive ? "ACTIVE" : "SELECT"}
@@ -311,19 +311,19 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
                   REAL FIRESTORE INCIDENT METRICS
                 </span>
                 <div className="grid grid-cols-3 gap-1.5 text-center">
-                  <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-200/80">
+                  <div className="bg-white dark:bg-[#0A0A0A] p-2 rounded-lg border border-slate-200/80">
                     <span className="text-[8px] text-slate-400 uppercase font-bold block">Active</span>
                     <span className={`text-sm font-mono font-extrabold ${currentPointInfo.activeReports > 0 ? "text-red-600" : "text-emerald-600"}`}>
                       {currentPointInfo.activeReports}
                     </span>
                   </div>
-                  <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-200/80">
+                  <div className="bg-white dark:bg-[#0A0A0A] p-2 rounded-lg border border-slate-200/80">
                     <span className="text-[8px] text-slate-400 uppercase font-bold block">Critical</span>
                     <span className="text-sm font-mono font-extrabold text-amber-600">
                       {currentPointInfo.criticalHazards}
                     </span>
                   </div>
-                  <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-200/80">
+                  <div className="bg-white dark:bg-[#0A0A0A] p-2 rounded-lg border border-slate-200/80">
                     <span className="text-[8px] text-slate-400 uppercase font-bold block">Resolved</span>
                     <span className="text-sm font-mono font-extrabold text-emerald-600">
                       {currentPointInfo.resolvedReports}
@@ -338,11 +338,11 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
                   MUNICIPAL TELEMETRY SENSORS
                 </span>
                 <div className="grid grid-cols-2 gap-1.5 text-left">
-                  <div className="bg-white dark:bg-slate-800/60 border border-slate-200/60 p-2 rounded-lg">
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200/60 p-2 rounded-lg">
                     <span className="text-[8px] text-slate-400 uppercase block font-semibold">Streetlights</span>
                     <span className="text-xs font-mono font-bold text-blue-700">{currentPointInfo.simulatedTelemetry.lightsActive} Active</span>
                   </div>
-                  <div className="bg-white dark:bg-slate-800/60 border border-slate-200/60 p-2 rounded-lg">
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200/60 p-2 rounded-lg">
                     <span className="text-[8px] text-slate-400 uppercase block font-semibold">Sensor AQI</span>
                     <span className="text-xs font-mono font-bold text-slate-800">{currentPointInfo.simulatedTelemetry.aqi} AQI</span>
                   </div>
@@ -350,7 +350,7 @@ export default function SmartCityDigitalTwin({ reports }: SmartCityDigitalTwinPr
               </div>
 
               {currentPointInfo.totalReports === 0 && (
-                <div className="text-[9.5px] text-slate-500 leading-normal italic text-center p-1 bg-white dark:bg-slate-800/60/70 rounded border border-dashed border-slate-200">
+                <div className="text-[9.5px] text-slate-500 leading-normal italic text-center p-1 bg-white dark:bg-[#0A0A0A]/70 rounded border border-dashed border-slate-200">
                   No active complaints lodged for this sector yet. Live telemetry running on baseline standards.
                 </div>
               )}

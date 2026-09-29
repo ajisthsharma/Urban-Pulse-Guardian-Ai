@@ -115,7 +115,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
   ];
 
   return (
-    <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xs overflow-hidden flex flex-col h-[580px] transition-all">
+    <div className="bg-white dark:bg-[#0A0A0A] border border-slate-200 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col h-[580px] transition-all">
       {/* Thread Header */}
       <div className="bg-gradient-to-r from-[#F5F3FF] to-[#FFFFFF] border-b border-[#DDD6FE] text-slate-900 dark:text-white p-4.5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -131,12 +131,12 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
         </div>
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
-          <span className="text-[9.5px] font-mono text-slate-500 dark:text-slate-300 font-extrabold uppercase">Delhi Central Node</span>
+          <span className="text-[9.5px] font-mono text-slate-500 dark:text-zinc-300 font-extrabold uppercase">Delhi Central Node</span>
         </div>
       </div>
 
       {/* Messages scrolling stack */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-5 bg-slate-50 dark:bg-slate-800/50 flex flex-col gap-4">
+      <div className="flex-1 overflow-y-auto p-4 md:p-5 bg-slate-50 dark:bg-[#111111]/50 flex flex-col gap-4">
         {messages.map((m) => (
           <div
             key={m.id}
@@ -155,7 +155,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
             <div className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
               m.role === "user"
                 ? "bg-[#2563EB] text-white rounded-tr-xs shadow-xs"
-                : "bg-white dark:bg-slate-800/60 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-tl-xs shadow-2xs"
+                : "bg-white dark:bg-[#0A0A0A] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 rounded-tl-xs shadow-2xs"
             }`}>
               {/* Simple Markdown/Paragraph display */}
               <div className="space-y-2 whitespace-pre-wrap">
@@ -222,7 +222,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
             key={idx}
             disabled={sending}
             onClick={() => handleSend(p)}
-            className="text-[10px] font-semibold bg-white dark:bg-slate-800/60 hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 px-3 py-1 rounded-full text-left transition-colors cursor-pointer shadow-3xs disabled:opacity-50"
+            className="text-[10px] font-semibold bg-white dark:bg-[#0A0A0A] hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 px-3 py-1 rounded-full text-left transition-colors cursor-pointer shadow-3xs disabled:opacity-50"
           >
             {p}
           </button>
@@ -235,7 +235,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
           e.preventDefault();
           handleSend(inputVal);
         }}
-        className="p-3 bg-white dark:bg-slate-800/60 border-t border-slate-200 flex gap-2 items-center"
+        className="p-3 bg-white dark:bg-[#0A0A0A] border-t border-slate-200 flex gap-2 items-center"
       >
         <input
           type="text"
@@ -243,7 +243,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
           onChange={(e) => setInputVal(e.target.value)}
           placeholder="Ask Guardian AI anything about city hazards..."
           disabled={sending}
-          className="flex-1 bg-slate-50 text-xs text-slate-800 rounded-xl px-4 py-3 border border-slate-200 focus:outline-hidden focus:bg-white dark:bg-slate-800/60 focus:border-blue-500 transition-all placeholder-slate-400"
+          className="flex-1 bg-slate-50 text-xs text-slate-800 rounded-xl px-4 py-3 border border-slate-200 focus:outline-hidden focus:bg-white dark:bg-[#0A0A0A] focus:border-blue-500 transition-all placeholder-slate-400"
         />
         <button
           type="submit"
