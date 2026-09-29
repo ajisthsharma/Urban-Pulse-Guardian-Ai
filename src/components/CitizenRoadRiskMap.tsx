@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import L from "../utils/initLeaflet";
+import { createOsmTileLayer, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "../utils/mapConfig";
 import { Report } from "../types";
 import { MapPin, AlertCircle, Clock, Shield, Filter, Eye, ChevronRight } from "lucide-react";
 
@@ -54,19 +55,23 @@ export default function CitizenRoadRiskMap({
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     // Center on Delhi NCR by default or first report
-    const initialLat = reports[0]?.latitude || 28.6139;
-    const initialLng = reports[0]?.longitude || 77.2090;
+    const initialLat = reports[0]?.latitude || DEFAULT_MAP_CENTER[0];
+    const initialLng = reports[0]?.longitude || DEFAULT_MAP_CENTER[1];
 
     const map = L.map(mapContainerRef.current, {
       center: [initialLat, initialLng],
-      zoom: 12,
-      zoomControl: true
+      zoom: DEFAULT_MAP_ZOOM,
+      zoomControl: true,
+      attributionControl: true
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
-    }).addTo(map);
+    const osmLayer = createOsmTileLayer();
+    osmLayer.addTo(map);
+
+    // Invalidate map size so OSM tiles render cleanly
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
 
     const layerGroup = L.layerGroup().addTo(map);
     markersLayerRef.current = layerGroup;
