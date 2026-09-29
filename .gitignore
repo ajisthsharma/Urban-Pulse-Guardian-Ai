@@ -1,0 +1,21 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Scratch & patch scripts
+fix_*.ts
+patch_*.ts
+update_*.ts
+modify_*.ts
+hide_*.ts
+check_errors.cjs
+current_block.txt
+test_nominatim.js
+test_osrm.js
+risk_test.ts
+add_create_notif.ts
