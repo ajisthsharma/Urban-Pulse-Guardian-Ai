@@ -131,6 +131,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Sync auth state listener with onAuthStateChanged and authoritative profile
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log("[AUTH STATE CHANGED]", {
+        hasFirebaseUser: Boolean(firebaseUser),
+        uid: firebaseUser?.uid ?? null,
+        email: firebaseUser?.email ?? null
+      });
+
       try {
         if (firebaseUser) {
           setUser(firebaseUser);
@@ -210,6 +216,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } catch (err) {
         console.error("Auth state transition error:", err);
       } finally {
+        console.log("[AUTH DIAGNOSTIC]", {
+          hasCurrentUser: Boolean(auth.currentUser),
+          uid: auth.currentUser?.uid ?? null,
+          email: auth.currentUser?.email ?? null,
+          projectId: auth.app.options.projectId ?? null
+        });
         setLoading(false);
       }
     });
@@ -384,55 +396,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return newProfile;
     } catch (err: any) {
       console.warn("Firebase Email Signup error:", err?.code || err);
-      if (
-        err?.code === "auth/operation-not-allowed" ||
-        err?.code === "auth/configuration-not-found" ||
-        err?.message?.includes("operation-not-allowed") ||
-        err?.message?.includes("Provider is disabled")
-      ) {
-        const assignedRole = determineRole(cleanEmail, requestedRole);
-        const isFieldTeam = assignedRole === "field_team";
-        const isAdmin = assignedRole === "admin";
-        const isMunicipal = assignedRole === "municipal";
-        const uid = "user_" + cleanEmail.replace(/[^a-zA-Z0-9]/g, "_");
-        const displayName = fullName.trim() || (isAdmin ? "Administrator" : isFieldTeam ? "Supervisor Vikram Singh (Field Ops)" : (isMunicipal ? "Municipal Officer" : "Urban Citizen"));
-
-        const newProfile: UserProfile = {
-          uid,
-          email: cleanEmail,
-          name: displayName,
-          fullName: displayName,
-          role: assignedRole,
-          points: assignedRole === "citizen" ? 100 : 0,
-          badges: isAdmin ? ["System Governor"] : isFieldTeam ? ["Field Operations Crew"] : (assignedRole === "municipal" ? ["Command Officer"] : ["Registered Observer"]),
-          scansCount: 0,
-          reportsCount: 0,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-
-        if (isFieldTeam) {
-          newProfile.teamId = "RT-014";
-          newProfile.teamName = "Road Maintenance Team Alpha";
-          newProfile.teamLead = "Supervisor Vikram Singh";
-          newProfile.availability = "AVAILABLE";
-        }
-
-        try { await setUserProfile(newProfile); } catch {}
-
-        setUser({
-          uid,
-          email: cleanEmail,
-          displayName,
-          emailVerified: true,
-          isAnonymous: false
-        } as any);
-
-        setUserProfileState(newProfile);
-        localStorage.setItem("urbanpulse_active_profile", JSON.stringify(newProfile));
-        return newProfile;
-      }
-
       const formatted = formatAuthErrorMessage(err);
       setAuthError(formatted);
       throw new Error(formatted);

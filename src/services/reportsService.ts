@@ -184,11 +184,11 @@ export async function createReport(
   const currentAuthUser = auth.currentUser;
   if (!currentAuthUser) {
     console.warn(`[reportsService] Denied Firestore write: No authenticated Firebase user session. Path: reports/*`);
-    throw new Error("Please sign in again before sending Emergency SOS.");
+    throw new Error("Please sign in before submitting a report.");
   }
 
   const userId = currentAuthUser.uid;
-  const userEmail = currentAuthUser.email || currentUser?.email || "citizen@urbanpulse.ai";
+  const userEmail = currentAuthUser.email || "citizen@urbanpulse.ai";
 
   // 1. Validate mandatory fields
   if (!input.title || !input.title.trim()) {

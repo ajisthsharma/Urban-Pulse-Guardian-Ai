@@ -190,15 +190,31 @@ export async function uploadFieldEvidence(
 export async function uploadEvidenceImage(
   fileOrData: File | Blob | string,
   userId: string = "anonymous"
-): Promise<{ success: boolean; downloadUrl?: string; error?: string }> {
+): Promise<{ success: boolean; downloadUrl?: string; error?: string; isFallback?: boolean }> {
   try {
     const tempReportId = `REP-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
     const filename = fileOrData instanceof File ? fileOrData.name : "evidence.jpg";
     const downloadUrl = await uploadReportEvidence(userId, tempReportId, fileOrData, filename);
-    return { success: true, downloadUrl };
+    
+    const isRemoteUrl = typeof downloadUrl === "string" && 
+      (downloadUrl.startsWith("https://firebasestorage.googleapis.com") ||
+       downloadUrl.startsWith("https://storage.googleapis.com") ||
+       (downloadUrl.startsWith("https://") && !downloadUrl.startsWith("blob:")));
+
+    if (isRemoteUrl) {
+      return { success: true, downloadUrl, isFallback: false };
+    } else {
+      return { 
+        success: false, 
+        downloadUrl, 
+        isFallback: true, 
+        error: "Firebase Storage upload was unavailable; preserved local reference." 
+      };
+    }
   } catch (err: any) {
     console.warn("Evidence upload error:", err);
-    return { success: false, error: err?.message || "Upload failed" };
+    const fallbackUrl = typeof fileOrData === "string" ? fileOrData : undefined;
+    return { success: false, downloadUrl: fallbackUrl, isFallback: true, error: err?.message || "Upload failed" };
   }
 }
 

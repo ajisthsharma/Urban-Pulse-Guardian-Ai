@@ -5,6 +5,7 @@ import {
   FileImage, Trash2, Camera, X, Compass, Check, AlertTriangle, RefreshCw,
   Building2, Copy
 } from "lucide-react";
+import { auth } from "../lib/firebase";
 import { Report, ReportCategory } from "../types";
 import { useAuth } from "../context/AuthContext";
 import { validateEvidenceFile, uploadEvidenceImage } from "../services/storageService";
@@ -19,7 +20,7 @@ interface CitizenUploadProps {
   onViewReportDetails?: (report: Report) => void;
 }
 
-type WorkflowStep = "FORM" | "ANALYZING" | "REVIEW" | "IRRELEVANT" | "SUBMITTING" | "SUCCESS";
+type WorkflowStep = "FORM" | "ANALYZING" | "AI_UNAVAILABLE" | "REVIEW" | "IRRELEVANT" | "SUBMITTING" | "SUCCESS";
 
 const DEFAULT_DELHI_COORDS = { lat: 28.6139, lng: 77.2090 };
 
@@ -373,8 +374,15 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
   };
 
   // STEP: Trigger AI Analysis
-  const handleTriggerAnalysis = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleTriggerAnalysis = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    const currentAuthUser = auth.currentUser;
+    if (!currentAuthUser) {
+      setFormError("Please sign in before submitting a citizen report.");
+      return;
+    }
+
     if (!title.trim()) {
       setFormError("Please enter an issue title overview.");
       return;
@@ -444,42 +452,18 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
         }
       }
 
-      // If 429, error or validation failed
-      console.warn("[Diagnostics] AI_VALIDATION_UNAVAILABLE (Status:", response.status, ")");
+      // If response not ok or validation failed, show honest AI Analysis Unavailable state
+      console.warn("[Diagnostics] AI_VALIDATION_UNAVAILABLE (Status:", response?.status, ")");
       setDiagTrace(prev => ({ ...prev, aiStatus: "AI_UNAVAILABLE", lastEvent: "AI_VALIDATION_UNAVAILABLE" }));
-      
-      // Set honest AI_UNAVAILABLE analysis result
-      setAiAnalysis({
-        issueDetected: true,
-        issueType: category || "Pothole",
-        confidence: 0,
-        severity: 50,
-        priority: "Medium",
-        riskLevel: "Medium",
-        description: description ? `${description} (AI Validation Unavailable)` : `Report on ${title} (AI Validation Quota Limit)`,
-        recommendedActions: ["Manual inspection required by municipal officer"],
-        source: "AI_UNAVAILABLE" as any
-      });
-      setCurrentStep("REVIEW");
+      setAiAnalysis(null);
+      setCurrentStep("AI_UNAVAILABLE");
 
     } catch (err: any) {
       console.warn("[Diagnostics] AI_VALIDATION_UNAVAILABLE error:", err?.message || err);
       clearInterval(progressTimer);
       setDiagTrace(prev => ({ ...prev, aiStatus: "AI_UNAVAILABLE", lastEvent: "AI_VALIDATION_UNAVAILABLE" }));
-      
-      // Allow user to proceed to REVIEW with honest AI_UNAVAILABLE status!
-      setAiAnalysis({
-        issueDetected: true,
-        issueType: category || "Pothole",
-        confidence: 0,
-        severity: 50,
-        priority: "Medium",
-        riskLevel: "Medium",
-        description: description ? `${description} (AI Validation Unavailable)` : `Report on ${title} (AI Validation Quota/Timeout)`,
-        recommendedActions: ["Manual inspection required by municipal officer"],
-        source: "AI_UNAVAILABLE" as any
-      });
-      setCurrentStep("REVIEW");
+      setAiAnalysis(null);
+      setCurrentStep("AI_UNAVAILABLE");
     } finally {
       clearInterval(progressTimer);
       setAiProgress(null);
@@ -494,24 +478,24 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
     setIsSubmitting(true);
     setFormError(null);
 
-    console.log("[Diagnostics] SUBMISSION_STARTED");
+    // 0. AUTHENTICATION PRE-FLIGHT CHECK
+    const currentAuthUser = auth.currentUser;
+    if (!currentAuthUser) {
+      console.warn("[Diagnostics] SUBMISSION_BLOCKED: No active Firebase Auth session.");
+      setFormError("Please sign in before submitting a citizen report.");
+      setDiagTrace(prev => ({ ...prev, submissionStatus: "ERROR", lastEvent: "AUTH_REQUIRED" }));
+      submitLockRef.current = false;
+      setIsSubmitting(false);
+      setCurrentStep("FORM");
+      return;
+    }
+
+    console.log("[Diagnostics] SUBMISSION_STARTED for user UID:", currentAuthUser.uid);
     setDiagTrace(prev => ({
       ...prev,
       submissionStatus: "SUBMITTING",
       lastEvent: "SUBMISSION_STARTED"
     }));
-
-    const activeAnalysis = aiAnalysis || {
-      issueDetected: true,
-      issueType: category || "Other",
-      confidence: 0,
-      severity: 40,
-      priority: "Medium" as const,
-      riskLevel: "Low" as const,
-      description: description || `Report on ${title}`,
-      recommendedActions: ["Inspect reported hazard location"],
-      source: "AI_UNAVAILABLE" as const
-    };
 
     setCurrentStep("SUBMITTING");
     setSubmittingStatus("Preparing report evidence and coordinates...");
@@ -529,35 +513,35 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
       return;
     }
 
-    const currentUid = user?.uid || userProfile?.uid || "anonymous_uid";
     let finalEvidenceUrl = imagePreview;
 
     // 1. EVIDENCE CHECK & STORAGE UPLOAD
-    const hasRawFile = rawImageFile && rawImageFile.size > 0;
-    const hasPreviewData = imagePreview && imagePreview.length > 50;
+    const hasRawFile = Boolean(rawImageFile && rawImageFile.size > 0);
+    const hasPreviewData = Boolean(imagePreview && imagePreview.length > 50);
 
-    if (hasRawFile) {
+    if (hasRawFile || hasPreviewData) {
       console.log("[Diagnostics] STORAGE_UPLOAD_STARTED");
       setDiagTrace(prev => ({ ...prev, storageStatus: "PENDING", lastEvent: "STORAGE_UPLOAD_STARTED" }));
       setSubmittingStatus("Uploading evidence file to Firebase Storage...");
 
       try {
-        const uploadRes = await uploadEvidenceImage(rawImageFile, currentUid);
+        const payloadToUpload = hasRawFile ? rawImageFile! : imagePreview!;
+        const uploadRes = await uploadEvidenceImage(payloadToUpload, currentAuthUser.uid);
         if (uploadRes.success && uploadRes.downloadUrl) {
           finalEvidenceUrl = uploadRes.downloadUrl;
           console.log("[Diagnostics] STORAGE_UPLOAD_COMPLETED");
           setDiagTrace(prev => ({ ...prev, storageStatus: "SUCCESS", lastEvent: "STORAGE_UPLOAD_COMPLETED" }));
         } else {
-          console.warn("[Diagnostics] Storage upload response error, falling back to preview:", uploadRes.error);
+          console.warn("[Diagnostics] Storage upload did not return remote URL, using direct reference fallback:", uploadRes.error);
           setDiagTrace(prev => ({ ...prev, storageStatus: "ERROR", lastEvent: "STORAGE_UPLOAD_FALLBACK" }));
+          if (uploadRes.downloadUrl) {
+            finalEvidenceUrl = uploadRes.downloadUrl;
+          }
         }
       } catch (storageErr) {
-        console.warn("[Diagnostics] Firebase Storage upload error/timeout (falling back):", storageErr);
+        console.warn("[Diagnostics] Firebase Storage upload threw error (falling back to direct preview):", storageErr);
         setDiagTrace(prev => ({ ...prev, storageStatus: "ERROR", lastEvent: "STORAGE_UPLOAD_TIMEOUT" }));
       }
-    } else if (hasPreviewData) {
-      console.log("[Diagnostics] STORAGE_UPLOAD_COMPLETED (Direct Data URL / String)");
-      setDiagTrace(prev => ({ ...prev, storageStatus: "SUCCESS", lastEvent: "STORAGE_UPLOAD_COMPLETED" }));
     } else {
       console.log("[Diagnostics] STORAGE_UPLOAD_SKIPPED (No evidence attached)");
       setDiagTrace(prev => ({ ...prev, storageStatus: "SKIPPED", lastEvent: "STORAGE_UPLOAD_SKIPPED" }));
@@ -568,36 +552,38 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
     setDiagTrace(prev => ({ ...prev, firestoreStatus: "PENDING", lastEvent: "FIRESTORE_WRITE_STARTED" }));
     setSubmittingStatus("Writing report record to canonical Firestore database...");
 
+    const isAiVerified = Boolean(aiAnalysis && aiAnalysis.source === "AI_GEMINI");
+
     const reportPayload = {
       title: title.trim(),
       description: description.trim() || `Report on ${title}`,
-      category: (activeAnalysis.issueType || category || "Pothole") as ReportCategory,
-      issueType: activeAnalysis.issueType || category || "Pothole",
-      severity: activeAnalysis.severity,
-      riskLevel: activeAnalysis.riskLevel,
-      priority: activeAnalysis.priority,
-      confidence: activeAnalysis.confidence,
+      category: ((isAiVerified ? aiAnalysis!.issueType : category) || "Pothole") as ReportCategory,
+      issueType: (isAiVerified ? aiAnalysis!.issueType : category) || "Pothole",
+      severity: isAiVerified ? aiAnalysis!.severity : 50,
+      riskLevel: (isAiVerified ? aiAnalysis!.riskLevel : "Medium") as any,
+      priority: (isAiVerified ? aiAnalysis!.priority : "Medium") as any,
+      confidence: isAiVerified ? aiAnalysis!.confidence : 0,
       location: location.trim() || "Delhi NCR Jurisdiction",
       latitude: targetLat,
       longitude: targetLng,
       image: finalEvidenceUrl,
       evidenceUrl: finalEvidenceUrl,
       source: "MANUAL_REPORT" as const,
-      aiAnalysis: (activeAnalysis.source as string) === "AI_UNAVAILABLE" ? null : {
-        category: activeAnalysis.issueType,
-        severityScore: activeAnalysis.severity,
-        riskLevel: activeAnalysis.riskLevel,
-        confidence: activeAnalysis.confidence,
-        description: activeAnalysis.description,
-        recommendedActions: activeAnalysis.recommendedActions
-      }
+      aiAnalysis: isAiVerified ? {
+        category: aiAnalysis!.issueType,
+        severityScore: aiAnalysis!.severity,
+        riskLevel: aiAnalysis!.riskLevel,
+        confidence: aiAnalysis!.confidence,
+        description: aiAnalysis!.description,
+        recommendedActions: aiAnalysis!.recommendedActions
+      } : null
     };
 
     try {
       const created = await withTimeout(
-        createFirestoreReport(reportPayload, userProfile || {
-          uid: currentUid,
-          email: user?.email || currentUserEmail,
+        createFirestoreReport(reportPayload, {
+          uid: currentAuthUser.uid,
+          email: currentAuthUser.email || currentUserEmail,
           name: userProfile?.name || "Citizen Reporter"
         }),
         12000,
@@ -653,7 +639,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
         body: JSON.stringify({
           ...reportPayload,
           id: actualReportId,
-          reporterEmail: user?.email || userProfile?.email || currentUserEmail
+          reporterEmail: currentAuthUser.email || currentUserEmail
         })
       }).catch(e => console.warn("Backend report sync note:", e));
 
@@ -661,7 +647,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
       console.error("[Diagnostics] FIRESTORE_WRITE_FAILED:", createErr);
       setDiagTrace(prev => ({ ...prev, submissionStatus: "ERROR", firestoreStatus: "ERROR", lastEvent: "FIRESTORE_WRITE_FAILED" }));
       setCurrentStep("REVIEW");
-      setFormError("Report could not be saved to database. Please retry.");
+      setFormError(createErr?.message || "Report could not be saved to database. Please retry.");
     } finally {
       submitLockRef.current = false;
       setIsSubmitting(false);
@@ -694,34 +680,95 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
     return img || "";
   };
 
+  // Diagnostic panel component
+  const renderDiagnosticsPanel = () => (
+    <div className="mt-4 p-3 bg-slate-900 text-slate-200 rounded-xl border border-slate-800 text-xs font-mono space-y-2">
+      <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
+        <span className="font-bold text-blue-400 flex items-center gap-1 text-[11px]">
+          <Activity className="w-3.5 h-3.5 text-blue-400" />
+          DEVELOPMENT DIAGNOSTICS TRACE
+        </span>
+        <span className="text-[10px] text-slate-400">Event: {diagTrace.lastEvent}</span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[10px]">
+        <div className="bg-slate-800/80 p-1.5 rounded">
+          <span className="text-slate-400 block text-[9px]">SUBMISSION</span>
+          <span className={`font-bold ${
+            diagTrace.submissionStatus === "SUCCESS" ? "text-emerald-400" :
+            diagTrace.submissionStatus === "SUBMITTING" ? "text-amber-400 animate-pulse" :
+            diagTrace.submissionStatus === "ERROR" ? "text-rose-400" : "text-slate-300"
+          }`}>{diagTrace.submissionStatus}</span>
+        </div>
+        <div className="bg-slate-800/80 p-1.5 rounded">
+          <span className="text-slate-400 block text-[9px]">AI VALIDATION</span>
+          <span className={`font-bold ${
+            diagTrace.aiStatus === "SUCCESS" ? "text-emerald-400" :
+            diagTrace.aiStatus === "NO_HAZARD" ? "text-amber-400" :
+            diagTrace.aiStatus === "AI_UNAVAILABLE" ? "text-orange-400" : "text-slate-300"
+          }`}>{diagTrace.aiStatus}</span>
+        </div>
+        <div className="bg-slate-800/80 p-1.5 rounded">
+          <span className="text-slate-400 block text-[9px]">STORAGE</span>
+          <span className={`font-bold ${
+            diagTrace.storageStatus === "SUCCESS" ? "text-emerald-400" :
+            diagTrace.storageStatus === "PENDING" ? "text-amber-400 animate-pulse" :
+            diagTrace.storageStatus === "SKIPPED" ? "text-blue-400" : "text-rose-400"
+          }`}>{diagTrace.storageStatus}</span>
+        </div>
+        <div className="bg-slate-800/80 p-1.5 rounded">
+          <span className="text-slate-400 block text-[9px]">FIRESTORE</span>
+          <span className={`font-bold ${
+            diagTrace.firestoreStatus === "SUCCESS" ? "text-emerald-400" :
+            diagTrace.firestoreStatus === "PENDING" ? "text-amber-400 animate-pulse" :
+            diagTrace.firestoreStatus === "ERROR" ? "text-rose-400" : "text-slate-300"
+          }`}>{diagTrace.firestoreStatus}</span>
+        </div>
+        <div className="bg-slate-800/80 p-1.5 rounded">
+          <span className="text-slate-400 block text-[9px]">NOTIFICATION</span>
+          <span className={`font-bold ${
+            diagTrace.notificationStatus === "SUCCESS" ? "text-emerald-400" :
+            diagTrace.notificationStatus === "PENDING" ? "text-amber-400 animate-pulse" :
+            diagTrace.notificationStatus === "ERROR" ? "text-rose-400" : "text-slate-300"
+          }`}>{diagTrace.notificationStatus}</span>
+        </div>
+      </div>
+      {diagTrace.reportId && (
+        <div className="text-[10px] text-emerald-400 border-t border-slate-800/60 pt-1 flex justify-between font-mono">
+          <span>REPORT DOCUMENT ID:</span>
+          <span className="font-bold">{diagTrace.reportId}</span>
+        </div>
+      )}
+    </div>
+  );
+
   // ----------------------------------------------------
   // STEP: IRRELEVANT IMAGE REJECTION VIEW
   // ----------------------------------------------------
   if (currentStep === "IRRELEVANT") {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-amber-200 shadow-md rounded-2xl p-6 text-left space-y-4">
-        <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-xl border border-amber-250">
-          <AlertTriangle className="w-6 h-6 text-amber-600 shrink-0" />
+      <div className="bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 shadow-md rounded-2xl p-6 text-left space-y-4">
+        <div className="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-250 dark:border-amber-800">
+          <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0" />
           <div>
-            <h4 className="text-sm font-bold uppercase tracking-wider text-amber-900">No Valid Urban Infrastructure Hazard Detected</h4>
-            <p className="text-xs text-amber-700 mt-0.5">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200">No Valid Urban Infrastructure Hazard Detected</h4>
+            <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
               The AI analysis engine inspected the attached photo and did not identify a qualifying road, sanitation, lighting, or municipal issue.
             </p>
           </div>
         </div>
 
         {imagePreview && (
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Evaluated Asset</span>
-            <div className="relative aspect-video max-h-48 rounded-lg overflow-hidden border border-slate-300">
+            <div className="relative aspect-video max-h-48 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-600">
               <img src={getDisplayImage(imagePreview)} alt="Evaluated" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
           </div>
         )}
 
-        <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-xs leading-relaxed space-y-1">
-          <p className="font-semibold text-slate-800">Guidelines for Accepted Photos:</p>
-          <ul className="list-disc pl-4 text-slate-600 text-[11px] space-y-0.5">
+        <div className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-300 text-xs leading-relaxed space-y-1">
+          <p className="font-semibold text-slate-800 dark:text-white">Guidelines for Accepted Photos:</p>
+          <ul className="list-disc pl-4 text-slate-600 dark:text-slate-300 text-[11px] space-y-0.5">
             <li>Road surface damage (potholes, severe asphalt cracks, cave-ins)</li>
             <li>Overflowing public municipal trash bins or illegal dumping</li>
             <li>Broken, dark, or leaning public streetlights</li>
@@ -733,17 +780,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
           <button
             type="button"
             onClick={() => {
-              setAiAnalysis({
-                issueDetected: true,
-                issueType: category || "Other",
-                confidence: 0,
-                severity: 40,
-                priority: "Low",
-                riskLevel: "Low",
-                description: description || `Citizen-reported issue at ${location || "Delhi NCR"}. (Manual review requested).`,
-                recommendedActions: ["Field inspector evaluation requested"],
-                source: "MANUAL_USER" as any
-              });
+              setAiAnalysis(null);
               setCurrentStep("REVIEW");
             }}
             className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-3 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
@@ -766,11 +803,96 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
           <button
             type="button"
             onClick={() => setCurrentStep("FORM")}
-            className="px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl border border-slate-200 transition-all text-xs cursor-pointer"
+            className="px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 transition-all text-xs cursor-pointer"
           >
             Back to Form
           </button>
         </div>
+
+        {renderDiagnosticsPanel()}
+      </div>
+    );
+  }
+
+  // ----------------------------------------------------
+  // STEP: AI ANALYSIS UNAVAILABLE VIEW
+  // ----------------------------------------------------
+  if (currentStep === "AI_UNAVAILABLE") {
+    return (
+      <div className="bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800/60 shadow-md rounded-2xl p-6 text-left space-y-4 animate-fadeIn">
+        <div className="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800">
+          <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0" />
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200">
+              AI Analysis Unavailable
+            </h4>
+            <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
+              The automated Gemini AI vision evaluation endpoint is currently unavailable. No automated risk analysis could be performed.
+            </p>
+          </div>
+        </div>
+
+        {imagePreview && (
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Attached Evidence</span>
+            <div className="relative aspect-video max-h-48 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-600">
+              <img src={getDisplayImage(imagePreview)} alt="Evidence" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            </div>
+          </div>
+        )}
+
+        <div className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-300 text-xs space-y-1">
+          <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-700">
+            <span className="text-slate-500 dark:text-slate-400">Issue Title:</span>
+            <span className="font-semibold text-slate-800 dark:text-white">{title}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-700">
+            <span className="text-slate-500 dark:text-slate-400">Category:</span>
+            <span className="font-semibold text-slate-800 dark:text-white">{category}</span>
+          </div>
+          <div className="flex justify-between py-1">
+            <span className="text-slate-500 dark:text-slate-400">Location:</span>
+            <span className="font-semibold text-slate-800 dark:text-white">{location}</span>
+          </div>
+        </div>
+
+        <div className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+          <p>
+            You may choose to <strong>proceed with manual submission</strong>. Your report will be logged directly into the central municipal incident queue for direct human officer triage.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2 pt-2">
+          <button
+            type="button"
+            id="proceed-manual-submission-btn"
+            onClick={() => {
+              setAiAnalysis(null);
+              setCurrentStep("REVIEW");
+            }}
+            className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-3 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+          >
+            <Check className="w-4 h-4" />
+            <span>Proceed with Manual Submission</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleTriggerAnalysis()}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-3 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Retry AI Analysis</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentStep("FORM")}
+            className="px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 transition-all text-xs cursor-pointer"
+          >
+            Back to Form
+          </button>
+        </div>
+
+        {renderDiagnosticsPanel()}
       </div>
     );
   }
@@ -778,28 +900,47 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
   // ----------------------------------------------------
   // STEP: CITIZEN REVIEW VIEW
   // ----------------------------------------------------
-  if (currentStep === "REVIEW" && aiAnalysis) {
+  if (currentStep === "REVIEW") {
+    const isAiEvaluated = Boolean(aiAnalysis && aiAnalysis.source === "AI_GEMINI");
+    const displayCategory = isAiEvaluated ? aiAnalysis!.issueType : category;
+    const displaySeverity = isAiEvaluated ? aiAnalysis!.severity : 50;
+    const displayPriority = isAiEvaluated ? aiAnalysis!.priority : "Medium";
+    const displayConfidence = isAiEvaluated ? `${aiAnalysis!.confidence}%` : "0% (Manual / Unverified)";
+    const displayDescription = isAiEvaluated 
+      ? aiAnalysis!.description 
+      : (description || `Citizen-reported incident at ${location}. Evaluated under manual municipal intake.`);
+
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 shadow-md rounded-2xl p-6 text-left space-y-4 animate-fadeIn">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl p-6 text-left space-y-4 animate-fadeIn">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-blue-600 animate-pulse" />
+            {isAiEvaluated ? (
+              <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-pulse" />
+            ) : (
+              <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            )}
             <div>
-              <h4 className="text-sm font-bold text-slate-800">Citizen Review & AI Diagnostics</h4>
-              <p className="text-[11px] text-slate-500">Review the AI structural evaluation before submitting to the municipal command grid.</p>
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white">
+                {isAiEvaluated ? "Citizen Review & AI Diagnostics" : "Manual Incident Verification Review"}
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                {isAiEvaluated 
+                  ? "Review the AI structural evaluation before submitting to the municipal command grid."
+                  : "AI analysis was unavailable. Review your incident details before logging to the municipal queue."}
+              </p>
             </div>
           </div>
           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${
-            aiAnalysis.source === "AI_GEMINI" 
-              ? "bg-blue-50 text-blue-700 border-blue-200" 
-              : "bg-amber-50 text-amber-700 border-amber-200"
+            isAiEvaluated 
+              ? "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800" 
+              : "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800"
           }`}>
-            {aiAnalysis.source === "AI_GEMINI" ? "✨ Gemini Verified" : "⚠️ Manual Citizen Report"}
+            {isAiEvaluated ? "✨ Gemini Verified" : "⚠️ Manual Citizen Report"}
           </span>
         </div>
 
         {formError && (
-          <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-900 flex items-start gap-2.5 text-xs">
+          <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl text-rose-900 dark:text-rose-300 flex items-start gap-2.5 text-xs">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
             <span>{formError}</span>
           </div>
@@ -807,14 +948,14 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Photo Preview */}
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col justify-between">
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Evidence Asset</span>
-            <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-300 shadow-xs mb-2">
+            <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-300 dark:border-slate-600 shadow-xs mb-2">
               <img src={getDisplayImage(imagePreview)} alt="Evidence" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
-            <div className="text-[11px] text-slate-600 space-y-0.5">
-              <div className="font-semibold text-slate-800 truncate">{title}</div>
-              <div className="text-slate-500 flex items-center gap-1 text-[10px]">
+            <div className="text-[11px] text-slate-600 dark:text-slate-300 space-y-0.5">
+              <div className="font-semibold text-slate-800 dark:text-white truncate">{title}</div>
+              <div className="text-slate-500 dark:text-slate-400 flex items-center gap-1 text-[10px]">
                 <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                 <span className="truncate">{location}</span>
               </div>
@@ -822,37 +963,42 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
           </div>
 
           {/* AI Scorecard */}
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">AI Evaluation Attributes</span>
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+              {isAiEvaluated ? "AI Evaluation Attributes" : "Report Assessment Attributes"}
+            </span>
             
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-150">
+              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase">Issue Category</span>
-                <span className="font-bold text-slate-900 block mt-0.5">{aiAnalysis.issueType}</span>
+                <span className="font-bold text-slate-900 dark:text-white block mt-0.5">{displayCategory}</span>
               </div>
-              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-150">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">Severity Score</span>
-                <span className="font-bold text-rose-600 block mt-0.5">{aiAnalysis.severity}%</span>
+              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                <span className="text-[9px] text-slate-400 font-bold block uppercase">
+                  {isAiEvaluated ? "Severity Score" : "Estimated Severity"}
+                </span>
+                <span className="font-bold text-rose-600 dark:text-rose-400 block mt-0.5">{displaySeverity}%</span>
               </div>
-              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-150">
+              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase">Priority Level</span>
-                <span className={`font-bold block mt-0.5 ${
-                  aiAnalysis.priority === "Critical" ? "text-rose-700" :
-                  aiAnalysis.priority === "High" ? "text-amber-700" : "text-slate-700"
-                }`}>
-                  {aiAnalysis.priority} Action
+                <span className="font-bold text-amber-700 dark:text-amber-400 block mt-0.5">
+                  {displayPriority} Action
                 </span>
               </div>
-              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-150">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">Confidence</span>
-                <span className="font-bold text-emerald-700 block mt-0.5">{aiAnalysis.confidence}%</span>
+              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                <span className="text-[9px] text-slate-400 font-bold block uppercase">AI Confidence</span>
+                <span className={`font-bold block mt-0.5 ${isAiEvaluated ? "text-emerald-700 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400"}`}>
+                  {displayConfidence}
+                </span>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-150 text-xs">
-              <span className="text-[9px] text-slate-400 font-bold block uppercase">AI Assessment</span>
-              <p className="text-[11px] text-slate-600 italic mt-0.5 leading-relaxed">
-                "{aiAnalysis.description}"
+            <div className="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
+              <span className="text-[9px] text-slate-400 font-bold block uppercase">
+                {isAiEvaluated ? "AI Assessment" : "Submission Note"}
+              </span>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 italic mt-0.5 leading-relaxed">
+                "{displayDescription}"
               </p>
             </div>
           </div>
@@ -884,7 +1030,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
             type="button"
             disabled={isSubmitting}
             onClick={() => setCurrentStep("FORM")}
-            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-200 transition-all text-xs cursor-pointer disabled:opacity-50"
+            className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 transition-all text-xs cursor-pointer disabled:opacity-50"
           >
             Edit Details
           </button>
@@ -893,70 +1039,13 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
             type="button"
             disabled={isSubmitting}
             onClick={handleReset}
-            className="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-2.5 px-4 rounded-xl border border-rose-100 transition-all text-xs cursor-pointer disabled:opacity-50"
+            className="bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 font-bold py-2.5 px-4 rounded-xl border border-rose-100 dark:border-rose-900 transition-all text-xs cursor-pointer disabled:opacity-50"
           >
             Cancel
           </button>
         </div>
 
-        {/* Development Diagnostics Panel */}
-        <div className="mt-4 p-3 bg-slate-900 text-slate-200 rounded-xl border border-slate-800 text-xs font-mono space-y-2">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
-            <span className="font-bold text-blue-400 flex items-center gap-1 text-[11px]">
-              <Activity className="w-3.5 h-3.5 text-blue-400" />
-              DEVELOPMENT DIAGNOSTICS TRACE
-            </span>
-            <span className="text-[10px] text-slate-400">Event: {diagTrace.lastEvent}</span>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[10px]">
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">SUBMISSION</span>
-              <span className={`font-bold ${
-                diagTrace.submissionStatus === "SUCCESS" ? "text-emerald-400" :
-                diagTrace.submissionStatus === "SUBMITTING" ? "text-amber-400 animate-pulse" :
-                diagTrace.submissionStatus === "ERROR" ? "text-rose-400" : "text-slate-300"
-              }`}>{diagTrace.submissionStatus}</span>
-            </div>
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">AI VALIDATION</span>
-              <span className={`font-bold ${
-                diagTrace.aiStatus === "SUCCESS" ? "text-emerald-400" :
-                diagTrace.aiStatus === "NO_HAZARD" ? "text-amber-400" :
-                diagTrace.aiStatus === "AI_UNAVAILABLE" ? "text-orange-400" : "text-slate-300"
-              }`}>{diagTrace.aiStatus}</span>
-            </div>
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">STORAGE</span>
-              <span className={`font-bold ${
-                diagTrace.storageStatus === "SUCCESS" ? "text-emerald-400" :
-                diagTrace.storageStatus === "PENDING" ? "text-amber-400 animate-pulse" :
-                diagTrace.storageStatus === "SKIPPED" ? "text-blue-400" : "text-rose-400"
-              }`}>{diagTrace.storageStatus}</span>
-            </div>
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">FIRESTORE</span>
-              <span className={`font-bold ${
-                diagTrace.firestoreStatus === "SUCCESS" ? "text-emerald-400" :
-                diagTrace.firestoreStatus === "PENDING" ? "text-amber-400 animate-pulse" :
-                diagTrace.firestoreStatus === "ERROR" ? "text-rose-400" : "text-slate-300"
-              }`}>{diagTrace.firestoreStatus}</span>
-            </div>
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">NOTIFICATION</span>
-              <span className={`font-bold ${
-                diagTrace.notificationStatus === "SUCCESS" ? "text-emerald-400" :
-                diagTrace.notificationStatus === "PENDING" ? "text-amber-400 animate-pulse" :
-                diagTrace.notificationStatus === "ERROR" ? "text-rose-400" : "text-slate-300"
-              }`}>{diagTrace.notificationStatus}</span>
-            </div>
-          </div>
-          {diagTrace.reportId && (
-            <div className="text-[10px] text-emerald-400 border-t border-slate-800/60 pt-1 flex justify-between font-mono">
-              <span>REPORT DOCUMENT ID:</span>
-              <span className="font-bold">{diagTrace.reportId}</span>
-            </div>
-          )}
-        </div>
+        {renderDiagnosticsPanel()}
       </div>
     );
   }
@@ -1121,54 +1210,8 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
           </button>
         </div>
 
-        {/* Development Diagnostics Panel */}
-        <div className="mt-4 p-3 bg-slate-900 text-slate-200 rounded-xl border border-slate-800 text-xs font-mono space-y-2">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
-            <span className="font-bold text-blue-400 flex items-center gap-1 text-[11px]">
-              <Activity className="w-3.5 h-3.5 text-blue-400" />
-              DEVELOPMENT DIAGNOSTICS TRACE
-            </span>
-            <span className="text-[10px] text-slate-400">Event: {diagTrace.lastEvent}</span>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[10px]">
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">SUBMISSION</span>
-              <span className="font-bold text-emerald-400">SUCCESS</span>
-            </div>
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">AI VALIDATION</span>
-              <span className={`font-bold ${
-                diagTrace.aiStatus === "SUCCESS" ? "text-emerald-400" :
-                diagTrace.aiStatus === "NO_HAZARD" ? "text-amber-400" :
-                diagTrace.aiStatus === "AI_UNAVAILABLE" ? "text-orange-400" : "text-slate-300"
-              }`}>{diagTrace.aiStatus}</span>
-            </div>
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">STORAGE</span>
-              <span className={`font-bold ${
-                diagTrace.storageStatus === "SUCCESS" ? "text-emerald-400" :
-                diagTrace.storageStatus === "SKIPPED" ? "text-blue-400" : "text-rose-400"
-              }`}>{diagTrace.storageStatus}</span>
-            </div>
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">FIRESTORE</span>
-              <span className="font-bold text-emerald-400">SUCCESS</span>
-            </div>
-            <div className="bg-slate-800/80 p-1.5 rounded">
-              <span className="text-slate-400 block text-[9px]">NOTIFICATION</span>
-              <span className={`font-bold ${
-                diagTrace.notificationStatus === "SUCCESS" ? "text-emerald-400" :
-                diagTrace.notificationStatus === "PENDING" ? "text-amber-400 animate-pulse" : "text-slate-300"
-              }`}>{diagTrace.notificationStatus}</span>
-            </div>
-          </div>
-          {diagTrace.reportId && (
-            <div className="text-[10px] text-emerald-400 border-t border-slate-800/60 pt-1 flex justify-between font-mono">
-              <span>REPORT DOCUMENT ID:</span>
-              <span className="font-bold">{diagTrace.reportId}</span>
-            </div>
-          )}
-        </div>
+        {/* Diagnostics Panel */}
+        {renderDiagnosticsPanel()}
       </div>
     );
   }
@@ -1213,7 +1256,14 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
         </div>
       </div>
 
-      
+      {!auth.currentUser && (
+        <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-900 dark:text-amber-200 flex items-start gap-2.5 text-xs">
+          <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div>
+            <strong className="font-semibold">Sign-in Required:</strong> You must be signed in with your Firebase citizen account before you can submit infrastructure reports. Reports without verified authentication will not be accepted.
+          </div>
+        </div>
+      )}
 
       {/* Primary Ingestion Form */}
       <form onSubmit={handleTriggerAnalysis} className="flex flex-col gap-4 text-xs text-slate-700 text-left">

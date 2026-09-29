@@ -1143,15 +1143,27 @@ Respond ONLY with valid JSON matching:
 
         const isDetected = Boolean(parsed.issueDetected);
 
+        const rawConf = Number(parsed.confidence);
+        const rawSev = Number(parsed.severity ?? parsed.severityScore);
+
+        if (isDetected && (isNaN(rawConf) || isNaN(rawSev))) {
+          console.warn("[Gemini AI] Model response missing numerical confidence or severity metrics.");
+          return res.status(502).json({
+            status: "unavailable",
+            error: "Incomplete AI analysis",
+            message: "AI analysis output did not include required hazard metrics."
+          });
+        }
+
         return res.json({
           status: "success",
           analysis: {
             issueDetected: isDetected,
             issueType: isDetected ? (parsed.issueType || parsed.category || category || "Other") : "Other",
-            confidence: Number(parsed.confidence) || 80,
-            severity: isDetected ? (Number(parsed.severity ?? parsed.severityScore) || 50) : 0,
-            priority: isDetected ? (parsed.priority || (Number(parsed.severity) >= 75 ? "High" : "Medium")) : "Low",
-            riskLevel: isDetected ? (parsed.riskLevel || (Number(parsed.severity) >= 75 ? "High" : "Medium")) : "Low",
+            confidence: isDetected ? Math.max(0, Math.min(100, Math.round(rawConf))) : 0,
+            severity: isDetected ? Math.max(0, Math.min(100, Math.round(rawSev))) : 0,
+            priority: isDetected ? (parsed.priority || (rawSev >= 75 ? "High" : "Medium")) : "Low",
+            riskLevel: isDetected ? (parsed.riskLevel || (rawSev >= 75 ? "High" : "Medium")) : "Low",
             description: parsed.description || (isDetected ? "Identified urban infrastructure hazard." : "No valid urban infrastructure hazard detected in image."),
             recommendedActions: isDetected && Array.isArray(parsed.recommendedActions) ? parsed.recommendedActions : [],
             reasoning: parsed.reasoning || (isDetected ? "Visual hazard detected by Gemini Vision." : "Visual inspection confirmed no road hazard present."),

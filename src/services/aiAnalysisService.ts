@@ -39,17 +39,25 @@ export function validateAIAnalysisOutput(data: any): { valid: boolean; result?: 
     issueType = "Other";
   }
 
-  let confidence = Number(data.confidence);
-  if (isNaN(confidence) || !isFinite(confidence)) {
-    confidence = issueDetected ? 70 : 0;
-  }
-  confidence = Math.max(0, Math.min(100, Math.round(confidence)));
+  const rawConf = data.confidence;
+  const rawSev = data.severity ?? data.severityScore;
 
-  let severity = Number(data.severity ?? data.severityScore);
-  if (isNaN(severity) || !isFinite(severity)) {
-    severity = issueDetected ? 50 : 0;
+  if (issueDetected) {
+    if (rawConf === undefined || rawConf === null || isNaN(Number(rawConf))) {
+      return { valid: false, error: "AI response is missing required numerical confidence score." };
+    }
+    if (rawSev === undefined || rawSev === null || isNaN(Number(rawSev))) {
+      return { valid: false, error: "AI response is missing required numerical severity score." };
+    }
   }
-  severity = Math.max(0, Math.min(100, Math.round(severity)));
+
+  const confidence = issueDetected 
+    ? Math.max(0, Math.min(100, Math.round(Number(rawConf))))
+    : 0;
+
+  const severity = issueDetected 
+    ? Math.max(0, Math.min(100, Math.round(Number(rawSev))))
+    : 0;
 
   let riskLevel: "Low" | "Medium" | "High" = "Low";
   if (issueDetected) {
