@@ -160,7 +160,8 @@ export default function App() {
     } else if (currentUser.role === "citizen") {
       const forbiddenForCitizen = [
         "field-operations", "command-center", "municipal-home", "dispatch-management", "admin-panel", 
-        "admin-users", "admin-teams", "admin-system", "admin-audit", "admin-settings", "audit-logs"
+        "admin-users", "admin-teams", "admin-system", "admin-audit", "admin-settings", "audit-logs",
+        "rewards", "copilot"
       ];
       if (forbiddenForCitizen.includes(activeSubTab)) {
         setActiveSubTab("citizen-home");
@@ -481,18 +482,6 @@ export default function App() {
         ...(activeScanSession && activeScanSession.candidates.length > 0 ? [{ id: "candidate-review", label: `Review Scans (${activeScanSession.candidates.length})`, desc: "Review & submit", icon: ShieldCheck }] : []),
         { id: "safe-route", label: "Safe Route", desc: "Hazard-free navigation", icon: Navigation },
         { id: "emergency-sos", label: "Emergency SOS", desc: "Critical infrastructure beacon", icon: AlertTriangle },
-      ]
-    },
-    {
-      title: "MY ACTIVITY",
-      items: [
-        { id: "rewards", label: "Rewards / My Activity", desc: `${userCivicPoints} Civic Points`, icon: Award },
-      ]
-    },
-    {
-      title: "AI",
-      items: [
-        { id: "copilot", label: "Citizen Copilot", desc: "AI Safety Advisor", icon: Sparkles },
       ]
     }
   ];
@@ -1230,7 +1219,7 @@ export default function App() {
                     setUserCivicPoints((pts) => pts + awardedPoints);
                     setActiveScanSession(null);
                     syncOperationalDatasets(currentUser.email, currentUser.role);
-                    setActiveSubTab("rewards");
+                    setActiveSubTab("my-reports");
                   }}
                   onDiscardSession={() => {
                     setActiveScanSession(null);

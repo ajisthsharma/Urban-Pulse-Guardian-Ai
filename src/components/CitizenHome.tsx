@@ -107,7 +107,7 @@ export default function CitizenHome({ onNavigate, reportsCount, userName }: Citi
       </div>
 
       {/* Secondary Status Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
+      <div className="mt-2">
         <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex items-center justify-between">
           <div>
             <h4 className="font-bold text-[#172033] text-sm mb-1">My Reports</h4>
@@ -121,21 +121,6 @@ export default function CitizenHome({ onNavigate, reportsCount, userName }: Citi
           <button onClick={() => onNavigate('my-reports')} className="px-4 py-2 bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#E2E8F0] hover:border-[#BFDBFE] text-[#172033] hover:text-[#2563EB] text-xs font-bold rounded-xl transition-colors cursor-pointer">
             View All
           </button>
-        </div>
-
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex flex-col justify-center">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#F5F3FF] border border-[#DDD6FE] flex items-center justify-center text-[#7C3AED] shrink-0">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-bold text-[#172033] text-sm mb-1">Citizen Copilot</h4>
-              <p className="text-xs text-[#64748B] mb-3">Ask AI about local safety and UrbanPulse services.</p>
-              <button onClick={() => onNavigate('copilot')} className="text-xs font-bold text-[#7C3AED] hover:text-[#6D28D9] flex items-center gap-1 cursor-pointer">
-                Chat Now <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
