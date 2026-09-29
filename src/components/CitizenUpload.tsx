@@ -699,7 +699,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
   // ----------------------------------------------------
   if (currentStep === "IRRELEVANT") {
     return (
-      <div className="bg-white border border-amber-200 shadow-md rounded-2xl p-6 text-left space-y-4">
+      <div className="bg-white dark:bg-slate-800/60 border border-amber-200 shadow-md rounded-2xl p-6 text-left space-y-4">
         <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-xl border border-amber-250">
           <AlertTriangle className="w-6 h-6 text-amber-600 shrink-0" />
           <div>
@@ -780,7 +780,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
   // ----------------------------------------------------
   if (currentStep === "REVIEW" && aiAnalysis) {
     return (
-      <div className="bg-white border border-slate-200 shadow-md rounded-2xl p-6 text-left space-y-4 animate-fadeIn">
+      <div className="bg-white dark:bg-slate-800/60 border border-slate-200 shadow-md rounded-2xl p-6 text-left space-y-4 animate-fadeIn">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-blue-600 animate-pulse" />
@@ -826,15 +826,15 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">AI Evaluation Attributes</span>
             
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-white p-2.5 rounded-lg border border-slate-150">
+              <div className="bg-white dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-150">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase">Issue Category</span>
                 <span className="font-bold text-slate-900 block mt-0.5">{aiAnalysis.issueType}</span>
               </div>
-              <div className="bg-white p-2.5 rounded-lg border border-slate-150">
+              <div className="bg-white dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-150">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase">Severity Score</span>
                 <span className="font-bold text-rose-600 block mt-0.5">{aiAnalysis.severity}%</span>
               </div>
-              <div className="bg-white p-2.5 rounded-lg border border-slate-150">
+              <div className="bg-white dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-150">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase">Priority Level</span>
                 <span className={`font-bold block mt-0.5 ${
                   aiAnalysis.priority === "Critical" ? "text-rose-700" :
@@ -843,13 +843,13 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
                   {aiAnalysis.priority} Action
                 </span>
               </div>
-              <div className="bg-white p-2.5 rounded-lg border border-slate-150">
+              <div className="bg-white dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-150">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase">Confidence</span>
                 <span className="font-bold text-emerald-700 block mt-0.5">{aiAnalysis.confidence}%</span>
               </div>
             </div>
 
-            <div className="bg-white p-2.5 rounded-lg border border-slate-150 text-xs">
+            <div className="bg-white dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-150 text-xs">
               <span className="text-[9px] text-slate-400 font-bold block uppercase">AI Assessment</span>
               <p className="text-[11px] text-slate-600 italic mt-0.5 leading-relaxed">
                 "{aiAnalysis.description}"
@@ -971,7 +971,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
       : `REF-${createdReport.id.substring(0, 8).toUpperCase()}`;
 
     return (
-      <div className="bg-white border border-emerald-200 shadow-lg rounded-2xl p-6 text-left space-y-4 animate-fadeIn relative">
+      <div className="bg-white dark:bg-slate-800/60 border border-emerald-200 shadow-lg rounded-2xl p-6 text-left space-y-4 animate-fadeIn relative">
         {showSuccessToast && toastReport && (
           <CitizenSuccessToast 
             report={toastReport} 
@@ -1047,14 +1047,14 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
-            <div className="bg-white/80 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-800/60/80 dark:bg-slate-900/80 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-2">
               <Building2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <div>
                 <span className="text-[9px] text-slate-500 uppercase font-bold block">Assigned Ward</span>
                 <span className="font-semibold text-slate-800 text-[11px] truncate block">{timeline.department}</span>
               </div>
             </div>
-            <div className="bg-white/80 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-800/60/80 dark:bg-slate-900/80 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-2">
               <Shield className="w-4 h-4 text-emerald-600 shrink-0" />
               <div>
                 <span className="text-[9px] text-slate-500 uppercase font-bold block">Target Resolution</span>
@@ -1178,7 +1178,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
   // ----------------------------------------------------
   if (currentStep === "SUBMITTING") {
     return (
-      <div className="bg-white border border-slate-200 shadow-md rounded-2xl p-8 text-center space-y-4 animate-fadeIn">
+      <div className="bg-white dark:bg-slate-800/60 border border-slate-200 shadow-md rounded-2xl p-8 text-center space-y-4 animate-fadeIn">
         <div className="relative w-14 h-14 mx-auto flex items-center justify-center">
           <div className="absolute inset-0 rounded-full border-2 border-blue-200 animate-ping opacity-50"></div>
           <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
@@ -1195,7 +1195,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
   // STEP: PRIMARY FORM VIEW
   // ----------------------------------------------------
   return (
-    <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-6 relative">
+    <div className="bg-white dark:bg-slate-800/60 border border-gray-200 shadow-sm rounded-2xl p-6 relative">
       {showSuccessToast && toastReport && (
         <CitizenSuccessToast 
           report={toastReport} 
@@ -1227,7 +1227,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-slate-50 border border-gray-200 px-3 py-2 rounded-lg text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-hidden"
+              className="w-full bg-slate-50 border border-gray-200 px-3 py-2 rounded-lg text-slate-800 focus:bg-white dark:bg-slate-800/60 focus:border-blue-500 focus:outline-hidden"
               placeholder="e.g. Broken drainage pipe flooding sidewalk"
               required
             />
@@ -1239,7 +1239,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
               id="citizen-category-select"
               value={category}
               onChange={(e) => setCategory(e.target.value as ReportCategory)}
-              className="w-full bg-slate-50 border border-gray-200 px-3 py-2 rounded-lg text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-hidden font-semibold"
+              className="w-full bg-slate-50 border border-gray-200 px-3 py-2 rounded-lg text-slate-800 focus:bg-white dark:bg-slate-800/60 focus:border-blue-500 focus:outline-hidden font-semibold"
             >
               <option value="Pothole">🚧 Pothole / Asphalt Fracture</option>
               <option value="Garbage Overflow">🚮 Garbage Overflow / Litter</option>
@@ -1267,7 +1267,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="w-full bg-slate-50 border border-gray-200 pl-9 pr-24 py-2 rounded-lg text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-hidden text-xs font-medium"
+              className="w-full bg-slate-50 border border-gray-200 pl-9 pr-24 py-2 rounded-lg text-slate-800 focus:bg-white dark:bg-slate-800/60 focus:border-blue-500 focus:outline-hidden text-xs font-medium"
               placeholder="e.g. 482 Pine Street, Financial District"
               required
             />
@@ -1314,7 +1314,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
             rows={2}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full bg-slate-50 border border-gray-200 px-3 py-2 rounded-lg text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-hidden"
+            className="w-full bg-slate-50 border border-gray-200 px-3 py-2 rounded-lg text-slate-800 focus:bg-white dark:bg-slate-800/60 focus:border-blue-500 focus:outline-hidden"
             placeholder="Provide context on severity, hazard height, traffic levels, or other variables..."
           />
         </div>
@@ -1393,7 +1393,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
 
                   {/* Live Status Badge */}
                   <div className="absolute top-2 right-2 px-2 py-0.5 bg-rose-600/90 text-[9px] font-mono text-white rounded-full flex items-center gap-1.5 shadow-xs backdrop-blur-xs">
-                    <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-white dark:bg-slate-800/60 animate-pulse" />
                     <span>LIVE FEED</span>
                   </div>
 
@@ -1468,7 +1468,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="text-[10px] font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                      className="text-[10px] font-bold bg-white dark:bg-slate-800/60 hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
                     >
                       <Upload className="w-3 h-3 text-slate-400" />
                       <span>Change Photo</span>
@@ -1476,7 +1476,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
                     <button
                       type="button"
                       onClick={() => startCamera()}
-                      className="text-[10px] font-bold bg-white hover:bg-slate-50 text-emerald-700 border border-slate-200 hover:border-slate-300 px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                      className="text-[10px] font-bold bg-white dark:bg-slate-800/60 hover:bg-slate-50 text-emerald-700 border border-slate-200 hover:border-slate-300 px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
                     >
                       <Camera className="w-3.5 h-3.5 text-emerald-500" />
                       <span>Camera</span>
@@ -1503,14 +1503,14 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
                 <div className="flex items-center gap-3">
                   <div 
                     onClick={() => fileInputRef.current?.click()} 
-                    className="p-3 bg-white border border-slate-150 rounded-2xl shadow-2xs hover:scale-105 hover:text-blue-600 transition-all cursor-pointer flex items-center justify-center text-slate-500"
+                    className="p-3 bg-white dark:bg-slate-800/60 border border-slate-150 rounded-2xl shadow-2xs hover:scale-105 hover:text-blue-600 transition-all cursor-pointer flex items-center justify-center text-slate-500"
                     title="Browse local files"
                   >
                     <Upload className="w-5 h-5 shrink-0" />
                   </div>
                   <div 
                     onClick={() => startCamera()} 
-                    className="p-3 bg-white border border-slate-150 rounded-2xl shadow-2xs hover:scale-105 hover:text-emerald-600 transition-all cursor-pointer flex items-center justify-center text-slate-500"
+                    className="p-3 bg-white dark:bg-slate-800/60 border border-slate-150 rounded-2xl shadow-2xs hover:scale-105 hover:text-emerald-600 transition-all cursor-pointer flex items-center justify-center text-slate-500"
                     title="Take live photo using device camera"
                   >
                     <Camera className="w-5 h-5 shrink-0" />

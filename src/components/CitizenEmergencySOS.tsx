@@ -51,22 +51,22 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
   return (
     <div id="emergency-sos-container" className="space-y-5">
       {/* HEADER BAR */}
-      <div className="bg-gradient-to-r from-[#FEF2F2] via-[#FFFBEB] to-[#FFFFFF] border border-[#FECACA] rounded-2xl p-5 text-[#172033] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-[#FEF2F2] via-[#FFFBEB] to-[#FFFFFF] border border-red-200 dark:border-red-800/50 rounded-2xl p-5 text-slate-900 dark:text-white shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#FEF2F2] border border-[#FECACA] flex items-center justify-center text-[#DC2626]">
+            <div className="w-9 h-9 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 flex items-center justify-center text-red-600 dark:text-red-400">
               <AlertOctagon className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-black tracking-tight text-[#172033]">
+                <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
                   CITIZEN SOS & RAPID INCIDENT BEACON
                 </h1>
-                <span className="px-2 py-0.5 bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] rounded text-[9.5px] font-mono font-bold uppercase tracking-wider">
+                <span className="px-2 py-0.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/50 rounded text-[9.5px] font-mono font-bold uppercase tracking-wider">
                   Direct Municipal Dispatch
                 </span>
               </div>
-              <p className="text-xs text-[#64748B] mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
                 Broadcast critical infrastructure collapse or accident beacon directly to 24/7 City Emergency Command.
               </p>
             </div>
@@ -88,14 +88,14 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
         {/* BIG SOS TRIGGER (Left 7 Cols) */}
-        <div className="lg:col-span-7 bg-white border border-[#E2E8F0] rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-5 shadow-xs">
+        <div className="lg:col-span-7 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-5 shadow-xs">
           {!sosActive && countdown === null && (
             <>
               <div className="max-w-md space-y-2">
-                <h3 className="text-base font-bold text-[#172033]">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   Emergency Infrastructure Beacon
                 </h3>
-                <p className="text-xs text-[#64748B]">
+                <p className="text-xs text-slate-500 dark:text-slate-300">
                   Select incident category below and press the SOS beacon to broadcast live GPS coordinates to city emergency response units.
                 </p>
               </div>
@@ -104,7 +104,7 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
                 <select
                   value={emergencyType}
                   onChange={(e) => setEmergencyType(e.target.value as any)}
-                  className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#172033] text-xs px-3.5 py-2.5 rounded-xl focus:outline-none focus:border-[#DC2626]"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 rounded-xl focus:outline-none focus:border-[#DC2626]"
                 >
                   <option value="Major Road Cave-In / Accident">Major Road Cave-In / Accident</option>
                   <option value="Active Flood / Submerged Road">Active Flood / Submerged Road</option>
@@ -127,15 +127,15 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
 
           {countdown !== null && (
             <div className="space-y-4 py-8">
-              <span className="text-xs font-mono text-[#DC2626] uppercase tracking-wider block font-semibold">
+              <span className="text-xs font-mono text-red-600 dark:text-red-400 uppercase tracking-wider block font-semibold">
                 Broadcasting Beacon in:
               </span>
-              <div className="text-6xl font-mono font-black text-[#DC2626] animate-ping">
+              <div className="text-6xl font-mono font-black text-red-600 dark:text-red-400 animate-ping">
                 {countdown}
               </div>
               <button
                 onClick={handleCancelSOS}
-                className="px-5 py-2 bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#172033] text-xs font-bold rounded-xl border border-[#E2E8F0] cursor-pointer"
+                className="px-5 py-2 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer"
               >
                 Cancel SOS
               </button>
@@ -144,12 +144,12 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
 
           {sosActive && (
             <div className="w-full space-y-4 py-4 text-left">
-              <div className="p-4 bg-[#FEF2F2] border border-[#FECACA] rounded-xl flex items-center justify-between text-[#DC2626]">
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl flex items-center justify-between text-red-600 dark:text-red-400">
                 <div className="flex items-center gap-3">
-                  <Radio className="w-6 h-6 text-[#DC2626] animate-pulse" />
+                  <Radio className="w-6 h-6 text-red-600 dark:text-red-400 animate-pulse" />
                   <div>
                     <h4 className="font-bold text-sm">Emergency Beacon Active</h4>
-                    <p className="text-xs text-[#DC2626] font-mono">
+                    <p className="text-xs text-red-600 dark:text-red-400 font-mono">
                       Category: {emergencyType}
                     </p>
                   </div>
@@ -159,24 +159,24 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
                 </span>
               </div>
 
-              <div className="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0] space-y-2 text-xs">
-                <div className="flex items-center justify-between text-[#475569]">
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
+                <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
                   <span>Broadcast GPS:</span>
-                  <span className="font-mono text-[#2563EB] font-bold">0.0000° N, 0.0000° E</span>
+                  <span className="font-mono text-slate-900 dark:text-white font-bold">0.0000° N, 0.0000° E</span>
                 </div>
-                <div className="flex items-center justify-between text-[#475569]">
+                <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
                   <span>Citizen Contact:</span>
-                  <span className="font-mono text-[#172033]">{currentUser?.email || "citizen@gmail.com"}</span>
+                  <span className="font-mono text-slate-900 dark:text-white">{currentUser?.email || "citizen@gmail.com"}</span>
                 </div>
-                <div className="flex items-center justify-between text-[#475569]">
+                <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
                   <span>Assigned Unit:</span>
-                  <span className="font-mono text-[#16A34A] font-bold">NCR Quick Action Squad #4</span>
+                  <span className="font-mono text-green-600 dark:text-green-400 font-bold">NCR Quick Action Squad #4</span>
                 </div>
               </div>
 
               <button
                 onClick={handleCancelSOS}
-                className="w-full py-2.5 bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#172033] text-xs font-bold rounded-xl border border-[#E2E8F0] cursor-pointer"
+                className="w-full py-2.5 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer"
               >
                 Resolve / Deactivate SOS Beacon
               </button>
@@ -185,8 +185,8 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
         </div>
 
         {/* EMERGENCY DIRECTORY (Right 5 Cols) */}
-        <div className="lg:col-span-5 bg-white border border-[#E2E8F0] rounded-2xl p-5 space-y-4 text-[#172033] shadow-xs">
-          <h3 className="text-xs font-mono font-bold text-[#64748B] uppercase tracking-wider">
+        <div className="lg:col-span-5 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 space-y-4 text-slate-900 dark:text-white shadow-xs">
+          <h3 className="text-xs font-mono font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider">
             24/7 City Emergency Contacts
           </h3>
 
@@ -199,15 +199,15 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
             ].map((contact, idx) => (
               <div
                 key={idx}
-                className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between text-xs"
+                className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between text-xs"
               >
                 <div>
-                  <span className="font-bold text-[#172033] block">{contact.name}</span>
-                  <span className="text-[11px] text-[#64748B]">{contact.desc}</span>
+                  <span className="font-bold text-slate-900 dark:text-white block">{contact.name}</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-300">{contact.desc}</span>
                 </div>
                 <a
                   href={`tel:${contact.number}`}
-                  className="px-3 py-1.5 bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626] hover:bg-[#DC2626] hover:text-white rounded-lg font-mono font-bold transition-all"
+                  className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 hover:bg-[#DC2626] hover:text-white rounded-lg font-mono font-bold transition-all"
                 >
                   {contact.number}
                 </a>

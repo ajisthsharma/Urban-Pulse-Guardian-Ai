@@ -73,6 +73,15 @@ export const userConverter: FirestoreDataConverter<UserProfile> = {
   }
 };
 
+function withFirestoreTimeout<T>(operation: Promise<T>, path: string, timeoutMs = 6000): Promise<T> {
+  return Promise.race([
+    operation,
+    new Promise<T>((_, reject) => {
+      window.setTimeout(() => reject(new Error(`Firestore request timed out for ${path}.`)), timeoutMs);
+    })
+  ]);
+}
+
 // ==========================================
 // USER SERVICES
 // ==========================================
@@ -81,7 +90,7 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
   const path = `users/${uid}`;
   try {
     const userRef = doc(db, "users", uid).withConverter(userConverter);
-    const snap = await getDoc(userRef);
+    const snap = await withFirestoreTimeout(getDoc(userRef), path);
     return snap.exists() ? snap.data() : null;
   } catch (error) {
     handleFirestoreError(error, OperationType.GET, path);
@@ -93,7 +102,7 @@ export async function setUserProfile(profile: UserProfile): Promise<void> {
   try {
     const cleanProfile = stripUndefinedDeep(profile);
     const userRef = doc(db, "users", profile.uid).withConverter(userConverter);
-    await setDoc(userRef, cleanProfile, { merge: true });
+    await withFirestoreTimeout(setDoc(userRef, cleanProfile, { merge: true }), path);
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, path);
   }

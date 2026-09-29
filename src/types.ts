@@ -204,9 +204,13 @@ export type AIAnalysisResult = AIAnalysis;
 
 export type ReportCategory = 
   | "Pothole" 
-  | "Garbage Overflow" 
+  | "Road Crack"
+  | "Damaged Road Surface"
+  | "Waterlogging"
+  | "Missing/Damaged Sign"
   | "Broken Streetlight" 
   | "Road Obstruction" 
+  | "Garbage Overflow" 
   | "Vandals / Graffiti" 
   | "Other";
 

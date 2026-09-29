@@ -121,6 +121,7 @@ export const reportConverter: FirestoreDataConverter<Report> = {
 // ===================================================
 
 export interface CreateReportInput {
+  id?: string;
   title: string;
   description: string;
   category: ReportCategory;
@@ -213,7 +214,7 @@ export async function createReport(
     if (existing) return existing;
   }
 
-  const reportId = `rep_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 7)}`;
+  const reportId = input.id || `UP-${Math.floor(1000 + Math.random() * 9000)}`;
   const timestamp = new Date().toISOString();
 
   // 4. Upload evidence image to Firebase Storage if available (and not already an HTTP/HTTPS URL)

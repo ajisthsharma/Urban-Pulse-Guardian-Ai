@@ -147,7 +147,7 @@ export default function ReportDetailsModal({
 
   return (
     <div className="fixed inset-0 z-[1200] bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[92vh] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white dark:bg-slate-800/60 rounded-2xl border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[92vh] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
         
         {/* Header bar */}
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-slate-50">
@@ -330,7 +330,7 @@ export default function ReportDetailsModal({
             </div>
 
             {/* In-Depth Status Work timeline logs / Professional Audit Trail */}
-            <div className="bg-white border border-slate-200 p-5 rounded-xl">
+            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 p-5 rounded-xl">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-xs font-black uppercase text-slate-800 tracking-wider flex items-center gap-2">
                   <span className="w-2.5 h-2.5 bg-blue-600 rounded-full animate-ping-slow shrink-0" />
@@ -503,7 +503,7 @@ export default function ReportDetailsModal({
           <div className="flex flex-col gap-4 text-left">
             
             {/* Gemini AI Diagnostics widget (Sleek professional card) */}
-            <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl border-t-4 border-blue-600">
+            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 shadow-sm p-6 rounded-2xl border-t-4 border-blue-600">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-5 h-5 text-blue-600 animate-pulse" />
@@ -542,27 +542,27 @@ export default function ReportDetailsModal({
                   <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-xl">
                     <span className="text-[9px] font-bold uppercase text-blue-600 tracking-wider block mb-2 px-1">Smart Operations Diagnostic Overview</span>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-left text-[11px]">
-                      <div className="bg-white p-2 rounded-lg border border-slate-150">
+                      <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-150">
                         <span className="text-[8px] text-slate-400 uppercase font-semibold block">Issue Type</span>
                         <span className="text-xs font-bold text-slate-800">{report.category}</span>
                       </div>
-                      <div className="bg-white p-2 rounded-lg border border-slate-150">
+                      <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-150">
                         <span className="text-[8px] text-slate-400 uppercase font-semibold block">Severity Score</span>
                         <span className={`text-xs font-bold ${report.severity >= 75 ? "text-rose-600" : report.severity >= 45 ? "text-amber-600" : "text-emerald-600"}`}>{report.severity}%</span>
                       </div>
-                      <div className="bg-white p-2 rounded-lg border border-slate-150">
+                      <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-150">
                         <span className="text-[8px] text-slate-400 uppercase font-semibold block">Priority</span>
                         <span className={`text-xs font-bold ${report.severity >= 75 ? "text-red-600 font-extrabold animate-pulse" : report.severity >= 45 ? "text-amber-600" : "text-emerald-600"}`}>
                           {report.priority || (report.severity >= 75 ? "Critical" : report.severity >= 45 ? "Medium" : "Low")}
                         </span>
                       </div>
-                      <div className="bg-white p-2 rounded-lg border border-slate-150 font-mono">
+                      <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-150 font-mono">
                         <span className="text-[8px] text-slate-400 uppercase font-semibold block font-sans">Est. Repair Cost</span>
                         <span className="text-xs font-bold text-blue-600">
                           {report.category === "Pothole" ? "₹15,000" : report.category === "Garbage Overflow" ? "₹5,600" : report.category === "Broken Streetlight" ? "₹9,200" : report.category === "Road Obstruction" ? "₹12,400" : "₹8,300"}
                         </span>
                       </div>
-                      <div className="bg-white p-2 rounded-lg border border-slate-150 font-mono">
+                      <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-150 font-mono">
                         <span className="text-[8px] text-slate-400 uppercase font-semibold block font-sans">Citizens Affected</span>
                         <span className="text-[11px] font-bold text-violet-600">
                           {(() => {
@@ -575,13 +575,13 @@ export default function ReportDetailsModal({
                           })()}
                         </span>
                       </div>
-                      <div className="bg-white p-2 rounded-lg border border-slate-150">
+                      <div className="bg-white dark:bg-slate-800/60 p-2 rounded-lg border border-slate-150">
                         <span className="text-[8px] text-slate-400 uppercase font-semibold block">Est. Repair Time</span>
                         <span className="text-xs font-bold text-slate-700">
                           {report.severity >= 75 ? "2 Days" : report.severity >= 45 ? "4 Days" : "7 Days"}
                         </span>
                       </div>
-                      <div className="bg-white p-2.5 rounded-lg border border-slate-150 col-span-2 sm:col-span-3">
+                      <div className="bg-white dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-150 col-span-2 sm:col-span-3">
                         <span className="text-[8px] text-slate-400 uppercase font-semibold block">Citizen Impact Level</span>
                         <span className={`text-[11px] font-bold ${report.severity >= 75 ? "text-red-650" : report.severity >= 45 ? "text-amber-700" : "text-emerald-700"}`}>
                           {report.severity >= 70 ? "🔥 High Critical (Severe obstruction on transport arteries)" : report.severity >= 40 ? "⚠️ Medium (Minor lanes and neighborhood access risk)" : "✅ Normal / Low Level Hazard"}
@@ -618,7 +618,7 @@ export default function ReportDetailsModal({
 
             {/* RESOLUTION REVIEW / EVIDENCE AUDIT */}
             {(report.resolution || report.fieldStatus === "RESOLUTION_SUBMITTED") && (
-              <div className="bg-white border-2 border-emerald-500/30 p-5 rounded-2xl shadow-sm space-y-4">
+              <div className="bg-white dark:bg-slate-800/60 border-2 border-emerald-500/30 p-5 rounded-2xl shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping-slow shrink-0" />
@@ -724,7 +724,7 @@ export default function ReportDetailsModal({
 
             {/* Officer command action board */}
             {isAuthorizedManager ? (
-              <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm">
+              <div className="bg-white dark:bg-slate-800/60 border border-slate-200/80 p-5 rounded-2xl shadow-sm">
                 <span className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest block mb-2">Dispatcher Control board</span>
                 <h4 className="font-display font-medium text-sm text-slate-800 mb-3 tracking-tight">Modify Status & Dispatch Crew</h4>
                 
@@ -741,7 +741,7 @@ export default function ReportDetailsModal({
                           onClick={() => setStatusInput(st)}
                           className={`py-1.5 rounded-md font-bold text-[10px] transition-all text-center cursor-pointer ${
                             statusInput === st
-                              ? "bg-white text-slate-800 shadow-xs border border-gray-200"
+                              ? "bg-white dark:bg-slate-800/60 text-slate-800 shadow-xs border border-gray-200"
                               : "text-gray-400 hover:text-gray-700"
                           }`}
                         >
@@ -758,7 +758,7 @@ export default function ReportDetailsModal({
                       id="assign-crew-select"
                       value={assignedToInput}
                       onChange={(e) => setAssignedToInput(e.target.value)}
-                      className="w-full bg-white border border-gray-200 px-3 py-2 rounded-lg text-slate-800 shadow-2xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs font-semibold"
+                      className="w-full bg-white dark:bg-slate-800/60 border border-gray-200 px-3 py-2 rounded-lg text-slate-800 shadow-2xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs font-semibold"
                     >
                       <option value="">-- Unassigned --</option>
                       {DEFAULT_FIELD_TEAMS.map((team) => (
@@ -777,7 +777,7 @@ export default function ReportDetailsModal({
                       rows={2}
                       value={commentInput}
                       onChange={(e) => setCommentInput(e.target.value)}
-                      className="w-full bg-white border border-gray-200 px-3 py-2 rounded-lg text-slate-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs"
+                      className="w-full bg-white dark:bg-slate-800/60 border border-gray-200 px-3 py-2 rounded-lg text-slate-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs"
                       placeholder="Input comments regarding dispatch crews, schedule times, blockages, or closures..."
                       required
                     />
@@ -812,7 +812,7 @@ export default function ReportDetailsModal({
                 <p className="text-[11px] text-emerald-700 leading-relaxed max-w-xs mx-auto mt-1">
                   Task acceptance, onsite GPS verification, and completion proof uploads are managed through the <strong>Field Operations Deck</strong>.
                 </p>
-                <div className="mt-4 p-2 bg-white rounded-lg text-[10px] font-semibold text-emerald-800 border border-emerald-200 shadow-2xs">
+                <div className="mt-4 p-2 bg-white dark:bg-slate-800/60 rounded-lg text-[10px] font-semibold text-emerald-800 border border-emerald-200 shadow-2xs">
                   Incident Status: [ {report.status} ] • Assigned To: {report.assignedTo || "Unassigned"}
                 </div>
               </div>
@@ -836,7 +836,7 @@ export default function ReportDetailsModal({
         {/* MODAL: REJECT RESOLUTION PROMPT */}
         {rejectionModalOpen && (
           <div className="fixed inset-0 z-60 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
+            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
               <div className="flex items-center gap-2 text-rose-700 font-bold text-sm">
                 <RotateCcw className="w-4 h-4" />
                 <span>Return Incident for Crew Rework</span>

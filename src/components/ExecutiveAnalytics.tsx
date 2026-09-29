@@ -93,7 +93,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Total Reports & Source Split */}
-        <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-3xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-800/60 p-5 border border-slate-200 rounded-2xl shadow-3xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase text-slate-400">
@@ -116,7 +116,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
         </div>
 
         {/* Resolution Efficiency */}
-        <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-3xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-800/60 p-5 border border-slate-200 rounded-2xl shadow-3xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase text-slate-400">
@@ -135,7 +135,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
         </div>
 
         {/* Active Critical Hazards */}
-        <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-3xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-800/60 p-5 border border-slate-200 rounded-2xl shadow-3xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase text-slate-400">
@@ -154,7 +154,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
         </div>
 
         {/* AI Road Scanner Volume */}
-        <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-3xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-800/60 p-5 border border-slate-200 rounded-2xl shadow-3xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase text-slate-400">
@@ -177,7 +177,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Ward Standings (Col-5) */}
-        <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+        <div className="lg:col-span-5 bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
           <div>
             <span className="text-[10px] font-mono font-extrabold text-blue-600 uppercase tracking-wider block">
               REAL WARD STANDINGS
@@ -217,7 +217,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-right">
-                        <span className="text-xs font-mono font-extrabold text-emerald-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-3xs">
+                        <span className="text-xs font-mono font-extrabold text-emerald-700 bg-white dark:bg-slate-800/60 border border-slate-200 px-2 py-0.5 rounded shadow-3xs">
                           {ward.scoreLabel}
                         </span>
                         <span className="text-[9.5px] font-bold text-emerald-600 uppercase font-sans">
@@ -249,7 +249,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-right">
-                        <span className="text-xs font-mono font-extrabold text-slate-800 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-3xs">
+                        <span className="text-xs font-mono font-extrabold text-slate-800 bg-white dark:bg-slate-800/60 border border-slate-200 px-2 py-0.5 rounded shadow-3xs">
                           {ward.scoreLabel}
                         </span>
                         <span className={`text-[9.5px] font-bold uppercase font-sans ${ward.trend === "improving" ? "text-emerald-600" : "text-red-600 font-extrabold"}`}>
@@ -266,7 +266,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
         </div>
 
         {/* Real Time Chronological Graph (Col-7) */}
-        <div className="lg:col-span-7 bg-white p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
+        <div className="lg:col-span-7 bg-white dark:bg-slate-800/60 p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
           <div>
             <span className="text-[10px] font-mono font-extrabold text-blue-600 uppercase tracking-wider block">
               CHRONOLOGICAL INCIDENT TIMELINE
@@ -332,7 +332,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Issue Distribution by Category (Col-6) */}
-        <div className="lg:col-span-6 bg-white p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
+        <div className="lg:col-span-6 bg-white dark:bg-slate-800/60 p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
           <div>
             <span className="text-[10px] font-mono font-extrabold text-blue-600 uppercase tracking-wider block">
               ISSUE CATEGORIZATION MATRIX
@@ -363,7 +363,7 @@ export default function ExecutiveAnalytics({ reports }: ExecutiveAnalyticsProps)
         </div>
 
         {/* Contractor & Municipal Crew Resolution Rates (Col-6) */}
-        <div className="lg:col-span-6 bg-white p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
+        <div className="lg:col-span-6 bg-white dark:bg-slate-800/60 p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
           <div>
             <span className="text-[10px] font-mono font-extrabold text-blue-600 uppercase tracking-wider block">
               MUNICIPAL DISPATCH TEAMS

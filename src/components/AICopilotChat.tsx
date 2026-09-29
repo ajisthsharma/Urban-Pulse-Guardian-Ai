@@ -115,15 +115,15 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
   ];
 
   return (
-    <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-xs overflow-hidden flex flex-col h-[580px] transition-all">
+    <div className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xs overflow-hidden flex flex-col h-[580px] transition-all">
       {/* Thread Header */}
-      <div className="bg-gradient-to-r from-[#F5F3FF] to-[#FFFFFF] border-b border-[#DDD6FE] text-[#172033] p-4.5 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-[#F5F3FF] to-[#FFFFFF] border-b border-[#DDD6FE] text-slate-900 dark:text-white p-4.5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-[#F5F3FF] border border-[#DDD6FE] text-[#7C3AED] flex items-center justify-center shadow-2xs">
+          <div className="w-8 h-8 rounded-lg bg-[#F5F3FF] border border-violet-200 dark:border-violet-800/50 text-[#7C3AED] flex items-center justify-center shadow-2xs">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-display font-bold text-sm leading-tight text-[#172033]">Guardian AI Assistant</h3>
+            <h3 className="font-display font-bold text-sm leading-tight text-slate-900 dark:text-white">Guardian AI Assistant</h3>
             <p className="text-[10px] text-[#7C3AED] font-bold tracking-wider uppercase mt-0.5">
               Role: {currentUserRole === "admin" ? "Director Copilot" : "Citizen Assistant"}
             </p>
@@ -131,12 +131,12 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
         </div>
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
-          <span className="text-[9.5px] font-mono text-[#64748B] font-extrabold uppercase">Delhi Central Node</span>
+          <span className="text-[9.5px] font-mono text-slate-500 dark:text-slate-300 font-extrabold uppercase">Delhi Central Node</span>
         </div>
       </div>
 
       {/* Messages scrolling stack */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-5 bg-[#F8FAFC] flex flex-col gap-4">
+      <div className="flex-1 overflow-y-auto p-4 md:p-5 bg-slate-50 dark:bg-slate-800/50 flex flex-col gap-4">
         {messages.map((m) => (
           <div
             key={m.id}
@@ -145,8 +145,8 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
             {/* Avatar */}
             <div className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center font-bold text-xs ${
               m.role === "user" 
-                ? "bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE]" 
-                : "bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE]"
+                ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50" 
+                : "bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800/50"
             }`}>
               {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
             </div>
@@ -155,7 +155,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
             <div className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
               m.role === "user"
                 ? "bg-[#2563EB] text-white rounded-tr-xs shadow-xs"
-                : "bg-white text-[#172033] border border-[#E2E8F0] rounded-tl-xs shadow-2xs"
+                : "bg-white dark:bg-slate-800/60 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-tl-xs shadow-2xs"
             }`}>
               {/* Simple Markdown/Paragraph display */}
               <div className="space-y-2 whitespace-pre-wrap">
@@ -222,7 +222,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
             key={idx}
             disabled={sending}
             onClick={() => handleSend(p)}
-            className="text-[10px] font-semibold bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 px-3 py-1 rounded-full text-left transition-colors cursor-pointer shadow-3xs disabled:opacity-50"
+            className="text-[10px] font-semibold bg-white dark:bg-slate-800/60 hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 px-3 py-1 rounded-full text-left transition-colors cursor-pointer shadow-3xs disabled:opacity-50"
           >
             {p}
           </button>
@@ -235,7 +235,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
           e.preventDefault();
           handleSend(inputVal);
         }}
-        className="p-3 bg-white border-t border-slate-200 flex gap-2 items-center"
+        className="p-3 bg-white dark:bg-slate-800/60 border-t border-slate-200 flex gap-2 items-center"
       >
         <input
           type="text"
@@ -243,7 +243,7 @@ export default function AICopilotChat({ currentUserRole, currentUserName }: AICo
           onChange={(e) => setInputVal(e.target.value)}
           placeholder="Ask Guardian AI anything about city hazards..."
           disabled={sending}
-          className="flex-1 bg-slate-50 text-xs text-slate-800 rounded-xl px-4 py-3 border border-slate-200 focus:outline-hidden focus:bg-white focus:border-blue-500 transition-all placeholder-slate-400"
+          className="flex-1 bg-slate-50 text-xs text-slate-800 rounded-xl px-4 py-3 border border-slate-200 focus:outline-hidden focus:bg-white dark:bg-slate-800/60 focus:border-blue-500 transition-all placeholder-slate-400"
         />
         <button
           type="submit"

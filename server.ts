@@ -68,7 +68,7 @@ interface Report {
   userId?: string;
   title: string;
   description: string;
-  category: "Pothole" | "Garbage Overflow" | "Broken Streetlight" | "Road Obstruction" | "Vandals / Graffiti" | "Other";
+  category: "Pothole" | "Road Crack" | "Damaged Road Surface" | "Waterlogging" | "Missing/Damaged Sign" | "Broken Streetlight" | "Road Obstruction" | "Garbage Overflow" | "Vandals / Graffiti" | "Other" | string;
   issueType?: string;
   severity: number;
   riskLevel: "Low" | "Medium" | "High";
@@ -434,7 +434,7 @@ async function generateContentWithFallback(
 // ===================================================
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // Trust reverse proxy (Cloud Run / Nginx) to accurately process X-Forwarded-For headers
 app.set("trust proxy", 1);
@@ -456,6 +456,25 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-XSS-Protection", "1; mode=block");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  next();
+});
+
+// Cross-Origin Resource Sharing (CORS) Middleware
+// Enables cross-origin requests from Vercel frontend deployments and local dev environments
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
   next();
 });
 
@@ -1162,6 +1181,8 @@ Respond ONLY with valid JSON matching:
 
 // B. ROAD SCANNER BATCHED FRAME ANALYSIS
 app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
+  const reqStartTime = Date.now();
+  const routeIdentifier = `${req.method} ${req.originalUrl || req.url}`;
   try {
     let rawFrames: any[] = [];
     if (Array.isArray(req.body.frames)) {
@@ -1170,7 +1191,10 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
       rawFrames = [{ frameIndex: req.body.frameIndex ?? 0, image: req.body.image, timestamp: req.body.timestamp }];
     }
 
+    console.log(`[Road Scanner AI] [Request: ${routeIdentifier}] IP: ${req.ip} | Origin: ${req.headers.origin || "direct"} | Raw frames count: ${rawFrames.length}`);
+
     if (!rawFrames || rawFrames.length === 0) {
+      console.warn(`[Road Scanner AI] [Status: 400] ${routeIdentifier} | Reason: No valid image frames provided in request.`);
       return res.status(400).json({
         detected: false,
         detection: null,
@@ -1183,6 +1207,7 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
     }
 
     if (!ai || !process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "MY_GEMINI_API_KEY" || process.env.GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+      console.warn(`[Road Scanner AI] [Status: 503] ${routeIdentifier} | Reason: GEMINI_API_KEY unconfigured or invalid on server.`);
       return res.status(503).json({
         detected: false,
         detection: null,
@@ -1217,6 +1242,7 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
     }
 
     if (validFrames.length === 0) {
+      console.warn(`[Road Scanner AI] [Status: 400] ${routeIdentifier} | Reason: All frame payloads were empty or corrupted.`);
       return res.status(400).json({
         detected: false,
         detections: [],
@@ -1454,7 +1480,7 @@ Respond strictly with valid JSON:
     const validDetections = detectionsArray.filter(det => det.confidence >= MIN_DETECTION_CONFIDENCE);
     const isDetected = validDetections.length > 0;
 
-    console.log(`[Road Scanner AI] Batch Evaluated | frames: ${validFrames.length} | raw: ${detectionsArray.length} | valid: ${validDetections.length} | model: ${modelUsed}`);
+    console.log(`[Road Scanner AI] [Status: 200] ${routeIdentifier} | Processed ${validFrames.length} frame(s) in ${Date.now() - reqStartTime}ms | Model: ${modelUsed} | Detections: ${validDetections.length}`);
 
     return res.json({
       detected: isDetected,
@@ -1472,7 +1498,7 @@ Respond strictly with valid JSON:
 
   } catch (err: any) {
     const classified = classifyGeminiError(err, ROAD_SCANNER_GEMINI_MODEL);
-    console.error("Batch frame analysis route failure:", classified);
+    console.error(`[Road Scanner AI] [Status: ${classified.httpStatus}] ${routeIdentifier} | Error State: ${classified.errorState} | Details: ${classified.message}`);
     return res.status(classified.httpStatus).json({ 
       detected: false, 
       detection: null, 
@@ -1487,9 +1513,10 @@ Respond strictly with valid JSON:
 });
 
 // Backward compatible single-frame endpoint forwarding to batch handler
-app.post("/api/scanner/analyze-frame", async (req: Request, res: Response) => {
+app.post("/api/scanner/analyze-frame", (req: Request, res: Response, next: NextFunction) => {
+  console.log(`[Road Scanner AI] [Forward: ${req.method} ${req.originalUrl || req.url} -> /api/scanner/analyze-batch]`);
   req.url = "/api/scanner/analyze-batch";
-  return app._router.handle(req, res);
+  return app._router.handle(req, res, next);
 });
 
 // Helper to build properly structured Gemini contents payload with strict role alternation
@@ -1821,8 +1848,8 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[Server] UrbanPulse Guardian AI active on port ${PORT}`);
+  app.listen(PORT, () => {
+    console.log(`[Server] UrbanPulse Guardian AI active on http://localhost:${PORT} and http://127.0.0.1:${PORT}`);
   });
 }
 

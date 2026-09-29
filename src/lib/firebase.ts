@@ -12,7 +12,10 @@ export const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || config.storageBucket || "",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || config.messagingSenderId || "",
   appId: import.meta.env.VITE_FIREBASE_APP_ID || config.appId || "",
-  firestoreDatabaseId: config.firestoreDatabaseId || "(default)"
+  // A database id is not part of Firebase web-app configuration. The generated
+  // AI Studio id in the legacy config is not an actual Firestore database and
+  // made every profile request wait/retry forever in production.
+  firestoreDatabaseId: "(default)"
 };
 
 // Canonical Single Firebase App initialization

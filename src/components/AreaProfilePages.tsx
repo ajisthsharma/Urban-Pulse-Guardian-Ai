@@ -67,7 +67,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
   const riskMeta = getRiskColor(localRiskScore);
 
   return (
-    <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 text-left" id="area-profile-pages">
+    <div className="bg-white dark:bg-slate-800/60 border border-slate-200 shadow-sm rounded-2xl p-6 text-left" id="area-profile-pages">
       
       {/* Title block */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-5 mb-5">
@@ -92,7 +92,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
             id="area-profile-selector"
             value={selectedArea}
             onChange={(e) => setSelectedArea(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-1 text-xs font-bold text-slate-800 shadow-3xs focus:outline-none focus:border-blue-500 font-sans cursor-pointer"
+            className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-lg px-3 py-1 text-xs font-bold text-slate-800 shadow-3xs focus:outline-none focus:border-blue-500 font-sans cursor-pointer"
           >
             {Object.entries(areasByCity).map(([city, areas]) => (
               <optgroup key={city} label={city}>
@@ -126,7 +126,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
 
             {/* Giant Circular visual */}
             <div className="mt-5 mb-4 flex items-center justify-center">
-              <div className="relative flex items-center justify-center w-28 h-28 rounded-full border-[6px] border-slate-100 bg-white shadow-xs">
+              <div className="relative flex items-center justify-center w-28 h-28 rounded-full border-[6px] border-slate-100 bg-white dark:bg-slate-800/60 shadow-xs">
                 {/* Score Dial simulated representation */}
                 <div className="absolute inset-0 rounded-full border-4 border-blue-500/20" />
                 <div className="absolute inset-0 rounded-full border-4 border-t-blue-600 pointer-events-none animate-spin-slow duration-5000" />
@@ -157,11 +157,11 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
 
             {/* Micro Stats list */}
             <div className="grid grid-cols-2 gap-2 mt-4 text-[11px] font-medium font-sans">
-              <div className="bg-white border border-slate-200/80 p-2.5 rounded-xl">
+              <div className="bg-white dark:bg-slate-800/60 border border-slate-200/80 p-2.5 rounded-xl">
                 <span className="text-slate-400 block text-[9px] uppercase">Active Alerts</span>
                 <span className="text-sm font-bold text-red-650 font-mono mt-0.5 block">{unresolvedReports.length} Active</span>
               </div>
-              <div className="bg-white border border-slate-200/80 p-2.5 rounded-xl">
+              <div className="bg-white dark:bg-slate-800/60 border border-slate-200/80 p-2.5 rounded-xl">
                 <span className="text-slate-400 block text-[9px] uppercase">Resolved Tickets</span>
                 <span className="text-sm font-bold text-emerald-650 font-mono mt-0.5 block">{resolvedCount} Cleaned</span>
               </div>
@@ -170,7 +170,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
           </div>
 
           {/* AI Confidence & Predicton parameters (TRUST & TRANSPARENCY) */}
-          <div className="bg-white border border-indigo-100 rounded-2xl p-5 shadow-2xs border-l-4 border-indigo-500">
+          <div className="bg-white dark:bg-slate-800/60 border border-indigo-100 rounded-2xl p-5 shadow-2xs border-l-4 border-indigo-500">
             <h5 className="text-xs font-black text-indigo-950 uppercase tracking-wider flex items-center gap-2 mb-2">
               <Sparkles className="w-4 h-4 text-indigo-600 animate-pulse" />
               <span>AI Validation Profile</span>
@@ -200,7 +200,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
         <div className="lg:col-span-8 flex flex-col gap-6">
           
           {/* Recharts Area Plot (FORECAST TREND & RISK HISTORY) */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs">
+          <div className="bg-white dark:bg-slate-800/60 border border-slate-200 rounded-2xl p-5 shadow-2xs">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 font-display">
@@ -240,7 +240,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             {/* AI Custom Area Recommendations */}
-            <div className="bg-white border border-slate-200 p-5 rounded-2xl text-left shadow-2xs">
+            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 p-5 rounded-2xl text-left shadow-2xs">
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block font-mono">Operational Priorities</span>
               <h5 className="font-bold text-sm text-slate-800 tracking-tight mt-0.5 mb-3 flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-blue-500 animate-pulse" />
@@ -265,7 +265,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
             </div>
 
             {/* Citizen Impact level */}
-            <div className="bg-white border border-slate-200 p-5 rounded-2xl text-left shadow-2xs">
+            <div className="bg-white dark:bg-slate-800/60 border border-slate-200 p-5 rounded-2xl text-left shadow-2xs">
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block font-mono">Voter Sentiment Index</span>
               <h5 className="font-bold text-sm text-slate-800 tracking-tight mt-0.5 mb-3 flex items-center gap-1.5 font-display">
                 <Activity className="w-4 h-4 text-indigo-500 animate-pulse" />
@@ -307,7 +307,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
                 <div className="text-[11px] text-slate-400 italic">No recent incidents nor updates recorded across {selectedArea} coordinates.</div>
               ) : (
                 areaReports.map((item) => (
-                  <div key={item.id} className="bg-white border border-slate-150 rounded px-2.5 py-1.5 flex justify-between items-center text-[10.5px]">
+                  <div key={item.id} className="bg-white dark:bg-slate-800/60 border border-slate-150 rounded px-2.5 py-1.5 flex justify-between items-center text-[10.5px]">
                     <div className="flex items-center gap-2">
                       <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                         item.status === "Resolved" ? "bg-emerald-500" : "bg-red-500 animate-pulse"

@@ -5,9 +5,11 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { Report, MapReportPoint } from "../types";
 import { getValidMapPoints, getHeatmapPoints } from "../utils/geoAnalytics";
+import { createOsmTileLayer, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "../utils/mapConfig";
 import { 
   Sparkles, X, AlertTriangle, ShieldCheck, Layers, Filter, 
-  Flame, MapPin, Camera, FileText, CheckCircle, Clock, Eye, AlertCircle
+  Flame, MapPin, Camera, FileText, CheckCircle, Clock, Eye, AlertCircle,
+  Navigation, Loader2, Info
 } from "lucide-react";
 
 interface SimpleMapProps {
@@ -32,12 +34,17 @@ export default function SimpleMap({
   const markersRef = useRef<{ [key: string]: L.Marker }>({});
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const heatCirclesRef = useRef<L.Circle[]>([]);
+  const userLocationMarkerRef = useRef<L.Marker | null>(null);
 
   // Filter & Display States
   const [viewMode, setViewMode] = useState<"markers" | "heatmap" | "both">(initialViewMode);
   const [clusteringEnabled, setClusteringEnabled] = useState(true);
   const [sourceFilter, setSourceFilter] = useState<string>("All");
   const [statusFilter, setStatusFilter] = useState<string>("All");
+
+  // Geolocation state
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationNotice, setLocationNotice] = useState<string | null>(null);
 
   // Normalized valid points
   const validMapPoints = getValidMapPoints(reports, {
@@ -50,20 +57,28 @@ export default function SimpleMap({
     statusFilter
   });
 
-  // Initialize Map
+  // Determine fallback center: prefer props, then first valid report, then DEFAULT_MAP_CENTER
+  const initialCenter: [number, number] =
+    centerLatitude && centerLongitude && centerLatitude !== 0 && centerLongitude !== 0
+      ? [centerLatitude, centerLongitude]
+      : validMapPoints.length > 0 && validMapPoints[0].latitude && validMapPoints[0].longitude
+      ? [validMapPoints[0].latitude, validMapPoints[0].longitude]
+      : DEFAULT_MAP_CENTER;
+
+  // Initialize Map with OpenStreetMap canonical tile layer
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [centerLatitude, centerLongitude],
-      zoom: 12,
-      zoomControl: false
+      center: initialCenter,
+      zoom: DEFAULT_MAP_ZOOM,
+      zoomControl: false,
+      attributionControl: true
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      maxZoom: 20,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
-    }).addTo(map);
+    // Official OpenStreetMap tile layer with compliant attribution & error handling
+    const osmLayer = createOsmTileLayer();
+    osmLayer.addTo(map);
 
     L.control.zoom({
       position: "bottomright"
@@ -82,6 +97,92 @@ export default function SimpleMap({
       }
     };
   }, []);
+
+  // Responsive container resize observer to prevent grey/blank tiles
+  useEffect(() => {
+    const container = mapContainerRef.current;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize();
+      }
+    });
+
+    resizeObserver.observe(container);
+
+    const timer = setTimeout(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize();
+      }
+    }, 200);
+
+    return () => {
+      resizeObserver.disconnect();
+      clearTimeout(timer);
+    };
+  }, []);
+
+  // Handle "My Location" geolocation request
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      setLocationNotice("Geolocation is not supported by your browser.");
+      setTimeout(() => setLocationNotice(null), 4000);
+      return;
+    }
+
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setIsLocating(false);
+        const { latitude, longitude } = pos.coords;
+        const map = mapInstanceRef.current;
+        if (!map) return;
+
+        map.flyTo([latitude, longitude], 15, { animate: true, duration: 1.2 });
+
+        if (userLocationMarkerRef.current) {
+          userLocationMarkerRef.current.remove();
+        }
+
+        const userLocIcon = L.divIcon({
+          className: "user-loc-marker",
+          html: `
+            <div class="relative flex items-center justify-center">
+              <div class="w-8 h-8 rounded-full bg-blue-500/30 animate-ping absolute"></div>
+              <div class="w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow-lg"></div>
+            </div>
+          `,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+        });
+
+        const marker = L.marker([latitude, longitude], { icon: userLocIcon }).addTo(map);
+        marker.bindPopup(`
+          <div class="p-1 text-center font-sans">
+            <div class="text-[11px] font-bold text-slate-800">Your Current Location</div>
+            <div class="text-[9.5px] font-mono text-slate-500 mt-0.5">${latitude.toFixed(4)}, ${longitude.toFixed(4)}</div>
+          </div>
+        `).openPopup();
+
+        userLocationMarkerRef.current = marker;
+      },
+      (err) => {
+        setIsLocating(false);
+        let message = "Could not obtain device location.";
+        if (err.code === err.PERMISSION_DENIED) {
+          message = "Location permission denied in browser.";
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+          message = "Location information is unavailable.";
+        } else if (err.code === err.TIMEOUT) {
+          message = "Location request timed out.";
+        }
+        setLocationNotice(message);
+        setTimeout(() => setLocationNotice(null), 4000);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
 
   // Sync center coordinates or fly to selectedReport with cluster support
   useEffect(() => {
@@ -204,7 +305,7 @@ export default function SimpleMap({
                 html: `
                   <div class="relative flex items-center justify-center w-11 h-11 -translate-x-1.5 -translate-y-1.5 cursor-pointer group" title="${count} clustered incidents (Max severity: ${maxSeverity}%)">
                     <div class="absolute inset-0 rounded-full ${pingClass} opacity-30" style="background-color: ${primaryColor};"></div>
-                    <div class="w-10 h-10 rounded-full border-2 bg-white/95 shadow-md flex flex-col items-center justify-center font-mono transition-transform group-hover:scale-110" style="border-color: ${primaryColor};">
+                    <div class="w-10 h-10 rounded-full border-2 bg-white dark:bg-slate-800/60/95 dark:bg-slate-900/95 shadow-md flex flex-col items-center justify-center font-mono transition-transform group-hover:scale-110" style="border-color: ${primaryColor};">
                       <div class="text-[12px] font-black leading-none" style="color: ${primaryColor};">${count}</div>
                       <div class="text-[7.5px] uppercase font-sans font-extrabold tracking-tighter text-slate-500 leading-none mt-0.5">
                         ${hasRoadScan ? "📷 scan" : "incidents"}
@@ -349,12 +450,12 @@ export default function SimpleMap({
       <div className="absolute top-3 left-3 z-[1000] flex flex-wrap items-center gap-2 max-w-[calc(100%-24px)]">
         
         {/* Layer Mode Toggle (Markers / Heatmap / Both) */}
-        <div className="bg-white/95 backdrop-blur-md px-2 py-1.5 rounded-lg border border-slate-200 shadow-md flex items-center gap-1 text-[11px] font-bold text-slate-700">
+        <div className="bg-white dark:bg-slate-800/60/95 dark:bg-slate-900/95 backdrop-blur-md px-2 py-1.5 rounded-lg border border-slate-200 shadow-md flex items-center gap-1 text-[11px] font-bold text-slate-700">
           <Layers className="w-3.5 h-3.5 text-blue-600 mr-1" />
           <button
             onClick={() => setViewMode("both")}
             className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
-              viewMode === "both" ? "bg-blue-600 text-white shadow-3xs" : "hover:bg-slate-100 text-slate-600"
+              viewMode === "both" ? "bg-zinc-50 text-zinc-800 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-50 dark:border-zinc-700 shadow-3xs" : "hover:bg-slate-100 text-slate-600"
             }`}
           >
             Combined
@@ -362,7 +463,7 @@ export default function SimpleMap({
           <button
             onClick={() => setViewMode("markers")}
             className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
-              viewMode === "markers" ? "bg-blue-600 text-white shadow-3xs" : "hover:bg-slate-100 text-slate-600"
+              viewMode === "markers" ? "bg-zinc-50 text-zinc-800 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-50 dark:border-zinc-700 shadow-3xs" : "hover:bg-slate-100 text-slate-600"
             }`}
           >
             Markers ({validMapPoints.length})
@@ -382,7 +483,7 @@ export default function SimpleMap({
         {(viewMode === "markers" || viewMode === "both") && (
           <button
             onClick={() => setClusteringEnabled(prev => !prev)}
-            className={`bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-lg border shadow-md flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer ${
+            className={`bg-white dark:bg-slate-800/60/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 py-1.5 rounded-lg border shadow-md flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer ${
               clusteringEnabled
                 ? "border-blue-300 text-blue-700 bg-blue-50/80"
                 : "border-slate-200 text-slate-600 hover:bg-slate-50"
@@ -391,14 +492,14 @@ export default function SimpleMap({
           >
             <Layers className={`w-3.5 h-3.5 ${clusteringEnabled ? "text-blue-600" : "text-slate-400"}`} />
             <span>Clusters:</span>
-            <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-extrabold ${clusteringEnabled ? "bg-blue-600 text-white" : "bg-slate-200 text-slate-600"}`}>
+            <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-extrabold ${clusteringEnabled ? "bg-zinc-100 text-zinc-900 border border-zinc-200 shadow-sm dark:bg-zinc-800 dark:text-white dark:text-white dark:border-zinc-700" : "bg-slate-200 text-slate-600"}`}>
               {clusteringEnabled ? "ON" : "OFF"}
             </span>
           </button>
         )}
 
         {/* Source Filter Dropdown */}
-        <div className="bg-white/95 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5">
+        <div className="bg-white dark:bg-slate-800/60/95 dark:bg-slate-900/95 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5">
           <Filter className="w-3 h-3 text-slate-400" />
           <select
             id="map-source-filter"
@@ -413,7 +514,7 @@ export default function SimpleMap({
         </div>
 
         {/* Status Filter Dropdown */}
-        <div className="bg-white/95 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5">
+        <div className="bg-white dark:bg-slate-800/60/95 dark:bg-slate-900/95 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5">
           <select
             id="map-status-filter"
             value={statusFilter}
@@ -427,17 +528,45 @@ export default function SimpleMap({
           </select>
         </div>
 
+        {/* My Location Geolocation Button */}
+        <button
+          onClick={handleLocateMe}
+          disabled={isLocating}
+          className="bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer"
+          title="Locate my current position via GPS"
+        >
+          {isLocating ? (
+            <Loader2 className="w-3.5 h-3.5 text-blue-600 animate-spin" />
+          ) : (
+            <Navigation className="w-3.5 h-3.5 text-blue-600" />
+          )}
+          <span>{isLocating ? "Locating..." : "My Location"}</span>
+        </button>
+
       </div>
 
-      {/* TOP RIGHT: Active Telemetry Badge */}
+      {/* Geolocation Notification Toast */}
+      {locationNotice && (
+        <div className="absolute top-16 left-3 z-[1001] bg-slate-900/95 text-white text-[11px] font-medium px-3 py-1.5 rounded-lg shadow-lg border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-150">
+          <Info className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span>{locationNotice}</span>
+          <button onClick={() => setLocationNotice(null)} className="ml-1 text-slate-400 hover:text-white cursor-pointer">
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+      )}
+
+      {/* TOP RIGHT: Active Telemetry Badge with OpenStreetMap Attribution Indicator */}
       <div className="absolute top-3 right-3 z-[1000] hidden sm:flex items-center gap-2 bg-slate-900/90 backdrop-blur-md text-white px-3 py-1.5 rounded-lg shadow-md border border-slate-800 text-[10.5px] font-mono">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Delhi NCR GIS Core</span>
-        <span className="text-slate-400">|</span>
-        <span className="text-blue-300 font-bold">{validMapPoints.length} Valid Points</span>
+        <span className="text-emerald-400 font-bold">OpenStreetMap</span>
+        <span className="text-slate-500">|</span>
+        <span>Delhi NCR Core</span>
+        <span className="text-slate-500">|</span>
+        <span className="text-blue-300 font-bold">{validMapPoints.length} Points</span>
         {clusteringEnabled && (viewMode === "markers" || viewMode === "both") && (
           <>
-            <span className="text-slate-400">|</span>
+            <span className="text-slate-500">|</span>
             <span className="text-emerald-300 font-bold">Clustering Active</span>
           </>
         )}
@@ -459,7 +588,7 @@ export default function SimpleMap({
                 setSourceFilter("All");
                 setStatusFilter("All");
               }}
-              className="mt-3 px-3 py-1 bg-blue-600 text-white text-[11px] font-bold rounded-lg shadow-xs hover:bg-blue-700 transition-colors cursor-pointer"
+              className="mt-3 px-3 py-1 bg-zinc-50 text-zinc-800 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-50 dark:border-zinc-700 text-[11px] font-bold rounded-lg shadow-xs hover:bg-blue-700 transition-colors cursor-pointer"
             >
               Reset Map Filters
             </button>
@@ -469,7 +598,7 @@ export default function SimpleMap({
 
       {/* BOTTOM RIGHT: SELECTED REPORT INSPECTION PANEL */}
       {selectedReport && (
-        <div className="absolute bottom-3 right-3 left-3 sm:left-auto sm:max-w-[360px] bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-4 shadow-xl z-[1000] animate-in fade-in slide-in-from-bottom-3 duration-200 text-left">
+        <div className="absolute bottom-3 right-3 left-3 sm:left-auto sm:max-w-[360px] bg-white dark:bg-slate-800/60/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 rounded-xl p-4 shadow-xl z-[1000] animate-in fade-in slide-in-from-bottom-3 duration-200 text-left">
           
           <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2.5">
             <div className="flex items-center gap-1.5 text-blue-600">
