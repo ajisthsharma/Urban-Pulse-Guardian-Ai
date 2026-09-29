@@ -17,6 +17,7 @@ import {
   Volume2
 } from "lucide-react";
 import { User, Report } from "../types";
+import { auth } from "../lib/firebase";
 import { createReport } from "../services/reportsService";
 import { createNotification } from "../services/notificationsService";
 
@@ -47,6 +48,7 @@ export default function FooterEmergencyButton({
 
   const countdownIntervalRef = useRef<any>(null);
   const autoLockCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
+  const sosInFlightRef = useRef<boolean>(false);
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -129,12 +131,13 @@ export default function FooterEmergencyButton({
     }
     setCountdown(null);
     setIsTriggering(false);
+    sosInFlightRef.current = false;
     setDispatchStage("IDLE");
   };
 
   // Instant or Counted Execution of High Priority SOS
   const startSosCountdown = (instant = false) => {
-    if (isTriggering) return;
+    if (isTriggering || sosInFlightRef.current) return;
     setErrorMessage(null);
     setIsTriggering(true);
 
@@ -161,23 +164,36 @@ export default function FooterEmergencyButton({
 
   // Perform Firestore Report creation & Notification broadcast
   const executeSosBroadcast = async () => {
+    if (sosInFlightRef.current) return;
+    sosInFlightRef.current = true;
     setIsTriggering(true);
     setDispatchStage("BROADCASTING");
     setCountdown(null);
 
     try {
-      // Ensure we have coordinates
+      // 0. Verify real Firebase Auth session is active before any write
+      const currentAuthUser = auth.currentUser;
+      if (!currentAuthUser) {
+        console.warn("[Emergency SOS] Denied: No authenticated Firebase user session found.");
+        setErrorMessage("Please sign in again before sending Emergency SOS.");
+        setIsTriggering(false);
+        setDispatchStage("IDLE");
+        sosInFlightRef.current = false;
+        return;
+      }
+
+      // Ensure we have coordinates (GPS continues working independently)
       let coords = userCoords || autoLockCoordsRef.current;
       if (!coords) {
         coords = await acquireLocation();
       }
 
-      const activeUser = currentUser || {
-        id: "citizen_quick_action",
-        email: "citizen@urbanpulse.gov",
-        fullName: "Citizen Quick Action",
-        role: "citizen" as const,
-        createdAt: new Date().toISOString()
+      const activeUser = {
+        id: currentAuthUser.uid,
+        uid: currentAuthUser.uid,
+        email: currentAuthUser.email || currentUser?.email || "citizen@urbanpulse.ai",
+        fullName: currentUser?.fullName || currentAuthUser.displayName || "Urban Citizen",
+        role: currentUser?.role || "citizen"
       };
 
       const customTitle = `🚨 URGENT SOS: High-Priority Emergency Incident`;
@@ -252,9 +268,16 @@ export default function FooterEmergencyButton({
       }
     } catch (err: any) {
       console.error("Failed to execute Quick-Action SOS:", err);
-      setErrorMessage(err.message || "Failed to broadcast SOS beacon. Please call emergency services directly.");
-      setIsTriggering(false);
+      const msg = err?.message || "Failed to broadcast SOS beacon. Please call emergency services directly.";
+      setErrorMessage(
+        msg.includes("permission") || msg.includes("Authentication required") || msg.includes("sign in")
+          ? "Please sign in again before sending Emergency SOS."
+          : msg
+      );
       setDispatchStage("IDLE");
+    } finally {
+      setIsTriggering(false);
+      sosInFlightRef.current = false;
     }
   };
 

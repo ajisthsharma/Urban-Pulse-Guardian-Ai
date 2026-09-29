@@ -1,8 +1,10 @@
 import { createNotification } from "../services/notificationsService";
-import React, { useState } from "react";
+import { createReport } from "../services/reportsService";
+import { auth } from "../lib/firebase";
+import React, { useState, useRef } from "react";
 import { 
   AlertOctagon, PhoneCall, ShieldAlert, MapPin, 
-  CheckCircle2, Radio, Clock, User, ArrowRight, Activity
+  CheckCircle2, Radio, Clock, User, ArrowRight, Activity, Loader2
 } from "lucide-react";
 import { User as UserType } from "../types";
 
@@ -15,27 +17,32 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
   const [countdown, setCountdown] = useState<number | null>(null);
   const [emergencyType, setEmergencyType] = useState<"Major Road Cave-In / Accident" | "Active Flood / Submerged Road" | "Live Electrical / Wire Hazard" | "Medical / Crash Emergency">("Major Road Cave-In / Accident");
   const [dispatchStatus, setDispatchStatus] = useState<"BROADCASTING" | "DISPATCHED" | "ACKNOWLEDGED">("BROADCASTING");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [createdTicketId, setCreatedTicketId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const sosInFlightRef = useRef<boolean>(false);
+  const countdownIntervalRef = useRef<any>(null);
 
   const handleTriggerSOS = () => {
+    if (isSubmitting || sosInFlightRef.current) return;
+    setErrorMessage(null);
+
+    // 0. Pre-check Firebase Auth session
+    const currentAuthUser = auth.currentUser;
+    if (!currentAuthUser) {
+      console.warn("[CitizenEmergencySOS] Denied: No authenticated Firebase user session found.");
+      setErrorMessage("Please sign in again before sending Emergency SOS.");
+      return;
+    }
+
     setCountdown(3);
-    const interval = setInterval(() => {
+    countdownIntervalRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev === null || prev <= 1) {
-          clearInterval(interval);
-          setSosActive(true);
-          setDispatchStatus("BROADCASTING");
-          
-          // Trigger Municipal Notification for SOS
-          createNotification(
-            "🚨 CRITICAL SOS ACTIVATED",
-            `Emergency: ${emergencyType} reported by ${currentUser?.email || 'Citizen'}`,
-            "alert_high_severity",
-            "admin",
-            "",
-            "SOS_ALERT"
-          );
-
-          setTimeout(() => setDispatchStatus("DISPATCHED"), 2500);
+          clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+          executeSosBroadcast();
           return null;
         }
         return prev - 1;
@@ -43,9 +50,101 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
     }, 1000);
   };
 
+  const executeSosBroadcast = async () => {
+    if (sosInFlightRef.current) return;
+    sosInFlightRef.current = true;
+    setIsSubmitting(true);
+    setSosActive(true);
+    setDispatchStatus("BROADCASTING");
+
+    try {
+      const currentAuthUser = auth.currentUser;
+      if (!currentAuthUser) {
+        console.warn("[CitizenEmergencySOS] Denied: No authenticated Firebase user session found.");
+        setErrorMessage("Please sign in again before sending Emergency SOS.");
+        setSosActive(false);
+        setIsSubmitting(false);
+        sosInFlightRef.current = false;
+        return;
+      }
+
+      // Default fallback or live coords
+      const lat = 28.6139;
+      const lng = 77.2090;
+
+      // 1. Create Report in Firestore
+      const report = await createReport(
+        {
+          title: `🚨 EMERGENCY SOS: ${emergencyType}`,
+          description: `Critical citizen emergency SOS broadcasted for: ${emergencyType}. Immediate response required.`,
+          category: "Other",
+          location: "Live Citizen Location (NCR Emergency Sector)",
+          latitude: lat,
+          longitude: lng,
+          severity: 99,
+          riskLevel: "High",
+          priority: "Critical",
+          confidence: 99,
+          source: "MANUAL_REPORT",
+          image: "https://images.unsplash.com/photo-1584467541268-b040f83be3fd?auto=format&fit=crop&w=600&q=80",
+          aiAnalysis: {
+            category: "Emergency SOS Incident",
+            severityScore: 99,
+            riskLevel: "High",
+            confidence: 99,
+            description: `Emergency incident: ${emergencyType}`,
+            recommendedActions: [
+              "Immediate emergency dispatch",
+              "Alert city response units",
+              "Secure incident perimeter"
+            ]
+          }
+        },
+        {
+          id: currentAuthUser.uid,
+          uid: currentAuthUser.uid,
+          email: currentAuthUser.email || currentUser?.email || "citizen@urbanpulse.ai",
+          fullName: currentUser?.fullName || currentAuthUser.displayName || "Urban Citizen"
+        }
+      );
+
+      setCreatedTicketId(report.id);
+
+      // 2. Trigger Municipal Notification for SOS
+      await createNotification(
+        "🚨 CRITICAL SOS ACTIVATED",
+        `Emergency: ${emergencyType} reported by ${currentAuthUser.email || 'Citizen'} (Ticket: ${report.id})`,
+        "alert_high_severity",
+        "admin",
+        "",
+        report.id
+      );
+
+      setDispatchStatus("DISPATCHED");
+    } catch (err: any) {
+      console.error("Failed to execute Citizen SOS:", err);
+      const msg = err?.message || "Failed to broadcast SOS beacon. Please call emergency services directly.";
+      setErrorMessage(
+        msg.includes("permission") || msg.includes("Authentication required") || msg.includes("sign in")
+          ? "Please sign in again before sending Emergency SOS."
+          : msg
+      );
+      setSosActive(false);
+    } finally {
+      setIsSubmitting(false);
+      sosInFlightRef.current = false;
+    }
+  };
+
   const handleCancelSOS = () => {
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
     setCountdown(null);
     setSosActive(false);
+    setIsSubmitting(false);
+    sosInFlightRef.current = false;
   };
 
   return (
@@ -87,8 +186,13 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
       {/* SOS ACTION CARD & DISPATCH STATUS */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
-        {/* BIG SOS TRIGGER (Left 7 Cols) */}
         <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-5 shadow-xs">
+          {errorMessage && (
+            <div className="w-full p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-300 text-xs font-semibold flex items-center justify-center gap-2">
+              <AlertOctagon className="w-4 h-4 text-red-600 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
           {!sosActive && countdown === null && (
             <>
               <div className="max-w-md space-y-2">
@@ -160,13 +264,19 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
               </div>
 
               <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
+                {createdTicketId && (
+                  <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
+                    <span>Emergency Ticket:</span>
+                    <span className="font-mono text-red-600 dark:text-red-400 font-bold">{createdTicketId}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
                   <span>Broadcast GPS:</span>
-                  <span className="font-mono text-slate-900 dark:text-white font-bold">0.0000° N, 0.0000° E</span>
+                  <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">28.6139° N, 77.2090° E</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
                   <span>Citizen Contact:</span>
-                  <span className="font-mono text-slate-900 dark:text-white">{currentUser?.email || "citizen@gmail.com"}</span>
+                  <span className="font-mono text-slate-900 dark:text-white">{auth.currentUser?.email || currentUser?.email || "citizen@urbanpulse.ai"}</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
                   <span>Assigned Unit:</span>

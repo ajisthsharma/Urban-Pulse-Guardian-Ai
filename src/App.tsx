@@ -441,6 +441,27 @@ export default function App() {
     return 0;
   });
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#F5F7FB] flex flex-col items-center justify-center p-6 text-[#172033]">
+        <div className="flex flex-col items-center gap-4 text-center max-w-sm">
+          <div className="w-14 h-14 rounded-2xl bg-[#2563EB] text-white flex items-center justify-center shadow-xl shadow-blue-500/20 animate-pulse">
+            <ShieldAlert className="w-7 h-7 text-white" />
+          </div>
+          <div>
+            <h2 className="font-display font-black text-lg text-slate-900 tracking-tight uppercase">
+              UrbanPulse Guardian Net
+            </h2>
+            <p className="text-xs text-slate-500 mt-1">
+              Verifying secure authentication session...
+            </p>
+          </div>
+          <Loader2 className="w-6 h-6 text-[#2563EB] animate-spin mt-2" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row font-sans transition-colors overflow-x-hidden text-slate-900 dark:text-white">
       
