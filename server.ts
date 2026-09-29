@@ -331,7 +331,7 @@ if (apiKey && apiKey !== "YOUR_GEMINI_API_KEY" && apiKey.trim().length > 0) {
 }
 
 // Authoritative Road Scanner Gemini Model & Batching Configuration
-const ROAD_SCANNER_GEMINI_MODEL = process.env.ROAD_SCANNER_GEMINI_MODEL || "gemini-3.8-flash";
+const ROAD_SCANNER_GEMINI_MODEL = process.env.ROAD_SCANNER_GEMINI_MODEL || "gemini-2.5-flash";
 const GEMINI_FRAME_BATCH_SIZE = 4;
 const MAX_GEMINI_REQUESTS_PER_SCAN = 3;
 
@@ -393,8 +393,8 @@ async function generateContentWithFallback(
   params: any,
   preferredModel: string = ROAD_SCANNER_GEMINI_MODEL
 ): Promise<{ response: any; modelUsed: string }> {
-  // Use authoritative primary model first, followed by valid high-efficiency modern models
-  const candidateModels = Array.from(new Set([preferredModel, "gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.8-flash"]));
+  // Use authoritative primary model first, followed by valid standard Google GenAI models
+  const candidateModels = Array.from(new Set([preferredModel, "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]));
   const availableModels = candidateModels.filter(m => !isModelInCooldown(m));
   const models = availableModels.length > 0 ? availableModels : candidateModels.slice(0, 1);
   let lastError: any = null;
@@ -1122,64 +1122,37 @@ Respond ONLY with valid JSON matching:
         const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
         const parsed = JSON.parse(cleaned);
 
+        const isDetected = Boolean(parsed.issueDetected);
+
         return res.json({
           status: "success",
           analysis: {
-            issueDetected: parsed.issueDetected !== undefined ? Boolean(parsed.issueDetected) : true,
-            issueType: parsed.issueType || parsed.category || category || "Pothole",
-            confidence: Number(parsed.confidence) || 88,
-            severity: Number(parsed.severity ?? parsed.severityScore) || 60,
-            priority: parsed.priority || (Number(parsed.severity) >= 75 ? "High" : "Medium"),
-            riskLevel: parsed.riskLevel || (Number(parsed.severity) >= 75 ? "High" : "Medium"),
-            description: parsed.description || "Identified urban infrastructure hazard requiring crew remediation.",
-            recommendedActions: Array.isArray(parsed.recommendedActions) ? parsed.recommendedActions : ["Dispatch field inspection team"],
-            reasoning: parsed.reasoning || "Visual features analyzed by Gemini Vision.",
+            issueDetected: isDetected,
+            issueType: isDetected ? (parsed.issueType || parsed.category || category || "Other") : "Other",
+            confidence: Number(parsed.confidence) || 80,
+            severity: isDetected ? (Number(parsed.severity ?? parsed.severityScore) || 50) : 0,
+            priority: isDetected ? (parsed.priority || (Number(parsed.severity) >= 75 ? "High" : "Medium")) : "Low",
+            riskLevel: isDetected ? (parsed.riskLevel || (Number(parsed.severity) >= 75 ? "High" : "Medium")) : "Low",
+            description: parsed.description || (isDetected ? "Identified urban infrastructure hazard." : "No valid urban infrastructure hazard detected in image."),
+            recommendedActions: isDetected && Array.isArray(parsed.recommendedActions) ? parsed.recommendedActions : [],
+            reasoning: parsed.reasoning || (isDetected ? "Visual hazard detected by Gemini Vision." : "Visual inspection confirmed no road hazard present."),
             source: "AI_GEMINI"
           }
         });
       } catch (geminiErr: any) {
-        console.log("[Gemini AI] Image analysis fallback activated:", sanitizeErrorMessage(geminiErr?.message || geminiErr).slice(0, 100));
+        console.warn("[Gemini AI] Image analysis error:", sanitizeErrorMessage(geminiErr?.message || geminiErr).slice(0, 100));
+        return res.status(503).json({
+          status: "unavailable",
+          error: "Analysis unavailable",
+          message: "AI analysis service is currently unavailable. Please verify API key configuration."
+        });
       }
     }
 
-    // Heuristic Fallback
-    const combined = `${title || ""} ${description || ""} ${category || ""}`.toLowerCase();
-    let issueType: Report["category"] = "Pothole";
-    let severity = 65;
-    let summary = "Urban infrastructure irregularity recorded by citizen reporter.";
-    let actions = ["Dispatch survey inspector", "Verify road sector safety"];
-
-    if (combined.includes("pothole") || combined.includes("crater") || combined.includes("asphalt")) {
-      issueType = "Pothole";
-      severity = 82;
-      summary = "Asphalt surface cavity detected. Poses immediate danger to vehicular rims and two-wheelers.";
-      actions = ["Deploy rapid asphalt cold-patch crew", "Place high-visibility hazard pylons", "Inspect sub-base drainage"];
-    } else if (combined.includes("garbage") || combined.includes("trash") || combined.includes("waste")) {
-      issueType = "Garbage Overflow";
-      severity = 64;
-      summary = "Civic waste accumulation encroaching onto public sidewalk right-of-way.";
-      actions = ["Alert municipal sanitation compactor unit", "Pressure-wash walkway", "Inspect commercial waste compliance"];
-    } else if (combined.includes("light") || combined.includes("lamp") || combined.includes("dark")) {
-      issueType = "Broken Streetlight";
-      severity = 70;
-      summary = "Street illumination luminaire dark or structurally compromised at junction.";
-      actions = ["Isolate local electrical junction", "Deploy bucket lift vehicle for fixture replacement", "Test photocell sensor"];
-    }
-
-    return res.json({
-      status: "success",
-      analysis: {
-        issueDetected: true,
-        issueType,
-        confidence: 85,
-        severity,
-        priority: severity >= 75 ? "High" : "Medium",
-        riskLevel: severity >= 75 ? "High" : "Medium",
-        description: summary,
-        recommendedActions: actions,
-        reasoning: "Rule-based smart infrastructure diagnostics heuristic applied.",
-        source: "FALLBACK_HEURISTIC"
-      }
+    return res.status(503).json({
+      status: "unavailable",
+      error: "Analysis unavailable",
+      message: "AI analysis unavailable: Gemini Vision engine not initialized or API key missing."
     });
   } catch (err: any) {
     console.error("AI Image Analysis error:", err);
@@ -1200,6 +1173,7 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
     if (!rawFrames || rawFrames.length === 0) {
       return res.status(400).json({
         detected: false,
+        detection: null,
         detections: [],
         aiStatus: "ERROR",
         errorState: "INVALID_FRAME",
@@ -1208,14 +1182,15 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
       });
     }
 
-    if (!ai || !process.env.GEMINI_API_KEY) {
-      return res.status(401).json({
+    if (!ai || !process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "MY_GEMINI_API_KEY" || process.env.GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+      return res.status(503).json({
         detected: false,
+        detection: null,
         detections: [],
-        aiStatus: "ERROR",
-        errorState: "GEMINI_AUTH_ERROR",
-        httpStatus: 401,
-        message: "Gemini API configuration is missing on server environment.",
+        aiStatus: "UNAVAILABLE",
+        errorState: "GEMINI_UNCONFIGURED",
+        httpStatus: 503,
+        message: "Analysis unavailable: Valid GEMINI_API_KEY is not configured on the server.",
         modelUsed: ROAD_SCANNER_GEMINI_MODEL
       });
     }
@@ -1253,42 +1228,43 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
       });
     }
 
-    const batchPrompt = `You are analyzing a sequence of road-scene video frames captured by a vehicle-mounted camera during an AI Road Scan.
+    const batchPrompt = `You are an expert Computer Vision Inspector for urban road safety.
+Inspect the provided image frame(s) carefully and objectively.
 
-You are provided with ${validFrames.length} consecutive video frame(s). Each image is explicitly tagged with its integer frameIndex.
+For each frame (tagged by frameIndex), analyze:
+1. isRoadScene (boolean): Is this an actual outdoor roadway, street, highway, or pavement scene? 
+   Set to FALSE for indoor rooms, selfies, people, animals, memes, food, objects, documents, screens, or building interiors.
+2. hasHazard (boolean): Is there an actual, visible roadway hazard on the pavement surface? 
+   Set to FALSE for smooth/clean roads, normal traffic, vehicles, pedestrians, or non-road scenes.
+3. category (string):
+   - If not a road scene or no hazard: "NO_ROAD_HAZARD"
+   - If genuine hazard: "Pothole" | "Road surface damage" | "Waterlogging" | "Road obstruction" | "Other road hazard"
+4. confidence (float, 0.0 to 1.0): Your genuine assessment confidence based strictly on visual clarity. Do NOT use fixed or arbitrary values.
+5. severity (string):
+   - "None" if no hazard
+   - "Low" for minor localized surface wear or shallow depressions
+   - "Medium" for moderate road damage affecting noticeable area
+   - "High" for large/deep-looking craters, severe potholes, or substantial road blockage
+   - "Unknown" if evidence is inconclusive
+6. boundingBox (object or null):
+   - If hazard detected: normalized bounding box { "x": float, "y": float, "width": float, "height": float } (values between 0.0 and 1.0)
+   - If no hazard: null
+7. reason (string): Factual 1-sentence explanation of what is visible in the frame (e.g., "Normal asphalt surface without defects", "Indoor portrait, no road present", or "Deep circular pothole visible in lane center").
 
-Inspect the visible roadway surface in EACH provided frame carefully.
+DO NOT FABRICATE HAZARDS. If unsure or if image is not a road, return hasHazard: false and category: "NO_ROAD_HAZARD".
 
-Detect ONLY real, visible road surface and infrastructure hazards (e.g. pothole, road crack, damaged road, waterlogging, debris).
-
-For every real hazard detected in ANY of the frames, specify:
-- frameIndex: the exact integer frameIndex corresponding to the image frame where the hazard appears
-- category: hazard category ("pothole", "road crack", "waterlogging", "debris", etc.)
-- confidence: confidence score between 0.0 and 1.0 (e.g. 0.92)
-- severity: severity score integer between 0 and 100
-- description: concise 1-sentence description
-- localization: normalized bounding box object { x, y, width, height } where all values are floats between 0.0 and 1.0 representing relative position on that frame
-
-If no hazard is visible across the frames:
-return an empty detections array.
-
-Do NOT invent hazards.
-
-Respond strictly in structured JSON format matching this schema:
+Respond strictly with valid JSON:
 {
-  "detections": [
+  "results": [
     {
       "frameIndex": 0,
-      "category": "pothole",
-      "confidence": 0.92,
-      "severity": 80,
-      "description": "Visible pothole on roadway surface",
-      "localization": {
-        "x": 0.40,
-        "y": 0.55,
-        "width": 0.22,
-        "height": 0.16
-      }
+      "isRoadScene": boolean,
+      "hasHazard": boolean,
+      "category": "Pothole" | "Road surface damage" | "Waterlogging" | "Road obstruction" | "Other road hazard" | "NO_ROAD_HAZARD",
+      "confidence": float,
+      "severity": "Low" | "Medium" | "High" | "None" | "Unknown",
+      "boundingBox": { "x": 0.35, "y": 0.52, "width": 0.22, "height": 0.16 } | null,
+      "reason": string
     }
   ]
 }`;
@@ -1303,187 +1279,195 @@ Respond strictly in structured JSON format matching this schema:
     console.log(`[Road Scanner AI] Batch Request Started | framesCount: ${validFrames.length} | model: ${ROAD_SCANNER_GEMINI_MODEL}`);
 
     let result: { response: any; modelUsed: string } | null = null;
-    let fallbackToCv = false;
+    let geminiErrorClassified: any = null;
 
-    if (ai) {
-      try {
-        result = await generateContentWithFallback(ai, {
-          contents: contentsPayload,
-          config: { responseMimeType: "application/json" }
-        }, ROAD_SCANNER_GEMINI_MODEL);
-      } catch (geminiErr: any) {
-        const classified = classifyGeminiError(geminiErr, ROAD_SCANNER_GEMINI_MODEL);
-        console.log(`[Road Scanner AI] Gemini batch analysis note: ${classified.errorState}. Activating CV telemetry fallback.`);
-        fallbackToCv = true;
-      }
-    } else {
-      fallbackToCv = true;
+    try {
+      result = await generateContentWithFallback(ai, {
+        contents: contentsPayload,
+        config: { responseMimeType: "application/json" }
+      }, ROAD_SCANNER_GEMINI_MODEL);
+    } catch (geminiErr: any) {
+      geminiErrorClassified = classifyGeminiError(geminiErr, ROAD_SCANNER_GEMINI_MODEL);
+      console.warn(`[Road Scanner AI] Gemini batch analysis error: ${geminiErrorClassified.errorState} - ${geminiErrorClassified.message}`);
     }
 
-    let detectionsArray: any[] = [];
-    let modelUsed = result?.modelUsed || "CV-Heuristic-Engine (Telemetry)";
+    // STRICT REQUIREMENT #2 & #7: NEVER fabricate a detection when AI analysis fails!
+    if (!result) {
+      const status = geminiErrorClassified?.httpStatus || 503;
+      return res.status(status).json({
+        detected: false,
+        detection: null,
+        detections: [],
+        aiStatus: "UNAVAILABLE",
+        errorState: geminiErrorClassified?.errorState || "AI_UNAVAILABLE",
+        httpStatus: status,
+        message: "Analysis unavailable: " + (geminiErrorClassified?.message || "Vision AI model service unreachable."),
+        modelUsed: geminiErrorClassified?.attemptedModel || ROAD_SCANNER_GEMINI_MODEL
+      });
+    }
 
-    if (fallbackToCv || !result) {
-      // High-precision road surface anomaly analyzer
-      const frameToAnalyze = validFrames[0];
-      const frameIdx = frameToAnalyze.frameIndex;
-      
-      // Determine if visual road hazard exists in this frame sequence
-      // Use frame payload variance & frame index to deterministically evaluate realistic roadway hazard presence
-      const hashVal = Math.abs(
-        (frameToAnalyze.base64Data.slice(100, 200).split("").reduce((acc: number, ch: string) => acc + ch.charCodeAt(0), 0) + (frameIdx * 37)) % 100
-      );
-      
-      // Verifiable road irregularities detected in road-contact zone
-      if (hashVal > 40) {
-        const hazardTypes = [
-          { cat: "Pothole", sev: 82, desc: "Surface cavity and asphalt depression identified in vehicle travel path." },
-          { cat: "Road Crack / Fissure", sev: 68, desc: "Transverse asphalt fissure expanding across lane center." },
-          { cat: "Waterlogging / Drainage", sev: 74, desc: "Surface water accumulation obscuring lane demarcation." }
-        ];
-        const selected = hazardTypes[hashVal % hazardTypes.length];
-        const xOffset = 0.32 + ((hashVal % 25) / 100);
-        const yOffset = 0.52 + ((hashVal % 18) / 100);
+    const modelUsed = result.modelUsed;
+    const rawText = (result.response?.text || "").trim();
+    let resultsArray: any[] = [];
 
-        detectionsArray.push({
-          frameIndex: frameIdx,
-          category: selected.cat,
-          confidence: 0.88 + ((hashVal % 10) / 100),
-          severity: selected.sev,
-          description: selected.desc,
-          localization: {
-            x: Number(xOffset.toFixed(2)),
-            y: Number(yOffset.toFixed(2)),
-            width: 0.26,
-            height: 0.18
-          }
-        });
-      }
-    } else {
-      const rawText = (result.response?.text || "").trim();
-      if (rawText) {
-        const cleanedText = rawText.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
-        try {
-          const parsed = JSON.parse(cleanedText);
-          if (Array.isArray(parsed?.detections)) {
-            detectionsArray = parsed.detections;
-          } else if (parsed && typeof parsed === "object" && parsed.category) {
-            detectionsArray = [parsed];
-          }
-        } catch (pErr: any) {
-          console.log("[Road Scanner AI] JSON parse note on Gemini output, activating CV fallback.");
-          const frameToAnalyze = validFrames[0];
-          detectionsArray.push({
-            frameIndex: frameToAnalyze.frameIndex,
-            category: "Pothole",
-            confidence: 0.85,
-            severity: 78,
-            description: "Visual road surface cavity verified in lane center.",
-            localization: { x: 0.36, y: 0.54, width: 0.25, height: 0.18 }
-          });
+    if (rawText) {
+      const cleanedText = rawText.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+      try {
+        const parsed = JSON.parse(cleanedText);
+        if (Array.isArray(parsed?.results)) {
+          resultsArray = parsed.results;
+        } else if (Array.isArray(parsed?.detections)) {
+          resultsArray = parsed.detections;
+        } else if (parsed && typeof parsed === "object") {
+          resultsArray = [parsed];
         }
+      } catch (pErr: any) {
+        console.warn("[Road Scanner AI] JSON parse error on Gemini output:", pErr);
+        return res.status(502).json({
+          detected: false,
+          detection: null,
+          detections: [],
+          aiStatus: "UNAVAILABLE",
+          errorState: "PARSE_ERROR",
+          httpStatus: 502,
+          message: "Analysis unavailable: Malformed AI response payload.",
+          modelUsed
+        });
       }
     }
 
     const MIN_DETECTION_CONFIDENCE = 55;
+    const detectionsArray: any[] = [];
 
-    const normalizedDetections = detectionsArray
-      .map(det => {
-        const frameIdx = Number(det.frameIndex ?? det.frame_index ?? det.frame ?? validFrames[0].frameIndex);
-        let catRaw = String(det.category || "pothole").toLowerCase().trim();
-        let normalizedCategory = "Pothole";
+    for (const item of resultsArray) {
+      const isRoadScene = item.isRoadScene !== false;
+      const hasHazard = Boolean(item.hasHazard);
+      const catRaw = String(item.category || "").trim();
+      const isNoHazard = catRaw.toUpperCase() === "NO_ROAD_HAZARD" || !hasHazard || !isRoadScene;
 
-        if (catRaw.includes("pothole") || catRaw.includes("asphalt") || catRaw.includes("hole") || catRaw.includes("damaged road")) {
-          normalizedCategory = "Pothole";
-        } else if (catRaw.includes("crack") || catRaw.includes("fissure")) {
-          normalizedCategory = "Road Crack / Fissure";
-        } else if (catRaw.includes("water") || catRaw.includes("puddle") || catRaw.includes("drainage")) {
-          normalizedCategory = "Waterlogging / Drainage";
-        } else if (catRaw.includes("garbage") || catRaw.includes("trash") || catRaw.includes("waste")) {
-          normalizedCategory = "Garbage on Road";
-        } else if (catRaw.includes("streetlight") || catRaw.includes("lamp") || catRaw.includes("light")) {
-          normalizedCategory = "Broken Streetlight";
-        } else if (catRaw.includes("obstruction") || catRaw.includes("debris") || catRaw.includes("block")) {
-          normalizedCategory = "Road Obstruction";
+      // Filter out non-road images (selfies, animals, indoors) and clean roads
+      if (isNoHazard) {
+        continue;
+      }
+
+      // Valid hazard category normalization
+      let normalizedCategory: string = "Other road hazard";
+      const lower = catRaw.toLowerCase();
+      if (lower.includes("pothole")) {
+        normalizedCategory = "Pothole";
+      } else if (lower.includes("water") || lower.includes("drainage") || lower.includes("flooding")) {
+        normalizedCategory = "Waterlogging";
+      } else if (lower.includes("crack") || lower.includes("fissure") || lower.includes("surface damage") || lower.includes("damaged road")) {
+        normalizedCategory = "Road surface damage";
+      } else if (lower.includes("obstruction") || lower.includes("debris") || lower.includes("barrier")) {
+        normalizedCategory = "Road obstruction";
+      } else {
+        normalizedCategory = catRaw || "Other road hazard";
+      }
+
+      // Genuine confidence from AI (never hardcode 91% or 84%!)
+      let conf = Number(item.confidence);
+      if (isNaN(conf) || !isFinite(conf)) {
+        conf = 0.75;
+      }
+      if (conf <= 1.0) {
+        conf = Math.round(conf * 100);
+      }
+      conf = Math.max(1, Math.min(100, Math.round(conf)));
+
+      // Severity calculation (Requirement #6: LOW, MEDIUM, HIGH, Unknown)
+      let severityLabel: "Low" | "Medium" | "High" | "Unknown" = "Medium";
+      let severityScore = 60;
+      const sevRaw = String(item.severity || "").toLowerCase().trim();
+
+      if (sevRaw === "low" || sevRaw.includes("low") || sevRaw.includes("minor")) {
+        severityLabel = "Low";
+        severityScore = 35;
+      } else if (sevRaw === "high" || sevRaw.includes("high") || sevRaw.includes("critical") || sevRaw.includes("severe")) {
+        severityLabel = "High";
+        severityScore = 85;
+      } else if (sevRaw === "medium" || sevRaw.includes("medium") || sevRaw.includes("moderate")) {
+        severityLabel = "Medium";
+        severityScore = 60;
+      } else if (typeof item.severity === "number" && !isNaN(item.severity)) {
+        const numSev = Math.max(1, Math.min(100, Math.round(item.severity <= 1.0 ? item.severity * 100 : item.severity)));
+        severityScore = numSev;
+        severityLabel = numSev >= 75 ? "High" : numSev >= 45 ? "Medium" : "Low";
+      } else {
+        severityLabel = "Unknown";
+        severityScore = 50;
+      }
+
+      // Localization bounding box
+      let loc = item.boundingBox || item.localization || null;
+      let validBbox: any = null;
+      if (loc && typeof loc === "object") {
+        const x = Number(loc.x ?? 0);
+        const y = Number(loc.y ?? 0);
+        const width = Number(loc.width ?? 0);
+        const height = Number(loc.height ?? 0);
+        if (!isNaN(x) && !isNaN(y) && !isNaN(width) && !isNaN(height) && width > 0.01 && height > 0.01) {
+          validBbox = {
+            x: Math.max(0, Math.min(0.95, Number(x.toFixed(3)))),
+            y: Math.max(0, Math.min(0.95, Number(y.toFixed(3)))),
+            width: Math.max(0.05, Math.min(1, Number(width.toFixed(3)))),
+            height: Math.max(0.05, Math.min(1, Number(height.toFixed(3))))
+          };
         }
+      }
 
-        let conf = Number(det.confidence ?? det.confidenceScore ?? 0.85);
-        if (conf <= 1.0) conf = Math.round(conf * 100);
-        conf = Math.max(0, Math.min(100, conf));
+      let estWidth: string | null = null;
+      let estLength: string | null = null;
+      let estArea: string | null = null;
+      let sizeConf: "High" | "Medium" | "Low" | "Unavailable" = "Unavailable";
 
-        let sev = Number(det.severity || det.severityScore || 65);
-        if (sev <= 1.0) sev = Math.round(sev * 100);
-        sev = Math.max(0, Math.min(100, sev));
+      if (validBbox && validBbox.width >= 0.04 && validBbox.height >= 0.03) {
+        const wM = Number(((validBbox.width / 0.45) * 2.2).toFixed(1));
+        const clampedW = Math.max(0.4, Math.min(3.2, wM));
+        const lM = Number(((validBbox.height / 0.35) * 1.8).toFixed(1));
+        const clampedL = Math.max(0.3, Math.min(3.0, lM));
+        const aM = Number((clampedW * clampedL).toFixed(2));
+        estWidth = `~${clampedW}m`;
+        estLength = `~${clampedL}m`;
+        estArea = `~${aM} m²`;
+        sizeConf = conf >= 80 ? "Medium" : "Low";
+      }
 
-        let loc = det.localization || det.boundingBox || det.location;
-        if (loc && typeof loc === "object") {
-          let x = Number(loc.x ?? loc.left ?? 0);
-          let y = Number(loc.y ?? loc.top ?? 0);
-          let w = Number(loc.width ?? loc.w ?? 0);
-          let h = Number(loc.height ?? loc.h ?? 0);
+      detectionsArray.push({
+        frameIndex: Number(item.frameIndex ?? validFrames[0].frameIndex),
+        category: normalizedCategory,
+        hazardType: normalizedCategory.toUpperCase().replace(/\s+/g, "_"),
+        confidence: conf,
+        severityScore: severityScore,
+        severityLabel: severityLabel,
+        description: typeof item.reason === "string" && item.reason.trim() 
+          ? item.reason.trim() 
+          : `Visual ${normalizedCategory} identified on roadway surface.`,
+        boundingBox: validBbox,
+        estimatedWidth: estWidth,
+        estimatedLength: estLength,
+        estimatedArea: estArea,
+        sizeConfidence: sizeConf
+      });
+    }
 
-          if (isNaN(x) || isNaN(y) || isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
-            loc = null;
-          } else {
-            loc = {
-              x: Math.max(0, Math.min(1, x)),
-              y: Math.max(0, Math.min(1, y)),
-              width: Math.max(0.01, Math.min(1 - x, w)),
-              height: Math.max(0.01, Math.min(1 - y, h))
-            };
-          }
-        } else {
-          loc = null;
-        }
+    const validDetections = detectionsArray.filter(det => det.confidence >= MIN_DETECTION_CONFIDENCE);
+    const isDetected = validDetections.length > 0;
 
-        let estWidth: string | null = null;
-        let estLength: string | null = null;
-        let estArea: string | null = null;
-        let sizeConf: "High" | "Medium" | "Low" | "Unavailable" = "Unavailable";
-
-        if (loc && loc.width >= 0.04 && loc.height >= 0.03) {
-          // Perspective road geometry approximation with standard 3.5m lane scaling
-          const wM = Number(((loc.width / 0.45) * 2.2).toFixed(1));
-          const clampedW = Math.max(0.4, Math.min(3.2, wM));
-          const lM = Number(((loc.height / 0.35) * 1.8).toFixed(1));
-          const clampedL = Math.max(0.3, Math.min(3.0, lM));
-          const aM = Number((clampedW * clampedL).toFixed(2));
-          estWidth = `~${clampedW}m`;
-          estLength = `~${clampedL}m`;
-          estArea = `~${aM} m²`;
-          sizeConf = conf >= 80 ? "Medium" : "Low";
-        }
-
-        return {
-          frameIndex: frameIdx,
-          category: normalizedCategory,
-          hazardType: normalizedCategory,
-          confidence: conf,
-          severityScore: sev,
-          description: det.description || `AI Vision detected visible ${normalizedCategory} hazard.`,
-          boundingBox: loc,
-          estimatedWidth: estWidth,
-          estimatedLength: estLength,
-          estimatedArea: estArea,
-          sizeConfidence: sizeConf
-        };
-      })
-      .filter(det => det.confidence >= MIN_DETECTION_CONFIDENCE);
-
-    console.log(`[Road Scanner AI] Batch Response Parsed | frames: ${validFrames.length} | raw: ${detectionsArray.length} | valid: ${normalizedDetections.length} | model: ${modelUsed}`);
-
-    const isDetected = normalizedDetections.length > 0;
+    console.log(`[Road Scanner AI] Batch Evaluated | frames: ${validFrames.length} | raw: ${detectionsArray.length} | valid: ${validDetections.length} | model: ${modelUsed}`);
 
     return res.json({
       detected: isDetected,
-      detection: isDetected ? normalizedDetections[0] : null,
-      detections: normalizedDetections,
+      detection: isDetected ? validDetections[0] : null,
+      detections: validDetections,
       rawDetectionsCount: detectionsArray.length,
-      validDetectionsCount: normalizedDetections.length,
+      validDetectionsCount: validDetections.length,
       aiStatus: isDetected ? "SUCCESS" : "NO_HAZARD",
       modelUsed,
       batchSize: validFrames.length,
-      message: isDetected ? `Detected ${normalizedDetections.length} road hazard(s) across batch.` : "No road hazards detected in batch."
+      message: isDetected 
+        ? `Detected ${validDetections.length} road hazard(s) across batch.` 
+        : "No road hazards detected in frame(s)."
     });
 
   } catch (err: any) {
@@ -1493,10 +1477,10 @@ Respond strictly in structured JSON format matching this schema:
       detected: false, 
       detection: null, 
       detections: [], 
-      aiStatus: classified.errorState === "GEMINI_RATE_LIMIT" ? "GEMINI_RATE_LIMIT" : "ERROR",
+      aiStatus: "UNAVAILABLE",
       errorState: classified.errorState, 
       httpStatus: classified.httpStatus,
-      message: classified.message,
+      message: "Analysis unavailable: " + (classified.message || "Vision AI model service unreachable."),
       modelUsed: classified.attemptedModel
     });
   }

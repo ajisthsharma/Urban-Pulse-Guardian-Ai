@@ -503,14 +503,14 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
 
     const activeAnalysis = aiAnalysis || {
       issueDetected: true,
-      issueType: category || "Pothole",
+      issueType: category || "Other",
       confidence: 0,
-      severity: 50,
+      severity: 40,
       priority: "Medium" as const,
-      riskLevel: "Medium" as const,
+      riskLevel: "Low" as const,
       description: description || `Report on ${title}`,
       recommendedActions: ["Inspect reported hazard location"],
-      source: "FALLBACK_HEURISTIC" as const
+      source: "AI_UNAVAILABLE" as const
     };
 
     setCurrentStep("SUBMITTING");
@@ -735,14 +735,14 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
             onClick={() => {
               setAiAnalysis({
                 issueDetected: true,
-                issueType: category || "Pothole",
-                confidence: 75,
-                severity: 55,
-                priority: "Medium",
-                riskLevel: "Medium",
-                description: description || `Citizen-verified hazard report at ${location || "Delhi NCR"}.`,
+                issueType: category || "Other",
+                confidence: 0,
+                severity: 40,
+                priority: "Low",
+                riskLevel: "Low",
+                description: description || `Citizen-reported issue at ${location || "Delhi NCR"}. (Manual review requested).`,
                 recommendedActions: ["Field inspector evaluation requested"],
-                source: "FALLBACK_HEURISTIC"
+                source: "MANUAL_USER" as any
               });
               setCurrentStep("REVIEW");
             }}
@@ -794,7 +794,7 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
               ? "bg-blue-50 text-blue-700 border-blue-200" 
               : "bg-amber-50 text-amber-700 border-amber-200"
           }`}>
-            {aiAnalysis.source === "AI_GEMINI" ? "✨ Gemini Verified" : "⚙️ Smart Heuristic"}
+            {aiAnalysis.source === "AI_GEMINI" ? "✨ Gemini Verified" : "⚠️ Manual Citizen Report"}
           </span>
         </div>
 

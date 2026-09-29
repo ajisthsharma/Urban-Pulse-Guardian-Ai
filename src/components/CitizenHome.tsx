@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, Navigation, AlertTriangle, FileText, Sparkles, ChevronRight, LayoutDashboard } from 'lucide-react';
+import { Camera, Navigation, AlertTriangle, FileText, Sparkles, ChevronRight, LayoutDashboard, ShieldAlert } from 'lucide-react';
 
 interface CitizenHomeProps {
   onNavigate: (tab: string) => void;
@@ -107,7 +107,7 @@ export default function CitizenHome({ onNavigate, reportsCount, userName }: Citi
       </div>
 
       {/* Secondary Status Section */}
-      <div className="mt-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
         <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex items-center justify-between">
           <div>
             <h4 className="font-bold text-[#172033] text-sm mb-1">My Reports</h4>
@@ -122,8 +122,24 @@ export default function CitizenHome({ onNavigate, reportsCount, userName }: Citi
             View All
           </button>
         </div>
+
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex flex-col justify-center">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] flex items-center justify-center text-[#2563EB] shrink-0">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="font-bold text-[#172033] text-sm mb-1">Road Risk Intelligence</h4>
+              <p className="text-xs text-[#64748B] mb-3">Live corridor risk assessment & multi-source hazard corroboration.</p>
+              <button onClick={() => onNavigate('road-risk-intelligence')} className="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-1 cursor-pointer">
+                Explore Corridors <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
   );
 }
+

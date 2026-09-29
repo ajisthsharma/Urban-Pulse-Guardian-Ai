@@ -463,7 +463,7 @@ export default function RoadAiCandidateReview({
                       ? "bg-rose-950 text-rose-300 border border-rose-800"
                       : "bg-amber-950 text-amber-300 border border-amber-800"
                   }`}>
-                    {currentCandidate.riskLevel} Risk ({currentCandidate.severity}/100)
+                    {currentCandidate.riskLevel} Severity ({currentCandidate.severity}/100)
                   </span>
                 </div>
               </div>

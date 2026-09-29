@@ -30,6 +30,7 @@ import FooterEmergencyButton from "./components/FooterEmergencyButton";
 import FieldTeamDashboard from "./components/FieldTeamDashboard";
 import AdminPanel from "./components/AdminPanel";
 import { DispatchManagement } from "./components/DispatchManagement";
+import RoadRiskIntelligenceView from "./components/RoadRiskIntelligenceView";
 import { 
   ShieldAlert, Layers, Search, Filter, Trash2, Eye, 
   MapPin, AlertOctagon, CheckSquare, Clock, ArrowRight, Save, User as UserIcon, Lock, Landmark, Sparkles, AlertCircle, Loader2, LogIn, UserPlus, Mail,
@@ -128,7 +129,7 @@ export default function App() {
   // High-fidelity sidebar terminal states
   const [activeTerminal, setActiveTerminal] = useState<"citizen" | "admin" | "field_team" | "split">("citizen");
   const [activeSubTab, setActiveSubTab] = useState<
-    "citizen-home" | "my-reports" | "municipal-home" | "command-center" | "infrastructure" | "dispatch-management" | "road-scanner" | "candidate-review" | "safe-route" | "rewards" | "emergency-sos" | "copilot" | "analytics" | "digital-twin" | "safety" | "traffic" | "environmental" | "emergency" | "field-operations" | "admin-panel" | "admin-users" | "admin-teams" | "admin-system" | "admin-audit" | "admin-settings" | "audit-logs"
+    "citizen-home" | "my-reports" | "municipal-home" | "command-center" | "infrastructure" | "dispatch-management" | "road-scanner" | "candidate-review" | "safe-route" | "road-risk-intelligence" | "rewards" | "emergency-sos" | "copilot" | "analytics" | "digital-twin" | "safety" | "traffic" | "environmental" | "emergency" | "field-operations" | "admin-panel" | "admin-users" | "admin-teams" | "admin-system" | "admin-audit" | "admin-settings" | "audit-logs"
   >("citizen-home");
 
   // On mount and role change, reset to correct home
@@ -480,6 +481,7 @@ export default function App() {
         { id: "infrastructure", label: "Report Issue", desc: "Log urban hazards", icon: Activity },
         { id: "road-scanner", label: "AI Road Scanner", desc: "Dashcam hazard detection", icon: Camera },
         ...(activeScanSession && activeScanSession.candidates.length > 0 ? [{ id: "candidate-review", label: `Review Scans (${activeScanSession.candidates.length})`, desc: "Review & submit", icon: ShieldCheck }] : []),
+        { id: "road-risk-intelligence", label: "Road Risk Intelligence", desc: "Corridor-level risk analysis", icon: ShieldAlert },
         { id: "safe-route", label: "Safe Route", desc: "Hazard-free navigation", icon: Navigation },
         { id: "emergency-sos", label: "Emergency SOS", desc: "Critical infrastructure beacon", icon: AlertTriangle },
       ]
@@ -504,6 +506,7 @@ export default function App() {
     {
       title: "CITY INTELLIGENCE",
       items: [
+        { id: "road-risk-intelligence", label: "Road Risk Intelligence", desc: "Corridor priority risk engine", icon: ShieldAlert },
         { id: "safety", label: "Map & Heatmap", desc: "GIS risk overlay maps", icon: MapPin },
         { id: "analytics", label: "City Analytics", desc: "City Health & Ward standings", icon: BarChart3 },
         { id: "digital-twin", label: "Digital Twin", desc: "5-Layer vector city hologram", icon: Layers },
@@ -543,6 +546,7 @@ export default function App() {
     {
       title: "INTELLIGENCE & PLATFORM",
       items: [
+        { id: "road-risk-intelligence", label: "Road Risk Intelligence", desc: "Corridor priority risk engine", icon: ShieldAlert },
         { id: "safety", label: "Map & Heatmap", desc: "GIS risk overlay maps", icon: MapPin },
         { id: "analytics", label: "City Analytics", desc: "City Health standings", icon: BarChart3 },
         { id: "copilot", label: "Copilot Engine", desc: "Fleet triage strategy", icon: Sparkles },
@@ -1093,6 +1097,7 @@ export default function App() {
                       {activeSubTab === "admin-audit" && "Platform Audit Trail & Security Ledger"}
                       {activeSubTab === "admin-settings" && "Platform Settings & Governance Policies"}
                       {activeSubTab === "audit-logs" && "Platform Audit Log Ledger"}
+                      {activeSubTab === "road-risk-intelligence" && "Road Risk Intelligence Engine"}
                       {activeSubTab === "infrastructure" && (
                         activeTerminal === "citizen" ? "Citizen Volunteer Dashboard" :
                         activeTerminal === "admin" ? "Municipal Commander Terminal" : ""
@@ -1131,6 +1136,7 @@ export default function App() {
                     ""
                   )}
                   {activeSubTab === "copilot" && `Chat live with UrbanPulse's real-time AI co-pilot. Obtain diagnostics, ask questions about regional hazards, or request simulated response priorities.`}
+                  {activeSubTab === "road-risk-intelligence" && `Dynamic road and corridor-level risk intelligence synthesizing real-time AI dashcam telemetry with citizen ground reports into prioritized municipal action.`}
                   {activeSubTab === "safety" && `GIS mapping system with localized micro-overlays, assessing probabilities of structural faults, dark streets, and water retention across municipal domains.`}
                   {activeSubTab === "traffic" && `Volume telemetry capturing traffic flow speeds, road obstructions, and proposing lane adjustments and dynamic speed controls.`}
                   {activeSubTab === "environmental" && `Monitoring atmospherics and smog indicators, with real-time AQI feedback and particulate density tracking across sectors.`}
@@ -1234,6 +1240,18 @@ export default function App() {
               <div className="w-full">
                 <SafeRouteNav
                   reports={reports}
+                />
+              </div>
+            )}
+
+            {/* ROAD RISK INTELLIGENCE LAYER */}
+            {activeSubTab === "road-risk-intelligence" && (
+              <div className="w-full">
+                <RoadRiskIntelligenceView
+                  reports={reports}
+                  onSelectReport={(rep) => setSelectedReport(rep)}
+                  onNavigateToDispatch={() => setActiveSubTab("dispatch-management")}
+                  userRole={currentUser.role}
                 />
               </div>
             )}

@@ -594,3 +594,87 @@ export interface DigitalTwinZoneIntelligence {
   };
 }
 
+// --- ROAD RISK INTELLIGENCE LAYER TYPES ---
+
+export type CorroborationState = 
+  | "MULTI-SOURCE CORROBORATED" 
+  | "AI OBSERVED" 
+  | "CITIZEN REPORTED" 
+  | "PERSISTENT OBSERVATION" 
+  | "EMERGING / LOW EVIDENCE"
+  | "STALE HAZARD RECORD"
+  | "REMEDIATED ZONE";
+
+export type CorridorRiskLevel = "LOW" | "MODERATE" | "HIGH" | "CRITICAL";
+
+export interface RiskContributingFactors {
+  severityScore: number;         // 0 - 30 max (based strictly on active reports)
+  activeIncidentsScore: number;  // 0 - 25 max (unresolved density)
+  recencyScore: number;          // 0 - 15 max (recency of active hazard)
+  corroborationScore: number;    // 0 - 15 max (independent verification bonus)
+  persistenceScore: number;      // 0 - 15 max (repeated physical observations)
+}
+
+export interface IncidentAuditRecord {
+  id: string;
+  title: string;
+  source: ReportSource;
+  reporterEmail: string;
+  severity: number;
+  status: ReportStatus;
+  createdAt: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface RoadRiskZone {
+  id: string;
+  corridorName: string;
+  centerLat: number;
+  centerLng: number;
+  radiusMeters: number;
+  reports: Report[];
+  contributingIncidentIds: string[];
+  auditRecords: IncidentAuditRecord[];
+  totalReportsCount: number;
+  activeReportsCount: number;
+  unresolvedCount: number;
+  resolvedCount: number;
+  roadScannerCount: number;
+  citizenReportCount: number;
+  totalObservationsCount: number;
+  dominantCategory: ReportCategory;
+  categoryCounts: Record<string, number>;
+  severityDistribution: {
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+    average: number;
+  };
+  corroborationState: CorroborationState;
+  persistenceState: string;
+  firstSeenTimestamp: string;
+  lastSeenTimestamp: string;
+  riskScore: number; // 0 - 100 deterministic
+  riskLevel: CorridorRiskLevel;
+  factors: RiskContributingFactors;
+  evidenceConfidence: "High" | "Medium" | "Low";
+  recommendedAction: {
+    priority: "Immediate" | "Urgent" | "Standard" | "Routine";
+    actionTitle: string;
+    actionDescription: string;
+    targetAuthority: string;
+    suggestedTargetHours?: number;
+    policyType: "PROTOTYPE_POLICY_RULE";
+    policyDisclaimer: string;
+  };
+  reasonsList: string[];
+}
+
+// Backward-compatible alias
+export type RoadRiskSegment = RoadRiskZone;
+
+
+

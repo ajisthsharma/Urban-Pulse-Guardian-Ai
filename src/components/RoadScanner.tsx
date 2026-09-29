@@ -149,6 +149,9 @@ export default function RoadScanner({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const mediaFileInputRef = useRef<HTMLInputElement | null>(null);
+  const [uploadedMediaUrl, setUploadedMediaUrl] = useState<string | null>(null);
+  const [uploadedMediaType, setUploadedMediaType] = useState<"IMAGE" | "VIDEO" | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const durationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const gpsWatchIdRef = useRef<number | null>(null);
@@ -718,25 +721,29 @@ export default function RoadScanner({
   // ==========================================
   // CONTINUOUS LIVE FRAME ANALYZER (Throttled)
   // ==========================================
-  const triggerThrottledAiAnalysis = async (frame: ExtractedFrame) => {
-    // Check if cooldown active
-    if (rateLimitCooldownUntilRef.current > Date.now()) {
-      return;
-    }
+  const triggerThrottledAiAnalysis = async (frame: ExtractedFrame, forceImmediate: boolean = false) => {
+    if (!forceImmediate) {
+      // Check if cooldown active
+      if (rateLimitCooldownUntilRef.current > Date.now()) {
+        return;
+      }
 
-    // Check pacing (minimum 2.5 seconds between calls to prevent rate limiting)
-    const now = Date.now();
-    if (now - lastAiCallTimeRef.current < 2500) {
-      return;
-    }
+      // Check pacing (minimum 2.5 seconds between calls to prevent rate limiting)
+      const now = Date.now();
+      if (now - lastAiCallTimeRef.current < 2500) {
+        return;
+      }
 
-    // If request in flight, buffer frame
-    if (aiInFlightRef.current) {
-      return;
+      // If request in flight, buffer frame
+      if (aiInFlightRef.current) {
+        return;
+      }
+      aiInFlightRef.current = true;
+      lastAiCallTimeRef.current = now;
+    } else {
+      aiInFlightRef.current = true;
+      lastAiCallTimeRef.current = Date.now();
     }
-
-    aiInFlightRef.current = true;
-    lastAiCallTimeRef.current = now;
 
     try {
       setDiagStats(prev => ({
@@ -766,6 +773,7 @@ export default function RoadScanner({
         rateLimitCooldownUntilRef.current = Date.now() + 10000;
         setAiServiceStatus("RATE_LIMITED");
         setAiStatusNotice("AI ANALYSIS UNAVAILABLE: API Rate Limit encountered (Backing off 10s). Video continues recording.");
+        setActiveOverlayBox(null);
         setDiagStats(prev => ({
           ...prev,
           aiStatus: "RATE_LIMITED",
@@ -776,9 +784,23 @@ export default function RoadScanner({
         return;
       }
 
+      if (res.status === 503) {
+        setAiServiceStatus("ERROR");
+        setAiStatusNotice(json.message || "Analysis unavailable: Visual AI service is not available.");
+        setActiveOverlayBox(null);
+        setDiagStats(prev => ({
+          ...prev,
+          aiStatus: "ERROR",
+          aiHttpStatus: 503,
+          geminiFailed: prev.geminiFailed + 1
+        }));
+        return;
+      }
+
       if (!res.ok) {
         setAiServiceStatus("ERROR");
-        setAiStatusNotice(`AI ANALYSIS UNAVAILABLE: Server responded with status ${res.status}`);
+        setAiStatusNotice(json.message || `Analysis unavailable: Server responded with status ${res.status}`);
+        setActiveOverlayBox(null);
         setDiagStats(prev => ({
           ...prev,
           aiStatus: "ERROR",
@@ -790,7 +812,6 @@ export default function RoadScanner({
 
       // Success
       setAiServiceStatus("ACTIVE");
-      setAiStatusNotice(null);
       setDiagStats(prev => ({
         ...prev,
         geminiSuccess: prev.geminiSuccess + 1,
@@ -803,6 +824,14 @@ export default function RoadScanner({
         ...prev,
         rawDetectionsCount: prev.rawDetectionsCount + detections.length
       }));
+
+      if (!json.detected || detections.length === 0) {
+        setActiveOverlayBox(null);
+        setAiStatusNotice("No road hazard detected in this frame / image.");
+        return;
+      }
+
+      setAiStatusNotice(null);
 
       if (detections.length > 0) {
         for (const det of detections) {
@@ -913,6 +942,58 @@ export default function RoadScanner({
       }));
     } finally {
       aiInFlightRef.current = false;
+    }
+  };
+
+  // ==========================================
+  // MEDIA FILE UPLOAD HANDLER (IMAGE / VIDEO)
+  // ==========================================
+  const handleMediaFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const isImg = file.type.startsWith("image/");
+    const isVid = file.type.startsWith("video/");
+
+    if (!isImg && !isVid) {
+      setCameraErrorMessage("Please select a valid image (PNG/JPG/WEBP) or video (MP4/WEBM) file.");
+      return;
+    }
+
+    setCameraErrorMessage(null);
+    setActiveOverlayBox(null);
+    setAiStatusNotice(null);
+
+    if (isImg) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const dataUrl = reader.result as string;
+        setUploadedMediaUrl(dataUrl);
+        setUploadedMediaType("IMAGE");
+        setExtractedFramesCount(1);
+        setAiServiceStatus("ACTIVE");
+        setAiStatusNotice("Inspecting uploaded image with Gemini Vision...");
+
+        const uploadFrame: ExtractedFrame = {
+          id: `UPLOAD-${Date.now()}`,
+          index: 1,
+          timestamp: Date.now(),
+          dataUrl,
+          width: 640,
+          height: 480,
+          gps: currentGps || { latitude: 28.6139, longitude: 77.2090, timestamp: Date.now() }
+        };
+        await triggerThrottledAiAnalysis(uploadFrame, true);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const vidUrl = URL.createObjectURL(file);
+      setUploadedMediaUrl(vidUrl);
+      setUploadedMediaType("VIDEO");
+      if (videoRef.current) {
+        videoRef.current.src = vidUrl;
+        videoRef.current.play().catch(() => {});
+      }
     }
   };
 
@@ -1146,17 +1227,17 @@ export default function RoadScanner({
 
       // 1. Process Frame 1 (Initial detection -> Track created, hits: 1)
       const bboxTest: BoundingBox = { x: 0.38, y: 0.58, width: 0.24, height: 0.18 };
-      const dims = estimatePhysicalDimensions(bboxTest, 91);
+      const dims = estimatePhysicalDimensions(bboxTest, 76);
 
       const track: TemporalTrack = {
         id: `TRK-${Date.now()}`,
-        category: "Pothole",
-        hazardType: "POTHOLE",
+        category: "Synthetic Test Hazard",
+        hazardType: "SYNTHETIC_TEST_HAZARD",
         hits: 1,
         firstSeen: Date.now(),
         lastSeen: Date.now(),
-        bestConfidence: 91,
-        bestSeverity: 85,
+        bestConfidence: 76,
+        bestSeverity: 62,
         bestImage: frameImg1,
         bestBbox: bboxTest,
         estimatedWidth: dims.estimatedWidth,
@@ -1179,12 +1260,12 @@ export default function RoadScanner({
       track.gps = gps3;
       await processConfirmedHazard(track);
 
-      // Set visual overlay to show active red bounding box
+      // Set visual overlay to show active test bounding box
       setActiveOverlayBox({
         bbox: bboxTest,
-        category: "POTHOLE",
-        confidence: 91,
-        severity: 85,
+        category: "SYNTHETIC_TEST",
+        confidence: 76,
+        severity: 62,
         estimatedSizeText: dims.formattedText
       });
 
@@ -1325,7 +1406,7 @@ export default function RoadScanner({
           )}
           {source === "RECORDED_VIDEO" && (
             <span className="px-2 py-0.5 bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE] rounded text-[10px] font-bold">
-              [ Recorded Dashcam Video / Demo Source ]
+              [ Dashcam / Media Upload ]
             </span>
           )}
         </div>
@@ -1403,18 +1484,44 @@ export default function RoadScanner({
         </div>
       )}
 
-      {/* RECORDED VIDEO DEMO OPTIONS */}
+      {/* RECORDED VIDEO / MEDIA UPLOAD OPTIONS */}
       {source === "RECORDED_VIDEO" && !isScanning && (
         <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#475569] flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <Film className="w-4 h-4 text-[#7C3AED]" />
-            <span className="font-bold text-[#172033]">Pre-recorded Dashcam Highway Feed</span>
+            <span className="font-bold text-[#172033]">Media Frame Analysis</span>
             <span className="px-2 py-0.5 bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE] rounded text-[9.5px] font-mono font-bold">
-              [ Recorded Dashcam Video / Demo Source ]
+              [ Dashcam / Media Upload ]
             </span>
           </div>
-          <div className="text-[11px] text-[#64748B]">
-            Realistic road surface simulation ready. Press <span className="text-[#172033] font-bold">"Start Live Scan"</span> to begin continuous playback.
+          <div className="flex items-center gap-2">
+            <input
+              ref={mediaFileInputRef}
+              type="file"
+              accept="image/*,video/*"
+              className="hidden"
+              onChange={handleMediaFileUpload}
+            />
+            <button
+              onClick={() => mediaFileInputRef.current?.click()}
+              className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Upload Test Image / Dashcam Clip</span>
+            </button>
+            {uploadedMediaUrl && (
+              <button
+                onClick={() => {
+                  setUploadedMediaUrl(null);
+                  setUploadedMediaType(null);
+                  setActiveOverlayBox(null);
+                  setAiStatusNotice(null);
+                }}
+                className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold"
+              >
+                Clear
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -1426,40 +1533,35 @@ export default function RoadScanner({
         <div className="lg:col-span-8 space-y-3">
           <div className="relative bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-video shadow-2xl flex items-center justify-center">
             
-            {/* Live Camera Video Feed */}
-            {source !== "RECORDED_VIDEO" ? (
+            {/* Viewport Content: Real Image Upload or Video Element */}
+            {uploadedMediaType === "IMAGE" && uploadedMediaUrl ? (
+              <div className="w-full h-full relative bg-slate-950 flex items-center justify-center overflow-hidden">
+                <img
+                  src={uploadedMediaUrl}
+                  alt="Uploaded road test frame"
+                  className="max-w-full max-h-full object-contain block"
+                />
+              </div>
+            ) : (
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
                 muted
-                className={`w-full h-full object-cover ${cameraState !== "CAMERA_READY" ? "hidden" : "block"}`}
+                className={`w-full h-full object-cover ${(source !== "RECORDED_VIDEO" && cameraState !== "CAMERA_READY") ? "hidden" : "block"}`}
               />
-            ) : (
-              // Realistic Highway Dashcam Demo Simulation Canvas or Video
-              <div className="w-full h-full relative bg-[#1c1f26] flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#111317] via-[#21242c] to-[#16181f]"></div>
-                
-                {/* Perspective Lane Markings */}
-                <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-                  <div className="w-0.5 h-full bg-amber-500/80 shadow-[0_0_10px_rgba(245,158,11,0.6)] animate-pulse"></div>
-                </div>
+            )}
 
-                {/* Simulated Road Pothole in view */}
-                <div className="absolute w-36 h-20 bg-slate-950 rounded-full border-4 border-slate-900 shadow-inner flex items-center justify-center bottom-16">
-                  <div className="w-20 h-10 bg-amber-950/40 rounded-full"></div>
-                </div>
-
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="px-2.5 py-1 bg-black/80 backdrop-blur-md text-purple-300 border border-purple-500/50 rounded-lg text-[10px] font-mono font-bold">
-                    [ Recorded Dashcam Video / Demo Source ]
-                  </span>
-                </div>
+            {/* Status notice banner when not actively scanning */}
+            {!isScanning && aiStatusNotice && (
+              <div className="absolute top-4 left-4 right-4 z-40 bg-slate-900/95 border border-amber-500/80 text-amber-200 p-3 rounded-xl text-xs font-mono shadow-xl flex items-center gap-2.5">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span className="flex-1 font-bold">{aiStatusNotice}</span>
               </div>
             )}
 
-            {/* Fallback View when camera is not initialized */}
-            {source !== "RECORDED_VIDEO" && cameraState !== "CAMERA_READY" && (
+            {/* Fallback View when camera is not initialized and no media is uploaded */}
+            {source !== "RECORDED_VIDEO" && cameraState !== "CAMERA_READY" && !uploadedMediaUrl && (
               <div className="w-full h-full relative bg-gradient-to-b from-slate-900 via-slate-950 to-[#070b14] flex flex-col items-center justify-center p-6 text-center">
                 <div className="relative z-10 max-w-md space-y-3">
                   <div className="w-14 h-14 bg-blue-600/20 border border-blue-500/40 rounded-2xl flex items-center justify-center text-blue-400 mx-auto animate-pulse">
@@ -1686,7 +1788,7 @@ export default function RoadScanner({
               <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-1 border-t border-[#F1F5F9]">
                 <div className="flex justify-between">
                   <span>Model:</span>
-                  <span className="text-[#172033] font-bold">{diagStats.geminiModel || "gemini-3.8-flash"}</span>
+                  <span className="text-[#172033] font-bold">{diagStats.geminiModel || "gemini-2.5-flash"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Dedup Radius:</span>
