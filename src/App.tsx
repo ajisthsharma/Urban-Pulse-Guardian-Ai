@@ -2679,46 +2679,6 @@ export default function App() {
               </button>
             </form>
 
-            {/* QUICK DEMO CREDENTIAL BUTTONS */}
-            <div className="mt-4 pt-3 border-t border-slate-200/70 flex flex-col gap-1.5">
-              <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest text-center">Quick Demo Preset Logins:</span>
-              <div className="grid grid-cols-3 gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAuthRoleInput("citizen");
-                    setEmailInput("citizen@urbanpulse.org");
-                    setPasswordInput("citizen123456");
-                  }}
-                  className="py-1 px-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 text-[9.5px] font-bold rounded-lg transition-colors border border-blue-200/80 cursor-pointer"
-                >
-                  Citizen
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAuthRoleInput("field_team");
-                    setEmailInput("fieldteam@urbanpulse.gov");
-                    setPasswordInput("field123456");
-                  }}
-                  className="py-1 px-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[9.5px] font-bold rounded-lg transition-colors border border-emerald-200/80 cursor-pointer"
-                >
-                  Field Crew
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAuthRoleInput("admin");
-                    setEmailInput("officer@urbanpulse.gov");
-                    setPasswordInput("admin123456");
-                  }}
-                  className="py-1 px-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9.5px] font-bold rounded-lg transition-colors border border-amber-200/80 cursor-pointer"
-                >
-                  Municipal
-                </button>
-              </div>
-            </div>
-
             <div className="flex items-center gap-3 w-full my-4 text-slate-400">
               <div className="flex-1 h-px bg-slate-200"></div>
               <span className="text-[10px] uppercase font-black tracking-widest text-slate-400">
