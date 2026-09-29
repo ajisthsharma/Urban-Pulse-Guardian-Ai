@@ -2443,10 +2443,10 @@ export default function App() {
                 <ShieldAlert className="w-6 h-6" />
               </div>
               <div className="text-left">
-                <h2 className="font-display font-black text-xl text-slate-900 tracking-tight leading-none uppercase">
+                <h2 className="font-display font-black text-xl text-slate-900 dark:text-white tracking-tight leading-none uppercase">
                   UrbanPulse AI
                 </h2>
-                <p className="text-[11px] font-semibold text-slate-500 mt-1">
+                <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-300 mt-1">
                   Smart City Diagnostic & Command Portal
                 </p>
               </div>
