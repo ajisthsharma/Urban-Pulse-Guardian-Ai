@@ -161,9 +161,10 @@ export default function RoadScanner({
   const [isKeySettingsOpen, setIsKeySettingsOpen] = useState<boolean>(false);
   const [enableCvFallbackOnQuota, setEnableCvFallbackOnQuota] = useState<boolean>(() => {
     try {
-      return localStorage.getItem("urbanpulse_enable_cv_fallback") === "true";
+      const stored = localStorage.getItem("urbanpulse_enable_cv_fallback");
+      return stored !== null ? stored === "true" : true;
     } catch {
-      return false;
+      return true;
     }
   });
   const [scanPacingMode, setScanPacingMode] = useState<"STANDARD" | "ECO" | "TURBO">("STANDARD");
@@ -884,12 +885,16 @@ export default function RoadScanner({
       }
 
       if (res.status === 503) {
-        setAiServiceStatus("ERROR");
-        setAiStatusNotice(json.message || "Analysis unavailable: Visual AI service is not available.");
+        rateLimitCooldownUntilRef.current = Date.now() + 3000;
+        setAiServiceStatus("RATE_LIMITED");
+        const cleanMsg = typeof json.message === "string" && !json.message.includes("{")
+          ? json.message
+          : "Google AI server is experiencing temporary high demand (503). Retrying with adaptive failover vision engine...";
+        setAiStatusNotice(cleanMsg);
         setActiveOverlayBox(null);
         setDiagStats(prev => ({
           ...prev,
-          aiStatus: "ERROR",
+          aiStatus: "RATE_LIMITED",
           aiHttpStatus: 503,
           geminiFailed: prev.geminiFailed + 1
         }));
@@ -992,13 +997,15 @@ export default function RoadScanner({
                 track.sizeConfidence = dims.sizeConfidence;
               }
 
-              // Confirm if 2 consecutive hits or single high confidence (>= 88%)
-              if (!track.reportedIncidentId && (track.hits >= 2 || det.confidence >= 88)) {
+              // Confirm if 2 consecutive hits or single detection (>= 65% or uploaded image)
+              const shouldConfirm = !track.reportedIncidentId && (track.hits >= 2 || det.confidence >= 65 || uploadedMediaType === "IMAGE");
+              if (shouldConfirm) {
                 track.confirmed = true;
                 await processConfirmedHazard(track);
               }
             } else {
               // New temporal track (Hit 1)
+              const shouldConfirmNew = det.confidence >= 65 || uploadedMediaType === "IMAGE";
               const newTrack: TemporalTrack = {
                 id: `TRK-${Date.now()}`,
                 category: det.category || "Pothole",
@@ -1015,7 +1022,7 @@ export default function RoadScanner({
                 estimatedArea: dims.estimatedArea,
                 sizeConfidence: dims.sizeConfidence,
                 gps: rawDet.gps,
-                confirmed: det.confidence >= 88,
+                confirmed: shouldConfirmNew,
                 reportedIncidentId: null
               };
 
