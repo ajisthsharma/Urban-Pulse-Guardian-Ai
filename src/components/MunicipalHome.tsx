@@ -13,13 +13,13 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-slate-900 dark:to-slate-950 rounded-3xl p-8 sm:p-10 text-slate-900 dark:text-white relative overflow-hidden shadow-xs border border-[#DBEAFE]">
+      <div className="bg-gradient-to-r from-blue-50 to-white dark:from-slate-900 dark:to-slate-950 rounded-3xl p-8 sm:p-10 text-slate-900 dark:text-white relative overflow-hidden shadow-xs border border-[#DBEAFE] dark:border-slate-800">
         <div className="absolute top-0 right-0 p-12 text-slate-900 dark:text-white opacity-5 pointer-events-none">
            <ShieldAlert className="w-48 h-48 rotate-12" />
         </div>
         
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-slate-900 dark:text-white rounded-full text-xs font-bold font-mono border border-[#DBEAFE] mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-slate-900 dark:text-white rounded-full text-xs font-bold font-mono border border-[#DBEAFE] dark:border-slate-800 mb-4">
             <ShieldAlert className="w-3.5 h-3.5 text-slate-900 dark:text-white" />
             URBANPULSE COMMAND DECK
           </div>
@@ -69,7 +69,7 @@ export default function MunicipalHome({ onNavigate, activeCriticalCount, pending
             onClick={() => onNavigate('infrastructure')}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl shadow-xs hover:shadow-md hover:border-[#F59E0B] transition-all text-left group flex flex-col items-start gap-4 cursor-pointer"
           >
-            <div className="w-12 h-12 bg-[#FFFBEB] text-amber-500 dark:text-amber-400 border border-[#FDE68A] rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-12 h-12 bg-amber-50 dark:bg-amber-900/30 text-amber-500 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
               <Activity className="w-6 h-6" />
             </div>
             <div>

@@ -137,21 +137,21 @@ export default function CityCommandCenter({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         
         {/* Stats 1: Active issues */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-2xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4.5 rounded-2xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Active Bottlenecks</span>
             <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
               <Activity className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-mono font-black text-slate-900">{totalActive}</div>
+          <div className="text-3xl font-mono font-black text-slate-900 dark:text-white">{totalActive}</div>
           <div className="text-[10.5px] text-slate-500 mt-2 flex items-center gap-1">
             <span className="text-red-500 font-bold">Unresolved</span> issues on map
           </div>
         </div>
 
         {/* Stats 2: Critical Alerts */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs border-l-4 border-red-500">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4.5 rounded-xl shadow-3xs border-l-4 border-red-500">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Critical Risks</span>
             <div className="p-1.5 bg-red-50 text-red-600 rounded-lg shrink-0">
@@ -165,49 +165,49 @@ export default function CityCommandCenter({
         </div>
 
         {/* Stats 3: Areas At Risk */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4.5 rounded-xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Areas At Risk</span>
             <div className="p-1.5 bg-amber-50 text-amber-600 rounded-lg shrink-0">
               <MapPin className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-mono font-black text-slate-900">{areasAtRiskCount}</div>
+          <div className="text-3xl font-mono font-black text-slate-900 dark:text-white">{areasAtRiskCount}</div>
           <div className="text-[10.5px] text-slate-500 mt-2 flex items-center gap-1">
             Sectors exceeding 60% risk index
           </div>
         </div>
 
         {/* Stats 4: Open Tasks */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4.5 rounded-xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Open Dispatch Tasks</span>
             <div className="p-1.5 bg-purple-50 text-purple-600 rounded-lg shrink-0">
               <ClipboardList className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-mono font-black text-slate-900">{openTasks}</div>
+          <div className="text-3xl font-mono font-black text-slate-900 dark:text-white">{openTasks}</div>
           <div className="text-[10.5px] text-slate-500 mt-2">
             Pending / In Progress tasks
           </div>
         </div>
 
         {/* Stats 5: Resolved issues */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4.5 rounded-xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Resolved Issues</span>
             <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg shrink-0">
               <CheckCircle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-mono font-black text-slate-900">{resolvedCount}</div>
+          <div className="text-3xl font-mono font-black text-slate-900 dark:text-white">{resolvedCount}</div>
           <div className="text-[10.5px] text-slate-500 mt-2 flex items-center gap-1">
             <span className="text-emerald-600 font-bold">100% Cleared</span> from screen
           </div>
         </div>
 
         {/* Stats 6: Resolution Time */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 p-4.5 rounded-xl shadow-3xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4.5 rounded-xl shadow-3xs">
           <div className="flex justify-between items-start mb-2">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Average Dispatch Triage</span>
             <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
@@ -226,12 +226,12 @@ export default function CityCommandCenter({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Core Live Command Log Panel (Col-7) */}
-        <div className="lg:col-span-7 bg-white dark:bg-slate-900 p-6 border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm">
+        <div className="lg:col-span-7 bg-white dark:bg-slate-900 p-6 border border-slate-200 dark:border-slate-700 rounded-2xl flex flex-col gap-4 shadow-sm">
           <div>
             <span className="text-[10px] font-mono font-extrabold text-blue-600 uppercase tracking-wider block">
               LIVE DIAGNOSTATIC FEED
             </span>
-            <h3 className="text-base font-bold text-slate-850 mt-0.5 font-display">
+            <h3 className="text-base font-bold text-slate-850 dark:text-slate-100 mt-0.5 font-display">
               Citywide System Alerts & High-Confidence Diagnostics
             </h3>
             <p className="text-[11px] text-slate-500 leading-normal mt-0.5">
@@ -241,7 +241,7 @@ export default function CityCommandCenter({
 
           <div className="flex flex-col gap-3 max-h-[360px] overflow-y-auto pr-1">
             {criticalTickets.length === 0 ? (
-              <div className="p-8 text-center text-slate-405 font-mono text-xs border border-dashed border-slate-200 rounded-xl">
+              <div className="p-8 text-center text-slate-405 font-mono text-xs border border-dashed border-slate-200 dark:border-slate-700 rounded-xl">
                 No active critical tickets within warning limits.
               </div>
             ) : (
@@ -259,7 +259,7 @@ export default function CityCommandCenter({
                   <div 
                     key={tc.id}
                     onClick={() => onSelectReport(tc)}
-                    className="p-4 bg-slate-50 border border-slate-200 hover:border-blue-300 rounded-xl hover:bg-slate-100/50 cursor-pointer transition-all duration-150 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+                    className="p-4 bg-slate-50 border border-slate-200 dark:border-slate-700 hover:border-blue-300 rounded-xl hover:bg-slate-100/50 cursor-pointer transition-all duration-150 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -290,7 +290,7 @@ export default function CityCommandCenter({
                           {tc.category}
                         </span>
                       </div>
-                      <h4 className="text-[12.5px] font-bold text-slate-800 mt-1.5 truncate">
+                      <h4 className="text-[12.5px] font-bold text-slate-800 dark:text-slate-200 mt-1.5 truncate">
                         {tc.title}
                       </h4>
                       <p className="text-[11px] text-slate-500 mt-1 truncate max-w-lg">
@@ -298,9 +298,9 @@ export default function CityCommandCenter({
                       </p>
                     </div>
 
-                    <div className="flex items-start sm:items-end flex-col shrink-0 gap-1 pl-4 sm:border-l border-slate-200 min-w-[130px]">
+                    <div className="flex items-start sm:items-end flex-col shrink-0 gap-1 pl-4 sm:border-l border-slate-200 dark:border-slate-700 min-w-[130px]">
                       <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Citizen Impact</span>
-                      <span className="text-xs font-mono font-extrabold text-slate-850 bg-white dark:bg-slate-900 border border-slate-200 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono font-extrabold text-slate-850 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-md">
                         {citizensAffected.toLocaleString()} affected
                       </span>
                       <span className="text-[11px] text-rose-600 font-bold flex items-center gap-0.5 font-mono">
@@ -315,13 +315,13 @@ export default function CityCommandCenter({
         </div>
 
         {/* Feature 13 Resource Allocation Desk (Col-5) */}
-        <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-5 flex flex-col gap-4 shadow-sm text-left">
+        <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 flex flex-col gap-4 shadow-sm text-left">
           <div>
             <div className="flex items-center gap-1.5 text-[10px] font-mono font-extrabold text-blue-600 uppercase tracking-wider">
               <Cpu className="w-3.5 h-3.5 text-blue-500 animate-spin-slow" />
               <span>RESOURCE PLANNING ENGINE</span>
             </div>
-            <h3 className="text-sm font-extrabold text-slate-850 mt-1 font-display">
+            <h3 className="text-sm font-extrabold text-slate-850 dark:text-slate-100 mt-1 font-display">
               Smart Fleet Dispatch Allocations
             </h3>
             <p className="text-[11px] text-slate-505 leading-relaxed">
@@ -351,7 +351,7 @@ export default function CityCommandCenter({
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col gap-3.5">
+          <div className="bg-slate-50 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex flex-col gap-3.5">
             <span className="text-[9.5px] font-extrabold text-slate-400 uppercase tracking-wider block">
               Active Wards Priority Allocation Ledger
             </span>
@@ -359,21 +359,21 @@ export default function CityCommandCenter({
             <div className="space-y-2.5">
               <div className="flex justify-between items-center text-xs">
                 <div>
-                  <span className="font-bold text-slate-800">DLF Cyber City Node</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">DLF Cyber City Node</span>
                   <span className="text-[10px] text-slate-505 block">0 unresolved alerts</span>
                 </div>
                 <span className="font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">1 Team Standby</span>
               </div>
               <div className="flex justify-between items-center text-xs border-t border-slate-100 pt-2.5">
                 <div>
-                  <span className="font-bold text-slate-800">Connaught Place Central</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">Connaught Place Central</span>
                   <span className="text-[10px] text-slate-505 block">3 active streetlight warnings</span>
                 </div>
                 <span className="font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[10px] font-bold">2 Ltg Teams Active</span>
               </div>
               <div className="flex justify-between items-center text-xs border-t border-slate-100 pt-2.5">
                 <div>
-                  <span className="font-bold text-slate-800">Noida Sector 62 Zone</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">Noida Sector 62 Zone</span>
                   <span className="text-[10px] text-slate-505 block">1 active obstruction report</span>
                 </div>
                 <span className="font-mono bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-[10px] font-bold">1 Road Crew Assigned</span>

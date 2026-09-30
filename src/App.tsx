@@ -2633,7 +2633,7 @@ export default function App() {
                       type="text"
                       value={fullNameInput}
                       onChange={(e) => setFullNameInput(e.target.value)}
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-semibold"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-semibold"
                       placeholder={authRoleInput === "field_team" ? "Vikram Singh (Crew Lead)" : authRoleInput === "admin" ? "Officer Rachel Chen" : "Ashish Singh"}
                       required
                     />
@@ -2652,7 +2652,7 @@ export default function App() {
                     type="email"
                     value={emailInput}
                     onChange={(e) => setEmailInput(e.target.value)}
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-semibold"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-semibold"
                     placeholder={authRoleInput === "field_team" ? "fieldteam@urbanpulse.gov" : authRoleInput === "admin" ? "officer@urbanpulse.gov" : "yourname@gmail.com"}
                     required
                   />
@@ -2670,7 +2670,7 @@ export default function App() {
                     type="password"
                     value={passwordInput}
                     onChange={(e) => setPasswordInput(e.target.value)}
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-medium tracking-widest"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 pl-3.5 pr-10 py-2.5 rounded-xl text-slate-900 dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-hidden transition-all placeholder:text-slate-400 font-medium tracking-widest"
                     placeholder="••••••••"
                   />
                   <Lock className="absolute right-3.5 top-3 w-4 h-4 text-slate-400" />
