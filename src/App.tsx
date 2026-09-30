@@ -32,6 +32,8 @@ import AdminPanel from "./components/AdminPanel";
 import { DispatchManagement } from "./components/DispatchManagement";
 import RoadRiskIntelligenceView from "./components/RoadRiskIntelligenceView";
 import { Moon, Sun } from "lucide-react";
+import { useLanguage } from "./i18n/LanguageContext";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import { 
   ShieldAlert, Layers, Search, Filter, Trash2, Eye, 
   MapPin, AlertOctagon, CheckSquare, Clock, ArrowRight, Save, User as UserIcon, Lock, Landmark, Sparkles, AlertCircle, Loader2, LogIn, UserPlus, Mail,
@@ -74,6 +76,7 @@ export default function App() {
     authError: contextAuthError,
     clearAuthError,
   } = useAuth();
+  const { t, tStatus, tCategory, tRiskLevel } = useLanguage();
 
   // Map to internal user model for compatibility with stable memoization
   const currentUser: User | null = useMemo(() => {
@@ -479,7 +482,7 @@ export default function App() {
               <div>
                 <h1 className="font-sans font-extrabold text-sm tracking-normal text-slate-900 dark:text-white leading-tight">URBANPULSE</h1>
                 <p className="text-[9.5px] font-extrabold text-blue-600 dark:text-blue-400 font-mono tracking-wider uppercase -mt-0.5">
-                  {currentUser.role === "admin" ? "MUNICIPAL DECK" : "CITIZEN NODE"}
+                  {currentUser.role === "admin" ? "MUNICIPAL DECK" : t("nav.portal")}
                 </p>
               </div>
             </div>
@@ -502,7 +505,7 @@ export default function App() {
                 ? "MUNICIPAL COMMAND CONTROL"
                 : currentUser.role === "field_team" 
                 ? "FIELD OPERATIONS SQUAD" 
-                : "CITIZEN CIVIC PORTAL"}
+                : t("nav.portal")}
             </span>
           </div>
 
@@ -511,19 +514,19 @@ export default function App() {
             {(() => {
   const citizenGroups = [
     {
-      title: "OVERVIEW",
+      title: t("nav.overview").toUpperCase(),
       items: [
-        { id: "citizen-home", label: "Overview", desc: "Citizen civic portal", icon: LayoutDashboard },
-        { id: "my-reports", label: "My Reports", desc: "Track filed issues", icon: FileText },
+        { id: "citizen-home", label: t("nav.overview"), desc: t("nav.portal"), icon: LayoutDashboard },
+        { id: "my-reports", label: t("nav.myReports"), desc: t("home.myReportsCardDesc"), icon: FileText },
       ]
     },
     {
-      title: "SAFETY",
+      title: t("home.quickActions").toUpperCase(),
       items: [
-        { id: "infrastructure", label: "Report Issue", desc: "Log urban hazards", icon: Activity },
-        { id: "road-scanner", label: "AI Road Scanner", desc: "Dashcam hazard detection", icon: Camera },
-        ...(activeScanSession && activeScanSession.candidates.length > 0 ? [{ id: "candidate-review", label: `Review Scans (${activeScanSession.candidates.length})`, desc: "Review & submit", icon: ShieldCheck }] : []),
-        { id: "emergency-sos", label: "Emergency SOS", desc: "Critical infrastructure beacon", icon: AlertTriangle },
+        { id: "infrastructure", label: t("nav.reportIssue"), desc: t("home.reportIssueCardDesc"), icon: Activity },
+        { id: "road-scanner", label: t("nav.roadScanner"), desc: t("home.roadScannerCardDesc"), icon: Camera },
+        ...(activeScanSession && activeScanSession.candidates.length > 0 ? [{ id: "candidate-review", label: `${t("nav.reviewScans")} (${activeScanSession.candidates.length})`, desc: "Review & submit", icon: ShieldCheck }] : []),
+        { id: "emergency-sos", label: t("nav.emergencySos"), desc: t("home.emergencySosCardDesc"), icon: AlertTriangle },
       ]
     }
   ];
@@ -820,7 +823,7 @@ export default function App() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search reports, locations, citizens, or commands..."
+                  placeholder={t("nav.searchPlaceholder")}
                   className="w-full bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:bg-slate-800 focus:bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white placeholder-[#94A3B8] font-medium pl-10 pr-20 py-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-[#2563EB] focus:ring-2 focus:ring-blue-600/10 dark:focus:ring-blue-400/20 transition-all outline-hidden"
                 />
                 <div className="absolute right-2.5 flex items-center gap-1 pointer-events-none">
@@ -864,6 +867,9 @@ export default function App() {
             
             {/* Header Right Controls */}
             <div className="flex items-center gap-2 sm:gap-3">
+              {/* Global Multilingual Switcher (MVP: English, Hindi, Punjabi) */}
+              <LanguageSwitcher variant="header" />
+
               {/* Theme Toggle */}
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
@@ -1351,7 +1357,7 @@ export default function App() {
                           onClick={() => setActiveSubTab("infrastructure")}
                           className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
                         >
-                          Report a Problem
+                          {t("nav.reportIssue")}
                         </button>
                       </div>
                     ) : (
@@ -1369,13 +1375,13 @@ export default function App() {
                                   rep.status === "In Progress" ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-[#DBEAFE]" :
                                   "bg-[#FFFBEB] text-[#D97706] border-[#FEF3C7]"
                                 }`}>
-                                  ● {rep.status}
+                                  ● {tStatus(rep.status)}
                                 </span>
                                 <span className="text-[10px] font-mono text-slate-400 dark:text-slate-400">
                                   {getRelativeTime(rep.createdAt)}
                                 </span>
                               </div>
-                              <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:text-blue-400 transition-colors line-clamp-1">
+                              <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
                                 {rep.title}
                               </h4>
                               <p className="text-[11px] text-slate-500 dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
@@ -1385,7 +1391,7 @@ export default function App() {
                             <div className="pt-2.5 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[10.5px] text-slate-500 dark:text-slate-300">
                               <span className="truncate max-w-[150px] font-medium">{rep.location}</span>
                               <span className="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                                Details →
+                                {t("common.details")} →
                               </span>
                             </div>
                           </div>
@@ -2422,6 +2428,11 @@ export default function App() {
 
           <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl shadow-slate-200/80 border border-slate-200/80 w-full max-w-[460px] p-6 sm:p-8 relative z-10 flex flex-col items-center">
             
+            {/* Top Bar Language Selector for multilingual login accessibility */}
+            <div className="w-full flex justify-end mb-2">
+              <LanguageSwitcher variant="header" />
+            </div>
+
             {/* Branding launcher icon & header */}
             <div className="flex items-center gap-3 mb-6 w-full justify-center">
               <div className={`w-11 h-11 ${authRoleInput === "admin" ? "bg-amber-500 shadow-amber-500/30" : "bg-blue-600 shadow-blue-600/30"} text-white rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 shrink-0`}>
