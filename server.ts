@@ -309,27 +309,6 @@ async function bootstrapFirestoreSeeds() {
 // SECURE GEMINI AI INITIALIZATION
 // ===================================================
 
-const apiKey = process.env.GEMINI_API_KEY;
-let ai: GoogleGenAI | null = null;
-
-if (apiKey && apiKey !== "YOUR_GEMINI_API_KEY" && apiKey.trim().length > 0) {
-  try {
-    ai = new GoogleGenAI({ 
-      apiKey,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build',
-        }
-      }
-    });
-    console.log("[Gemini AI] Sovereign AI Engine successfully initialized on server.");
-  } catch (err) {
-    console.warn("[Gemini AI] Initialization warning:", err);
-  }
-} else {
-  console.log("[Gemini AI] No valid GEMINI_API_KEY in environment. Heuristic fallback mode active.");
-}
-
 // Model Sanitization Helper to prevent obsolete model identifiers from being used
 function sanitizeGeminiModelName(model?: string): string {
   if (!model) return "gemini-3.8-flash";
@@ -352,9 +331,6 @@ function sanitizeGeminiModelName(model?: string): string {
 
 // Authoritative Road Scanner Gemini Model & Batching Configuration
 const ROAD_SCANNER_GEMINI_MODEL = sanitizeGeminiModelName(process.env.ROAD_SCANNER_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-3.8-flash");
-// Do not add retired model names here. A 404 from an obsolete fallback prevents
-// the scanner from returning a useful result when a deployment still has an old
-// environment override.
 const GEMINI_VISION_MODELS = ["gemini-3.8-flash"];
 const GEMINI_FRAME_BATCH_SIZE = 4;
 const MAX_GEMINI_REQUESTS_PER_SCAN = 3;
@@ -399,8 +375,8 @@ function classifyGeminiError(err: any, fallbackModel: string = ROAD_SCANNER_GEMI
   if (status === 401 || status === 403 || errMsg.includes("API_KEY") || errMsg.includes("UNAUTHENTICATED") || errMsg.includes("API key not valid") || errMsg.includes("PermissionDenied")) {
     return { errorState: "GEMINI_AUTH_ERROR", httpStatus: status === 500 ? 401 : status, message: errMsg || "Gemini API configuration is missing or authentication failed.", attemptedModel };
   }
-  if (status === 429 || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("Quota exceeded")) {
-    return { errorState: "GEMINI_RATE_LIMIT", httpStatus: 429, message: "Gemini API quota or rate limit exceeded. Please wait before scanning again.", attemptedModel };
+  if (status === 429 || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("Quota exceeded") || errMsg.includes("quota")) {
+    return { errorState: "GEMINI_RATE_LIMIT", httpStatus: 429, message: "Gemini API quota or rate limit exceeded. Please wait before scanning again or configure an additional API key.", attemptedModel };
   }
   if (status === 404 || errMsg.includes("NOT_FOUND") || errMsg.includes("not found")) {
     return { errorState: "GEMINI_MODEL_ERROR", httpStatus: 404, message: errMsg || "Gemini model identifier invalid or unavailable.", attemptedModel };
@@ -412,47 +388,280 @@ function classifyGeminiError(err: any, fallbackModel: string = ROAD_SCANNER_GEMI
   return { errorState: "GEMINI_REQUEST_ERROR", httpStatus: status, message: errMsg || "Gemini vision API request failed.", attemptedModel };
 }
 
+// ===================================================
+// GEMINI MULTI-KEY POOL & ROTATION ENGINE
+// ===================================================
+
+export interface GeminiKeyEntry {
+  id: string;
+  apiKey: string;
+  masked: string;
+  client: GoogleGenAI;
+  cooldownUntil: number;
+  consecutiveFailures: number;
+  totalCalls: number;
+  successCalls: number;
+  lastUsed: number;
+}
+
+export class GeminiKeyPoolManager {
+  private keys: GeminiKeyEntry[] = [];
+
+  constructor() {
+    this.refreshPool();
+  }
+
+  public refreshPool() {
+    const rawKeys: string[] = [];
+
+    // 1. GEMINI_API_KEYS (comma, semicolon, or newline delimited list)
+    if (process.env.GEMINI_API_KEYS) {
+      const split = process.env.GEMINI_API_KEYS.split(/[,;\n\r]+/).map(s => s.trim()).filter(Boolean);
+      rawKeys.push(...split);
+    }
+
+    // 2. GEMINI_API_KEY (single default key)
+    if (process.env.GEMINI_API_KEY) {
+      const k = process.env.GEMINI_API_KEY.trim();
+      if (k && !rawKeys.includes(k) && k !== "YOUR_GEMINI_API_KEY") {
+        rawKeys.push(k);
+      }
+    }
+
+    // 3. Numbered fallback keys GEMINI_API_KEY_1 .. GEMINI_API_KEY_5
+    for (let i = 1; i <= 5; i++) {
+      const k = process.env[`GEMINI_API_KEY_${i}`]?.trim();
+      if (k && !rawKeys.includes(k) && k !== "YOUR_GEMINI_API_KEY") {
+        rawKeys.push(k);
+      }
+    }
+
+    const existingMap = new Map(this.keys.map(k => [k.apiKey, k]));
+
+    this.keys = rawKeys.map((apiKey, idx) => {
+      const existing = existingMap.get(apiKey);
+      if (existing) return existing;
+
+      const masked = apiKey.length > 8 ? `${apiKey.slice(0, 4)}...${apiKey.slice(-4)}` : "***";
+      const client = new GoogleGenAI({
+        apiKey,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build'
+          }
+        }
+      });
+      return {
+        id: `key_${idx + 1}`,
+        apiKey,
+        masked,
+        client,
+        cooldownUntil: 0,
+        consecutiveFailures: 0,
+        totalCalls: 0,
+        successCalls: 0,
+        lastUsed: 0
+      };
+    });
+
+    if (this.keys.length > 0) {
+      console.log(`[Gemini KeyPool] Successfully initialized with ${this.keys.length} pooled key(s).`);
+    } else {
+      console.log("[Gemini KeyPool] No GEMINI_API_KEY(S) configured. Operating in heuristic fallback mode.");
+    }
+  }
+
+  public hasKeys(): boolean {
+    return this.keys.length > 0;
+  }
+
+  public getPrimaryClient(): GoogleGenAI | null {
+    if (this.keys.length === 0) return null;
+    return this.keys[0].client;
+  }
+
+  public getCandidateKeys(overrideKey?: string): GeminiKeyEntry[] {
+    const now = Date.now();
+    if (overrideKey && typeof overrideKey === "string" && overrideKey.trim().length > 10) {
+      const cleanKey = overrideKey.trim();
+      const masked = `${cleanKey.slice(0, 4)}...${cleanKey.slice(-4)}`;
+      const client = new GoogleGenAI({
+        apiKey: cleanKey,
+        httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
+      });
+      return [{
+        id: "client_override",
+        apiKey: cleanKey,
+        masked,
+        client,
+        cooldownUntil: 0,
+        consecutiveFailures: 0,
+        totalCalls: 0,
+        successCalls: 0,
+        lastUsed: now
+      }];
+    }
+
+    if (this.keys.length === 0) return [];
+
+    // Filter available keys not currently in cooldown
+    const available = this.keys.filter(k => k.cooldownUntil <= now);
+    if (available.length === 0) {
+      const sorted = [...this.keys].sort((a, b) => a.cooldownUntil - b.cooldownUntil);
+      return sorted;
+    }
+
+    // Sort by lastUsed (least recently used first) for round-robin load distribution
+    return available.sort((a, b) => a.lastUsed - b.lastUsed);
+  }
+
+  public markSuccess(keyItem: GeminiKeyEntry) {
+    keyItem.consecutiveFailures = 0;
+    keyItem.successCalls++;
+    keyItem.totalCalls++;
+    keyItem.lastUsed = Date.now();
+  }
+
+  public markRateLimited(keyItem: GeminiKeyEntry, baseCooldownMs: number = 60000) {
+    keyItem.consecutiveFailures++;
+    keyItem.totalCalls++;
+    keyItem.lastUsed = Date.now();
+    const actualCooldown = Math.min(300000, baseCooldownMs * Math.max(1, keyItem.consecutiveFailures));
+    keyItem.cooldownUntil = Date.now() + actualCooldown;
+    console.warn(`[Gemini KeyPool] Key ${keyItem.masked} rate limited. Cooling down ${Math.round(actualCooldown / 1000)}s.`);
+  }
+
+  public getStatus() {
+    const now = Date.now();
+    const inCooldown = this.keys.filter(k => k.cooldownUntil > now);
+    const shortestCooldown = inCooldown.length > 0
+      ? Math.max(1, Math.ceil((Math.min(...inCooldown.map(k => k.cooldownUntil)) - now) / 1000))
+      : 0;
+
+    return {
+      totalKeys: this.keys.length,
+      activeKeys: this.keys.length - inCooldown.length,
+      inCooldownKeys: inCooldown.length,
+      shortestCooldownSeconds: shortestCooldown,
+      keys: this.keys.map(k => ({
+        id: k.id,
+        masked: k.masked,
+        inCooldown: k.cooldownUntil > now,
+        cooldownRemainingSec: Math.max(0, Math.ceil((k.cooldownUntil - now) / 1000)),
+        successCalls: k.successCalls,
+        totalCalls: k.totalCalls
+      }))
+    };
+  }
+}
+
+export const geminiKeyPool = new GeminiKeyPoolManager();
+let ai: GoogleGenAI | null = geminiKeyPool.getPrimaryClient();
+
+// ===================================================
+// IN-MEMORY FRAME SIGNATURE & RECENT CACHE
+// ===================================================
+
+interface CachedRoadAnalysis {
+  results: any[];
+  modelUsed: string;
+  timestamp: number;
+}
+const roadFrameAnalysisCache = new Map<string, CachedRoadAnalysis>();
+
+function computeFrameSignature(base64Data: string): string {
+  const len = base64Data.length;
+  if (len < 500) return base64Data;
+  const s1 = base64Data.slice(100, 250);
+  const s2 = base64Data.slice(Math.floor(len / 2), Math.floor(len / 2) + 150);
+  const s3 = base64Data.slice(len - 250, len - 100);
+  return crypto.createHash("md5").update(`${len}-${s1}-${s2}-${s3}`).digest("hex");
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of roadFrameAnalysisCache.entries()) {
+    if (now - v.timestamp > 30000) {
+      roadFrameAnalysisCache.delete(k);
+    }
+  }
+}, 30000);
+
+// Unified Content Generation with Multi-Key & Multi-Model Fallback
 async function generateContentWithFallback(
-  aiClient: GoogleGenAI, 
+  aiClient: GoogleGenAI | null, 
   params: any,
-  preferredModel: string = ROAD_SCANNER_GEMINI_MODEL
-): Promise<{ response: any; modelUsed: string }> {
-  // Use only a currently supported vision model. Retired model fallbacks caused
-  // the production scanner to surface a misleading final 404 response.
+  preferredModel: string = ROAD_SCANNER_GEMINI_MODEL,
+  overrideApiKey?: string
+): Promise<{ response: any; modelUsed: string; keyUsed?: string }> {
+  const candidateKeys = geminiKeyPool.getCandidateKeys(overrideApiKey);
+
+  if (candidateKeys.length === 0 && aiClient) {
+    candidateKeys.push({
+      id: "legacy_client",
+      apiKey: "legacy",
+      masked: "legacy",
+      client: aiClient,
+      cooldownUntil: 0,
+      consecutiveFailures: 0,
+      totalCalls: 0,
+      successCalls: 0,
+      lastUsed: Date.now()
+    });
+  }
+
+  if (candidateKeys.length === 0) {
+    throw new Error("No Gemini API keys configured or available.");
+  }
+
   const primaryModel = sanitizeGeminiModelName(preferredModel);
   const candidateModels = Array.from(new Set([primaryModel, ...GEMINI_VISION_MODELS]));
-  const availableModels = candidateModels.filter(m => !isModelInCooldown(m));
-  const models = availableModels.length > 0 ? availableModels : candidateModels.slice(0, 1);
   let lastError: any = null;
+  const now = Date.now();
 
-  for (const model of models) {
-    try {
-      const reqPayload = JSON.parse(JSON.stringify(params));
-      reqPayload.model = model;
+  for (const keyItem of candidateKeys) {
+    if (keyItem.cooldownUntil > now && candidateKeys.some(k => k.cooldownUntil <= now)) {
+      continue;
+    }
 
-      const response = await aiClient.models.generateContent(reqPayload);
-      if (response) {
-        return { response, modelUsed: model };
-      }
-    } catch (err: any) {
-      lastError = err;
-      if (err && typeof err === "object") {
-        err.attemptedModel = model;
-      }
-      const errMsg = sanitizeErrorMessage(err?.message || String(err));
-      const status = Number(err?.status || err?.statusCode || err?.code) || 0;
-      const isRateLimit = status === 429 || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("Quota exceeded");
-      
-      if (isRateLimit) {
-        setModelCooldown(model, 60000);
-        console.log(`[Gemini AI] Model ${model} free-tier rate limit/quota reached. Cooling down 60s, switching to next fallback.`);
-      } else {
-        console.log(`[Gemini AI] Model ${model} unavailable: ${errMsg.slice(0, 80)}`);
+    const availableModels = candidateModels.filter(m => !isModelInCooldown(m));
+    const modelsToTry = availableModels.length > 0 ? availableModels : candidateModels.slice(0, 1);
+
+    for (const model of modelsToTry) {
+      try {
+        const reqPayload = JSON.parse(JSON.stringify(params));
+        reqPayload.model = model;
+
+        const response = await keyItem.client.models.generateContent(reqPayload);
+        if (response) {
+          geminiKeyPool.markSuccess(keyItem);
+          return { response, modelUsed: model, keyUsed: keyItem.masked };
+        }
+      } catch (err: any) {
+        lastError = err;
+        if (err && typeof err === "object") {
+          err.attemptedModel = model;
+        }
+        const errMsg = sanitizeErrorMessage(err?.message || String(err));
+        const status = Number(err?.status || err?.statusCode || err?.code) || 0;
+        const isRateLimit = status === 429 || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("Quota exceeded") || errMsg.includes("quota");
+
+        if (isRateLimit) {
+          geminiKeyPool.markRateLimited(keyItem, 60000);
+          setModelCooldown(model, 30000);
+          console.warn(`[Gemini AI] Key ${keyItem.masked} reached rate limit/quota. Rotating to next available key.`);
+          break; // Try next key
+        } else if (status === 404 || errMsg.includes("NOT_FOUND")) {
+          setModelCooldown(model, 300000);
+          console.warn(`[Gemini AI] Model ${model} returned 404, cooling down.`);
+        } else {
+          console.warn(`[Gemini AI] Model ${model} on key ${keyItem.masked} error: ${errMsg.slice(0, 80)}`);
+        }
       }
     }
   }
 
-  throw lastError || new Error("All Gemini model fallback attempts exhausted.");
+  throw lastError || new Error("All Gemini API keys and model fallbacks exhausted.");
 }
 
 // ===================================================
@@ -561,15 +770,29 @@ function sanitizeCoordinate(val: any, fallback: number, min: number, max: number
 // REST API ROUTES (CANONICAL FIRESTORE INTEGRATION)
 // ===================================================
 
-// Health Check
+// Health Check & Diagnostics
 app.get("/api/health", (req: Request, res: Response) => {
+  const poolStatus = geminiKeyPool.getStatus();
   res.json({
     status: "ok",
     service: "UrbanPulse Guardian AI Engine",
     timestamp: new Date().toISOString(),
     firestoreConnected: Boolean(firestoreDb),
-    aiEngineActive: Boolean(ai),
-    roadScannerModel: ROAD_SCANNER_GEMINI_MODEL
+    aiEngineActive: geminiKeyPool.hasKeys(),
+    roadScannerModel: ROAD_SCANNER_GEMINI_MODEL,
+    keyPool: poolStatus
+  });
+});
+
+// Live Road Scanner AI Quota & Key Pool Diagnostics
+app.get("/api/scanner/quota-status", (req: Request, res: Response) => {
+  const poolStatus = geminiKeyPool.getStatus();
+  res.json({
+    status: "ok",
+    model: ROAD_SCANNER_GEMINI_MODEL,
+    active: poolStatus.activeKeys > 0,
+    hasConfiguredKeys: geminiKeyPool.hasKeys(),
+    ...poolStatus
   });
 });
 
@@ -1245,18 +1468,26 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
       });
     }
 
-    if (!ai || !process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "MY_GEMINI_API_KEY" || process.env.GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
-      console.warn(`[Road Scanner AI] [Status: 503] ${routeIdentifier} | Reason: GEMINI_API_KEY unconfigured or invalid on server.`);
-      return res.status(503).json({
-        detected: false,
-        detection: null,
-        detections: [],
-        aiStatus: "UNAVAILABLE",
-        errorState: "GEMINI_UNCONFIGURED",
-        httpStatus: 503,
-        message: "Analysis unavailable: Valid GEMINI_API_KEY is not configured on the server.",
-        modelUsed: ROAD_SCANNER_GEMINI_MODEL
-      });
+    const overrideApiKey = (req.headers["x-gemini-api-key"] as string) || req.body?.customApiKey;
+    const allowTelemetryFallback = 
+      req.headers["x-allow-cv-fallback"] === "true" || 
+      req.body?.allowTelemetryFallback === true || 
+      Boolean(req.query.allowFallback);
+
+    if (!geminiKeyPool.hasKeys() && !(overrideApiKey && overrideApiKey.trim().length > 10)) {
+      if (!allowTelemetryFallback) {
+        console.warn(`[Road Scanner AI] [Status: 503] ${routeIdentifier} | Reason: GEMINI_API_KEY unconfigured or invalid on server.`);
+        return res.status(503).json({
+          detected: false,
+          detection: null,
+          detections: [],
+          aiStatus: "UNAVAILABLE",
+          errorState: "GEMINI_UNCONFIGURED",
+          httpStatus: 503,
+          message: "Analysis unavailable: Valid GEMINI_API_KEY is not configured on the server. Configure GEMINI_API_KEY(S) or input a custom key in the scanner settings.",
+          modelUsed: ROAD_SCANNER_GEMINI_MODEL
+        });
+      }
     }
 
     const validFrames: { frameIndex: number; mimeType: string; base64Data: string; timestamp?: number }[] = [];
@@ -1290,6 +1521,26 @@ app.post("/api/scanner/analyze-batch", async (req: Request, res: Response) => {
         httpStatus: 400,
         message: "All frame payloads in batch were empty or corrupted.",
         modelUsed: ROAD_SCANNER_GEMINI_MODEL
+      });
+    }
+
+    // Fast-path: Check frame signature cache to avoid burning quota on repeated or slow road frames
+    const primarySig = computeFrameSignature(validFrames[0].base64Data);
+    const cached = roadFrameAnalysisCache.get(primarySig);
+    if (cached && (Date.now() - cached.timestamp < 15000)) {
+      console.log(`[Road Scanner AI] Frame cache hit (${primarySig.slice(0, 8)}). Serving cached detections.`);
+      return res.json({
+        detected: cached.results.length > 0,
+        detection: cached.results[0] || null,
+        detections: cached.results,
+        rawDetectionsCount: cached.results.length,
+        validDetectionsCount: cached.results.length,
+        aiStatus: cached.results.length > 0 ? "SUCCESS" : "NO_HAZARD",
+        modelUsed: `${cached.modelUsed} (Quota-Optimized Cache)`,
+        batchSize: validFrames.length,
+        message: cached.results.length > 0 
+          ? `Detected ${cached.results.length} road hazard(s) across batch [Cached].` 
+          : "No road hazards detected in batch [Cached]."
       });
     }
 
@@ -1343,14 +1594,14 @@ Respond strictly with valid JSON:
 
     console.log(`[Road Scanner AI] Batch Request Started | framesCount: ${validFrames.length} | model: ${ROAD_SCANNER_GEMINI_MODEL}`);
 
-    let result: { response: any; modelUsed: string } | null = null;
+    let result: { response: any; modelUsed: string; keyUsed?: string } | null = null;
     let geminiErrorClassified: any = null;
 
     try {
       result = await generateContentWithFallback(ai, {
         contents: contentsPayload,
         config: { responseMimeType: "application/json" }
-      }, ROAD_SCANNER_GEMINI_MODEL);
+      }, ROAD_SCANNER_GEMINI_MODEL, overrideApiKey);
     } catch (geminiErr: any) {
       geminiErrorClassified = classifyGeminiError(geminiErr, ROAD_SCANNER_GEMINI_MODEL);
       console.warn(`[Road Scanner AI] Gemini batch analysis error: ${geminiErrorClassified.errorState} - ${geminiErrorClassified.message}`);
@@ -1359,13 +1610,20 @@ Respond strictly with valid JSON:
     // STRICT REQUIREMENT #2 & #7: NEVER fabricate a detection when AI analysis fails!
     if (!result) {
       const status = geminiErrorClassified?.httpStatus || 503;
+      const isRateLimit = geminiErrorClassified?.errorState === "GEMINI_RATE_LIMIT" || status === 429;
+      const poolStatus = geminiKeyPool.getStatus();
+
       return res.status(status).json({
         detected: false,
         detection: null,
         detections: [],
-        aiStatus: "UNAVAILABLE",
+        aiStatus: isRateLimit ? "RATE_LIMITED" : "UNAVAILABLE",
         errorState: geminiErrorClassified?.errorState || "AI_UNAVAILABLE",
         httpStatus: status,
+        retryAfter: poolStatus.shortestCooldownSeconds || 15,
+        cooldownSeconds: poolStatus.shortestCooldownSeconds || 15,
+        activeKeys: poolStatus.activeKeys,
+        totalKeys: poolStatus.totalKeys,
         message: "Analysis unavailable: " + (geminiErrorClassified?.message || "Vision AI model service unreachable."),
         modelUsed: geminiErrorClassified?.attemptedModel || ROAD_SCANNER_GEMINI_MODEL
       });
@@ -1520,6 +1778,12 @@ Respond strictly with valid JSON:
     const isDetected = validDetections.length > 0;
 
     console.log(`[Road Scanner AI] [Status: 200] ${routeIdentifier} | Processed ${validFrames.length} frame(s) in ${Date.now() - reqStartTime}ms | Model: ${modelUsed} | Detections: ${validDetections.length}`);
+    // Cache results for frame signature to prevent redundant API calls
+    roadFrameAnalysisCache.set(primarySig, {
+      results: validDetections,
+      modelUsed,
+      timestamp: Date.now()
+    });
 
     return res.json({
       detected: isDetected,
