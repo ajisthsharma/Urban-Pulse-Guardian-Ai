@@ -1,6 +1,7 @@
 import { createNotification } from "../services/notificationsService";
 import { createReport } from "../services/reportsService";
 import { auth } from "../lib/firebase";
+import { useAuth } from "../context/AuthContext";
 import React, { useState, useRef } from "react";
 import { 
   AlertOctagon, PhoneCall, ShieldAlert, MapPin, 
@@ -13,6 +14,7 @@ interface CitizenEmergencySOSProps {
 }
 
 export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOSProps) {
+  const { user: authUser, loading: authLoading, isAuthenticated } = useAuth();
   const [sosActive, setSosActive] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [emergencyType, setEmergencyType] = useState<"Major Road Cave-In / Accident" | "Active Flood / Submerged Road" | "Live Electrical / Wire Hazard" | "Medical / Crash Emergency">("Major Road Cave-In / Accident");
@@ -24,12 +26,25 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
   const sosInFlightRef = useRef<boolean>(false);
   const countdownIntervalRef = useRef<any>(null);
 
-  const handleTriggerSOS = () => {
+  // Wait helper to resolve real Firebase Auth session if auth initialization is still running
+  const resolveAuthSession = async (): Promise<any> => {
+    if (auth.currentUser) return auth.currentUser;
+    if (authLoading) {
+      const start = Date.now();
+      while (Date.now() - start < 3000) {
+        if (auth.currentUser) return auth.currentUser;
+        await new Promise((r) => setTimeout(r, 100));
+      }
+    }
+    return auth.currentUser;
+  };
+
+  const handleTriggerSOS = async () => {
     if (isSubmitting || sosInFlightRef.current) return;
     setErrorMessage(null);
 
     // 0. Pre-check Firebase Auth session
-    const currentAuthUser = auth.currentUser;
+    const currentAuthUser = await resolveAuthSession();
     if (!currentAuthUser) {
       console.warn("[CitizenEmergencySOS] Denied: No authenticated Firebase user session found.");
       setErrorMessage("Please sign in again before sending Emergency SOS.");
@@ -58,7 +73,7 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
     setDispatchStatus("BROADCASTING");
 
     try {
-      const currentAuthUser = auth.currentUser;
+      const currentAuthUser = await resolveAuthSession();
       if (!currentAuthUser) {
         console.warn("[CitizenEmergencySOS] Denied: No authenticated Firebase user session found.");
         setErrorMessage("Please sign in again before sending Emergency SOS.");
@@ -69,8 +84,19 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
       }
 
       // Default fallback or live coords
-      const lat = 28.6139;
-      const lng = 77.2090;
+      let lat = 28.6139;
+      let lng = 77.2090;
+      if (typeof navigator !== "undefined" && "geolocation" in navigator) {
+        try {
+          const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 4000, maximumAge: 10000 });
+          });
+          lat = pos.coords.latitude;
+          lng = pos.coords.longitude;
+        } catch {
+          // Fall back gracefully to active metro grid
+        }
+      }
 
       // 1. Create Report in Firestore
       const report = await createReport(
@@ -78,7 +104,7 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
           title: `🚨 EMERGENCY SOS: ${emergencyType}`,
           description: `Critical citizen emergency SOS broadcasted for: ${emergencyType}. Immediate response required.`,
           category: "Other",
-          location: "Live Citizen Location (NCR Emergency Sector)",
+          location: `Live Citizen Location (GPS ${lat.toFixed(4)}, ${lng.toFixed(4)})`,
           latitude: lat,
           longitude: lng,
           severity: 99,
@@ -110,25 +136,29 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
 
       setCreatedTicketId(report.id);
 
-      // 2. Trigger Municipal Notification for SOS
-      await createNotification(
-        "🚨 CRITICAL SOS ACTIVATED",
-        `Emergency: ${emergencyType} reported by ${currentAuthUser.email || 'Citizen'} (Ticket: ${report.id})`,
-        "alert_high_severity",
-        "admin",
-        "",
-        report.id
-      );
+      // 2. Trigger Municipal Notification for SOS (Secondary non-blocking)
+      try {
+        await createNotification(
+          "🚨 CRITICAL SOS ACTIVATED",
+          `Emergency: ${emergencyType} reported by ${currentAuthUser.email || 'Citizen'} (Ticket: ${report.id})`,
+          "alert_high_severity",
+          "admin",
+          "",
+          report.id
+        );
+      } catch (notifErr) {
+        console.warn("[CitizenEmergencySOS] Secondary notification broadcast note:", notifErr);
+      }
 
       setDispatchStatus("DISPATCHED");
     } catch (err: any) {
       console.error("Failed to execute Citizen SOS:", err);
       const msg = err?.message || "Failed to broadcast SOS beacon. Please call emergency services directly.";
-      setErrorMessage(
-        msg.includes("permission") || msg.includes("Authentication required") || msg.includes("sign in")
-          ? "Please sign in again before sending Emergency SOS."
-          : msg
-      );
+      if (!auth.currentUser || msg.includes("auth/user-not-found") || msg.includes("unauthenticated")) {
+        setErrorMessage("Please sign in again before sending Emergency SOS.");
+      } else {
+        setErrorMessage(msg.includes("permission") ? "Incident registry write permission denied. Please verify citizen credentials." : msg);
+      }
       setSosActive(false);
     } finally {
       setIsSubmitting(false);
@@ -193,6 +223,21 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
               <span>{errorMessage}</span>
             </div>
           )}
+
+          {authLoading && (
+            <div className="w-full p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-600 dark:text-slate-300 text-xs font-semibold flex items-center justify-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin text-red-600" />
+              <span>Verifying authenticated emergency session...</span>
+            </div>
+          )}
+
+          {!authLoading && !authUser && !auth.currentUser && (
+            <div className="w-full p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-300 text-xs font-semibold flex items-center justify-center gap-2">
+              <AlertOctagon className="w-4 h-4 text-red-600 shrink-0" />
+              <span>Authentication Required: Please sign in before sending Emergency SOS.</span>
+            </div>
+          )}
+
           {!sosActive && countdown === null && (
             <>
               <div className="max-w-md space-y-2">
@@ -220,8 +265,9 @@ export default function CitizenEmergencySOS({ currentUser }: CitizenEmergencySOS
               {/* Big Red SOS Button */}
               <button
                 id="trigger-sos-btn"
+                disabled={authLoading || (!authUser && !auth.currentUser)}
                 onClick={handleTriggerSOS}
-                className="w-36 h-36 rounded-full bg-gradient-to-tr from-[#DC2626] to-[#EF4444] hover:from-[#B91C1C] hover:to-[#DC2626] text-white font-black text-2xl tracking-widest shadow-xl shadow-red-500/20 border-4 border-red-200 flex flex-col items-center justify-center gap-1 transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                className="w-36 h-36 rounded-full bg-gradient-to-tr from-[#DC2626] to-[#EF4444] hover:from-[#B91C1C] hover:to-[#DC2626] disabled:opacity-40 disabled:pointer-events-none text-white font-black text-2xl tracking-widest shadow-xl shadow-red-500/20 border-4 border-red-200 flex flex-col items-center justify-center gap-1 transition-transform hover:scale-105 active:scale-95 cursor-pointer"
               >
                 <AlertOctagon className="w-8 h-8" />
                 <span>SOS</span>

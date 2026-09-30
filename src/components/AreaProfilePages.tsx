@@ -182,7 +182,7 @@ export default function AreaProfilePages({ reports, selectedCityName }: AreaProf
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-450 font-medium">Underlying Model:</span>
-                <strong className="text-slate-800 font-mono">Gemini 1.5-Pro</strong>
+                <strong className="text-slate-800 font-mono">Gemini 2.5-Flash</strong>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-450 font-medium font-sans">Data Sources:</span>

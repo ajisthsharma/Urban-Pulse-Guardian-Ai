@@ -282,7 +282,7 @@ export async function createReport(
   const path = `reports/${reportId}`;
 
   // Log pre-write state without sensitive tokens (Rule 10)
-  console.log(`[Firestore Pre-Write Auth Check] Operation: ${OperationType.WRITE} | Path: ${path} | Has currentUser: ${Boolean(currentAuthUser)} | UID: ${currentAuthUser.uid}`);
+  console.log(`[Firestore Pre-Write Auth Check] Operation: ${OperationType.CREATE} | Path: ${path} | Has currentUser: ${Boolean(currentAuthUser)} | UID: ${currentAuthUser.uid}`);
 
   try {
     const reportRef = doc(db, "reports", reportId).withConverter(reportConverter);
@@ -310,7 +310,7 @@ export async function createReport(
 
     return canonicalReport;
   } catch (error) {
-    handleFirestoreError(error, OperationType.WRITE, path);
+    handleFirestoreError(error, OperationType.CREATE, path);
     return canonicalReport;
   }
 }

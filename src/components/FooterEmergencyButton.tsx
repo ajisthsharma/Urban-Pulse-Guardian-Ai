@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { User, Report } from "../types";
 import { auth } from "../lib/firebase";
+import { useAuth } from "../context/AuthContext";
 import { createReport } from "../services/reportsService";
 import { createNotification } from "../services/notificationsService";
 
@@ -32,6 +33,7 @@ export default function FooterEmergencyButton({
   onReportCreated,
   onOpenReportDetails
 }: FooterEmergencyButtonProps) {
+  const { user: authUser, loading: authLoading, isAuthenticated } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [isTriggering, setIsTriggering] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -58,6 +60,19 @@ export default function FooterEmergencyButton({
       }
     };
   }, []);
+
+  // Wait helper to resolve real Firebase Auth session if auth initialization is still running
+  const resolveAuthSession = async (): Promise<any> => {
+    if (auth.currentUser) return auth.currentUser;
+    if (authLoading) {
+      const start = Date.now();
+      while (Date.now() - start < 3000) {
+        if (auth.currentUser) return auth.currentUser;
+        await new Promise((r) => setTimeout(r, 100));
+      }
+    }
+    return auth.currentUser;
+  };
 
   // Acquire high accuracy GPS location
   const acquireLocation = (): Promise<{ lat: number; lng: number; accuracy?: number; name: string }> => {
@@ -136,9 +151,17 @@ export default function FooterEmergencyButton({
   };
 
   // Instant or Counted Execution of High Priority SOS
-  const startSosCountdown = (instant = false) => {
+  const startSosCountdown = async (instant = false) => {
     if (isTriggering || sosInFlightRef.current) return;
     setErrorMessage(null);
+
+    // Verify real Firebase Auth session before starting countdown
+    const currentAuthUser = await resolveAuthSession();
+    if (!currentAuthUser) {
+      setErrorMessage("Please sign in again before sending Emergency SOS.");
+      return;
+    }
+
     setIsTriggering(true);
 
     if (instant) {
@@ -172,7 +195,7 @@ export default function FooterEmergencyButton({
 
     try {
       // 0. Verify real Firebase Auth session is active before any write
-      const currentAuthUser = auth.currentUser;
+      const currentAuthUser = await resolveAuthSession();
       if (!currentAuthUser) {
         console.warn("[Emergency SOS] Denied: No authenticated Firebase user session found.");
         setErrorMessage("Please sign in again before sending Emergency SOS.");
@@ -237,26 +260,29 @@ export default function FooterEmergencyButton({
         }
       );
 
-      // 2. Broadcast High-Severity Notification to Municipal Admins
-      await createNotification(
-        "🚨 CRITICAL SOS INCIDENT ALERT",
-        `Immediate emergency beacon triggered at GPS [${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}] by ${activeUser.email || 'Citizen'}. Priority: CRITICAL (Severity 98/100).`,
-        "alert_high_severity",
-        "admin",
-        "",
-        newReport.id
-      );
-
-      // Also create a citizen confirmation notification
-      if (activeUser.email) {
+      // 2. Broadcast High-Severity Notification to Municipal Admins (Secondary non-blocking)
+      try {
         await createNotification(
-          "🚨 Emergency Beacon Dispatched",
-          `Your SOS incident alert (Ticket: ${newReport.id}) has been broadcasted to the 24/7 Municipal Response Command.`,
-          "report_submitted",
-          "citizen",
-          activeUser.email,
+          "🚨 CRITICAL SOS INCIDENT ALERT",
+          `Immediate emergency beacon triggered at GPS [${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}] by ${activeUser.email || 'Citizen'}. Priority: CRITICAL (Severity 98/100).`,
+          "alert_high_severity",
+          "admin",
+          "",
           newReport.id
         );
+
+        if (activeUser.email) {
+          await createNotification(
+            "🚨 Emergency Beacon Dispatched",
+            `Your SOS incident alert (Ticket: ${newReport.id}) has been broadcasted to the 24/7 Municipal Response Command.`,
+            "report_submitted",
+            "citizen",
+            activeUser.email,
+            newReport.id
+          );
+        }
+      } catch (notifErr) {
+        console.warn("[Emergency SOS] Secondary notification broadcast note:", notifErr);
       }
 
       setCreatedSosReport(newReport);
@@ -269,11 +295,11 @@ export default function FooterEmergencyButton({
     } catch (err: any) {
       console.error("Failed to execute Quick-Action SOS:", err);
       const msg = err?.message || "Failed to broadcast SOS beacon. Please call emergency services directly.";
-      setErrorMessage(
-        msg.includes("permission") || msg.includes("Authentication required") || msg.includes("sign in")
-          ? "Please sign in again before sending Emergency SOS."
-          : msg
-      );
+      if (!auth.currentUser || msg.includes("auth/user-not-found") || msg.includes("unauthenticated")) {
+        setErrorMessage("Please sign in again before sending Emergency SOS.");
+      } else {
+        setErrorMessage(msg.includes("permission") ? "Incident registry write permission denied. Please verify citizen credentials." : msg);
+      }
       setDispatchStage("IDLE");
     } finally {
       setIsTriggering(false);
@@ -446,13 +472,34 @@ export default function FooterEmergencyButton({
                     />
                   </div>
 
+                  {/* AUTH STATE NOTICE IF UNVERIFIED */}
+                  {authLoading && (
+                    <div className="p-3 bg-slate-950/80 border border-slate-800 rounded-2xl text-slate-300 text-xs flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
+                      <span>Verifying authenticated emergency session...</span>
+                    </div>
+                  )}
+
+                  {!authLoading && !authUser && !auth.currentUser && (
+                    <div className="p-3.5 bg-rose-950/60 border border-rose-800/80 rounded-2xl text-rose-200 text-xs flex items-start gap-2.5">
+                      <AlertOctagon className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                      <div className="space-y-1">
+                        <p className="font-bold">Authentication Required:</p>
+                        <p className="text-[11.5px] leading-relaxed text-rose-300">
+                          Please sign in before sending Emergency SOS. Unauthenticated incident beacons are restricted.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   {/* ACTION BUTTONS */}
                   <div className="pt-2 flex flex-col sm:flex-row gap-3">
                     <button
                       id="trigger-quick-sos-countdown-btn"
                       type="button"
+                      disabled={authLoading || (!authUser && !auth.currentUser)}
                       onClick={() => startSosCountdown(false)}
-                      className="flex-1 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 active:from-rose-700 text-white font-black text-xs py-3.5 px-4 rounded-2xl shadow-xl shadow-rose-600/40 border border-rose-400/40 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+                      className="flex-1 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 active:from-rose-700 disabled:opacity-40 disabled:pointer-events-none text-white font-black text-xs py-3.5 px-4 rounded-2xl shadow-xl shadow-rose-600/40 border border-rose-400/40 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
                     >
                       <Radio className="w-4 h-4 animate-pulse" />
                       <span>Start 3s Safe Beacon</span>
@@ -461,8 +508,9 @@ export default function FooterEmergencyButton({
                     <button
                       id="trigger-quick-sos-instant-btn"
                       type="button"
+                      disabled={authLoading || (!authUser && !auth.currentUser)}
                       onClick={() => startSosCountdown(true)}
-                      className="bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-rose-300 font-bold text-xs py-3.5 px-4 rounded-2xl border border-rose-900/60 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+                      className="bg-slate-800 hover:bg-slate-700 active:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none text-rose-300 font-bold text-xs py-3.5 px-4 rounded-2xl border border-rose-900/60 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
                     >
                       <SendHorizontal className="w-4 h-4 text-rose-400" />
                       <span>Instant Send</span>
