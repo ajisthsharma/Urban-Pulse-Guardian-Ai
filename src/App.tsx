@@ -1200,7 +1200,7 @@ export default function App() {
                 </p>
 
                 {/* TRUST & TRANSPARENCY DECK (AI parameters, data sources, last updated) */}
-                {!(activeTerminal === "citizen" && activeSubTab === "infrastructure") && (
+                {activeTerminal !== "citizen" && (
                   <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-2 text-[10px] font-mono font-medium text-slate-500 dark:text-slate-300 border-t border-[#F1F5F9] items-center">
                     <div className="flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
@@ -1294,7 +1294,7 @@ export default function App() {
             )}
 
             {/* SAFE ROUTE & HAZARD-AWARE NAVIGATION */}
-            {activeSubTab === "safe-route" && currentUser.role !== "citizen" && (
+            {activeSubTab === "safe-route" && (
               <div className="w-full">
                 <SafeRouteNav
                   reports={reports}
