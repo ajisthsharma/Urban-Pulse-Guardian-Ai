@@ -5,7 +5,6 @@ import { subscribeToNotifications, markNotificationAsRead, markAllNotificationsA
 import { useAuth } from "./context/AuthContext";
 import { RoleGuard } from "./components/RoleGuard";
 import DashboardStats from "./components/DashboardStats";
-import AIInsightsPanel from "./components/AIInsightsPanel";
 import SimpleMap from "./components/SimpleMap";
 import CitizenUpload from "./components/CitizenUpload";
 import ReportDetailsModal from "./components/ReportDetailsModal";
@@ -1200,23 +1199,7 @@ export default function App() {
                   {activeSubTab === "emergency" && `Continuous transit routing, determining hazard bypass coordinates and dispatcher assignment priorities for hospital responder lanes.`}
                 </p>
 
-                {/* TRUST & TRANSPARENCY DECK (AI parameters, data sources, last updated) */}
-                {activeTerminal !== "citizen" && (
-                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-2 text-[10px] font-mono font-medium text-slate-500 dark:text-slate-300 border-t border-[#F1F5F9] items-center">
-                    <div className="flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
-                      <span>AI Engine: <strong className="text-slate-900 dark:text-white">Gemini 3.5-Flash Verified</strong> (98.4% Confidence Threshold)</span>
-                    </div>
-                    <span className="text-[#CBD5E1]">|</span>
-                    <div>
-                      <span>Data Streams: <strong className="text-slate-900 dark:text-white">GPS Lock, Municipal GIS & Citizen Mesh</strong></span>
-                    </div>
-                    <span className="text-[#CBD5E1]">|</span>
-                    <div>
-                      <span>Telemetry Sync: <strong className="text-blue-600 dark:text-blue-400 font-bold">Consolidated</strong></span>
-                    </div>
-                  </div>
-                )}
+                {/* TRUST & TRANSPARENCY DECK (Removed) */}
               </div>
 
               {/* Controls and Selectors panel */}
@@ -1620,7 +1603,7 @@ export default function App() {
             {/* DEFAULT CORE WORKSPACE PANELS */}
             {activeSubTab === "infrastructure" && (
               <div className="flex flex-col gap-6 w-full">
-                {activeTerminal !== "citizen" && <AIInsightsPanel reports={reports} />}
+
                 {activeTerminal === "split" ? (
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start h-full">
                 
