@@ -4,7 +4,7 @@ service cloud.firestore {
 
     // Helper functions
     function isAuthenticated() {
-      return request.auth != null;
+      return request.auth != null && request.auth.uid != null;
     }
 
     function isUser(userId) {
@@ -17,20 +17,20 @@ service cloud.firestore {
 
     function hasRole(role) {
       return isAuthenticated() && (
-        (request.auth.token.role == role) ||
+        ('role' in request.auth.token && request.auth.token.role == role) ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-         getUserData().role == role)
+         'role' in getUserData() && getUserData().role == role)
       );
     }
 
     function isAdmin() {
       return hasRole('admin') || 
-             (isAuthenticated() && request.auth.token.email.matches('.*admin.*'));
+             (isAuthenticated() && 'email' in request.auth.token && request.auth.token.email != null && request.auth.token.email.matches('.*admin.*'));
     }
 
     function isMunicipal() {
       return isAdmin() || hasRole('municipal') ||
-             (isAuthenticated() && (
+             (isAuthenticated() && 'email' in request.auth.token && request.auth.token.email != null && (
                request.auth.token.email.matches('.*@.*\\.gov\\.in$') ||
                request.auth.token.email.matches('.*officer.*') ||
                request.auth.token.email.matches('.*municipal.*')
@@ -39,15 +39,10 @@ service cloud.firestore {
 
     function isFieldTeam() {
       return hasRole('field_team') || isMunicipal() ||
-             (isAuthenticated() && (
+             (isAuthenticated() && 'email' in request.auth.token && request.auth.token.email != null && (
                request.auth.token.email.matches('.*field.*') ||
                request.auth.token.email.matches('.*crew.*')
              ));
-    }
-
-    // Default deny all unhandled paths
-    match /{document=**} {
-      allow read, write: if false;
     }
 
     // User Profiles (citizen, municipal, field_team, admin)
@@ -73,7 +68,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isAuthenticated() && (
         request.resource.data.userId == request.auth.uid ||
-        request.resource.data.reporterEmail == request.auth.token.email ||
+        ('reporterEmail' in request.resource.data && 'email' in request.auth.token && request.resource.data.reporterEmail == request.auth.token.email) ||
         isAdmin() || isMunicipal() || isFieldTeam()
       );
       allow update: if isAuthenticated() && (
@@ -110,7 +105,7 @@ service cloud.firestore {
       allow create: if isAuthenticated();
       allow update, delete: if isAuthenticated() && (
         isAdmin() || isMunicipal() || 
-        resource.data.recipientEmail == request.auth.token.email
+        ('recipientEmail' in resource.data && 'email' in request.auth.token && resource.data.recipientEmail == request.auth.token.email)
       );
     }
 

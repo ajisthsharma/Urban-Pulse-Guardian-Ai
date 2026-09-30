@@ -40,6 +40,8 @@ export default function RoadRiskIntelligenceView({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const corridorLayersRef = useRef<{ [key: string]: L.LayerGroup }>({});
+  const hasFittedRiskZonesRef = useRef(false);
+  const mapboxToken = (import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || "").trim();
 
   // Compute road segments deterministically from real Firestore reports
   const allSegments = useMemo(() => buildRoadRiskIntelligence(reports), [reports]);
@@ -106,7 +108,17 @@ export default function RoadRiskIntelligenceView({
       zoomControl: false
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    const useMapbox = Boolean(mapboxToken);
+    const tileUrl = useMapbox
+      ? `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/512/{z}/{x}/{y}@2x?access_token=${mapboxToken}`
+      : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+    L.tileLayer(tileUrl, useMapbox ? {
+      tileSize: 512,
+      zoomOffset: -1,
+      maxZoom: 20,
+      crossOrigin: true,
+      attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a> &copy; OpenStreetMap'
+    } : {
       maxZoom: 20,
       attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
     }).addTo(map);
@@ -244,6 +256,17 @@ export default function RoadRiskIntelligenceView({
       layerGroup.addTo(map);
       corridorLayersRef.current[seg.id] = layerGroup;
     });
+
+    // The report subscription is asynchronous: fit only after live coordinates
+    // arrive, so the map never remains stranded at its default city center.
+    if (filteredSegments.length > 0) {
+      const bounds = L.latLngBounds(filteredSegments.map((segment) => [segment.centerLat, segment.centerLng] as L.LatLngTuple));
+      map.invalidateSize();
+      if (!hasFittedRiskZonesRef.current || filteredSegments.length > 1) {
+        map.fitBounds(bounds.pad(0.25), { maxZoom: 14, animate: false });
+        hasFittedRiskZonesRef.current = true;
+      }
+    }
   }, [filteredSegments, activeSegment?.id, onSelectReport]);
 
   // Fly to active segment when selection changes
@@ -418,6 +441,16 @@ export default function RoadRiskIntelligenceView({
             ref={mapContainerRef} 
             className="w-full h-[520px] rounded-2xl overflow-hidden border border-[#E2E8F0] relative z-0"
           />
+
+          {filteredSegments.length === 0 && (
+            <div className="-mt-[310px] mb-[260px] relative z-10 pointer-events-none flex justify-center">
+              <div className="bg-white/95 backdrop-blur border border-[#E2E8F0] rounded-2xl px-5 py-4 text-center shadow-lg max-w-sm">
+                <MapPin className="w-5 h-5 text-[#2563EB] mx-auto mb-2" />
+                <p className="text-xs font-bold text-[#172033]">No mappable active reports</p>
+                <p className="text-[11px] text-[#64748B] mt-1">Submit reports with GPS coordinates or turn off “Active Issues Only” to view historical zones.</p>
+              </div>
+            </div>
+          )}
 
           {/* Corridor Selection Strip */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 px-1">

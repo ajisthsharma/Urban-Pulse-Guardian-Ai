@@ -330,8 +330,19 @@ if (apiKey && apiKey !== "YOUR_GEMINI_API_KEY" && apiKey.trim().length > 0) {
   console.log("[Gemini AI] No valid GEMINI_API_KEY in environment. Heuristic fallback mode active.");
 }
 
+// Model Sanitization Helper to prevent obsolete v1beta model errors
+function sanitizeGeminiModelName(model?: string): string {
+  if (!model) return "gemini-2.5-flash";
+  const cleaned = model.trim().replace(/^models\//, "");
+  // Replace obsolete or deprecated models with supported multimodal models in @google/genai
+  if (cleaned.includes("1.5") || cleaned.includes("1.0") || cleaned === "gemini-flash" || cleaned === "gemini-pro") {
+    return "gemini-2.5-flash";
+  }
+  return cleaned || "gemini-2.5-flash";
+}
+
 // Authoritative Road Scanner Gemini Model & Batching Configuration
-const ROAD_SCANNER_GEMINI_MODEL = process.env.ROAD_SCANNER_GEMINI_MODEL || "gemini-2.5-flash";
+const ROAD_SCANNER_GEMINI_MODEL = sanitizeGeminiModelName(process.env.ROAD_SCANNER_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash");
 const GEMINI_FRAME_BATCH_SIZE = 4;
 const MAX_GEMINI_REQUESTS_PER_SCAN = 3;
 
@@ -394,7 +405,8 @@ async function generateContentWithFallback(
   preferredModel: string = ROAD_SCANNER_GEMINI_MODEL
 ): Promise<{ response: any; modelUsed: string }> {
   // Use authoritative primary model first, followed by valid standard Google GenAI models
-  const candidateModels = Array.from(new Set([preferredModel, "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]));
+  const primaryModel = sanitizeGeminiModelName(preferredModel);
+  const candidateModels = Array.from(new Set([primaryModel, "gemini-2.5-flash", "gemini-2.0-flash"]));
   const availableModels = candidateModels.filter(m => !isModelInCooldown(m));
   const models = availableModels.length > 0 ? availableModels : candidateModels.slice(0, 1);
   let lastError: any = null;
