@@ -202,29 +202,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             localStorage.setItem("urbanpulse_active_profile", JSON.stringify(fallbackProf));
           }
         } else {
-          // Check if there is an active local session fallback
-          const savedProfileStr = localStorage.getItem("urbanpulse_active_profile");
-          if (savedProfileStr) {
-            try {
-              const savedProfile = JSON.parse(savedProfileStr);
-              if (savedProfile?.uid && savedProfile?.role) {
-                setUser({
-                  uid: savedProfile.uid,
-                  email: savedProfile.email,
-                  displayName: savedProfile.name || savedProfile.fullName,
-                  emailVerified: true,
-                  isAnonymous: false
-                } as any);
-                setUserProfileState(savedProfile);
-                setLoading(false);
-                return;
-              }
-            } catch (e) {
-              console.warn("Local profile parse error:", e);
-            }
-          }
           setUser(null);
           setUserProfileState(null);
+          localStorage.removeItem("urbanpulse_active_profile");
         }
       } catch (err) {
         console.error("Auth state transition error:", err);
@@ -240,7 +220,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, pass: string): Promise<UserProfile> => {
     setAuthError(null);
     const cleanEmail = email.trim();
-    const isDemoEmail = cleanEmail.includes("fieldteam") || cleanEmail.includes("officer") || cleanEmail.includes("citizen") || cleanEmail.includes("admin");
 
     // Invalidate any previous user profile before authenticating
     localStorage.removeItem("urbanpulse_active_profile");
@@ -284,74 +263,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           profile.availability = "AVAILABLE";
         }
 
-        try { await setUserProfile(profile); } catch {}
+        try { await setUserProfile(profile); } catch (e) {
+          console.warn("Could not save profile:", e);
+        }
       }
 
+      setUser(userCredential.user);
       setUserProfileState(profile);
       localStorage.setItem("urbanpulse_active_profile", JSON.stringify(profile));
       return profile;
     } catch (err: any) {
       console.warn("Firebase Email Login error:", err?.code || err);
-      // Graceful fallback for preset accounts or disabled auth providers
-      if (
-        isDemoEmail ||
-        err?.code === "auth/operation-not-allowed" ||
-        err?.code === "auth/configuration-not-found" ||
-        err?.message?.includes("operation-not-allowed") ||
-        err?.message?.includes("Provider is disabled")
-      ) {
-        const assignedRole = determineRole(cleanEmail);
-        const isAdmin = assignedRole === "admin";
-        const isFieldTeam = assignedRole === "field_team";
-        const isMunicipal = assignedRole === "municipal";
-        const namePart = cleanEmail.split("@")[0] || "User";
-        
-        const displayName = isAdmin
-          ? "Administrator Marcus Vance (Super Admin)"
-          : isFieldTeam 
-          ? "Supervisor Vikram Singh (Field Ops)" 
-          : (isMunicipal ? "Director Rachel Chen (Municipal Dispatch)" : (namePart.charAt(0).toUpperCase() + namePart.slice(1)));
-        
-        const uid = "user_" + cleanEmail.replace(/[^a-zA-Z0-9]/g, "_");
-
-        const profile: UserProfile = {
-          uid,
-          email: cleanEmail,
-          name: displayName,
-          fullName: displayName,
-          role: assignedRole,
-          points: assignedRole === "citizen" ? 100 : 0,
-          badges: isAdmin ? ["System Governor"] : isFieldTeam ? ["Field Operations Crew"] : (isMunicipal ? ["Command Officer"] : ["Active Observer"]),
-          scansCount: 0,
-          reportsCount: 0,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-
-        if (isFieldTeam) {
-          profile.teamId = "RT-014";
-          profile.teamName = "Road Maintenance Team Alpha";
-          profile.teamLead = "Supervisor Vikram Singh";
-          profile.availability = "AVAILABLE";
-        }
-
-        try { await setUserProfile(profile); } catch (e) {
-          console.warn("Could not persist demo user profile:", e);
-        }
-
-        setUser({
-          uid,
-          email: cleanEmail,
-          displayName,
-          emailVerified: true,
-          isAnonymous: false
-        } as any);
-
-        setUserProfileState(profile);
-        localStorage.setItem("urbanpulse_active_profile", JSON.stringify(profile));
-        return profile;
-      }
-
       const formatted = formatAuthErrorMessage(err);
       setAuthError(formatted);
       throw new Error(formatted);
@@ -369,9 +291,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem("urbanpulse_active_profile");
 
     try {
-      let uid: string;
       const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, pass);
-      uid = userCredential.user.uid;
+      const uid = userCredential.user.uid;
 
       const assignedRole = determineRole(cleanEmail, requestedRole);
       const isFieldTeam = assignedRole === "field_team";
@@ -401,69 +322,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       try {
         await setUserProfile(newProfile);
-      } catch {}
+      } catch (e) {
+        console.warn("Could not save profile:", e);
+      }
 
-      setUser({
-        uid,
-        email: cleanEmail,
-        displayName: newProfile.name,
-        emailVerified: true,
-        isAnonymous: false
-      } as any);
+      setUser(userCredential.user);
       setUserProfileState(newProfile);
       localStorage.setItem("urbanpulse_active_profile", JSON.stringify(newProfile));
       return newProfile;
     } catch (err: any) {
       console.warn("Firebase Email Signup error:", err?.code || err);
-      if (
-        err?.code === "auth/operation-not-allowed" ||
-        err?.code === "auth/configuration-not-found" ||
-        err?.message?.includes("operation-not-allowed") ||
-        err?.message?.includes("Provider is disabled")
-      ) {
-        const assignedRole = determineRole(cleanEmail, requestedRole);
-        const isFieldTeam = assignedRole === "field_team";
-        const isAdmin = assignedRole === "admin";
-        const isMunicipal = assignedRole === "municipal";
-        const uid = "user_" + cleanEmail.replace(/[^a-zA-Z0-9]/g, "_");
-        const displayName = fullName.trim() || (isAdmin ? "Administrator" : isFieldTeam ? "Supervisor Vikram Singh (Field Ops)" : (isMunicipal ? "Municipal Officer" : "Urban Citizen"));
-
-        const newProfile: UserProfile = {
-          uid,
-          email: cleanEmail,
-          name: displayName,
-          fullName: displayName,
-          role: assignedRole,
-          points: assignedRole === "citizen" ? 100 : 0,
-          badges: isAdmin ? ["System Governor"] : isFieldTeam ? ["Field Operations Crew"] : (assignedRole === "municipal" ? ["Command Officer"] : ["Registered Observer"]),
-          scansCount: 0,
-          reportsCount: 0,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-
-        if (isFieldTeam) {
-          newProfile.teamId = "RT-014";
-          newProfile.teamName = "Road Maintenance Team Alpha";
-          newProfile.teamLead = "Supervisor Vikram Singh";
-          newProfile.availability = "AVAILABLE";
-        }
-
-        try { await setUserProfile(newProfile); } catch {}
-
-        setUser({
-          uid,
-          email: cleanEmail,
-          displayName,
-          emailVerified: true,
-          isAnonymous: false
-        } as any);
-
-        setUserProfileState(newProfile);
-        localStorage.setItem("urbanpulse_active_profile", JSON.stringify(newProfile));
-        return newProfile;
-      }
-
       const formatted = formatAuthErrorMessage(err);
       setAuthError(formatted);
       throw new Error(formatted);

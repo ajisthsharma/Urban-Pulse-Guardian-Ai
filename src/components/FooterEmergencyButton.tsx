@@ -19,6 +19,8 @@ import {
 import { User, Report } from "../types";
 import { createReport } from "../services/reportsService";
 import { createNotification } from "../services/notificationsService";
+import { useAuth } from "../context/AuthContext";
+import { auth } from "../lib/firebase";
 
 interface FooterEmergencyButtonProps {
   currentUser: User | null;
@@ -31,6 +33,7 @@ export default function FooterEmergencyButton({
   onReportCreated,
   onOpenReportDetails
 }: FooterEmergencyButtonProps) {
+  const { user: authUser, loading: authLoading } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [isTriggering, setIsTriggering] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -166,18 +169,29 @@ export default function FooterEmergencyButton({
     setCountdown(null);
 
     try {
-      // Ensure we have coordinates
+      // Ensure coordinates are locked
       let coords = userCoords || autoLockCoordsRef.current;
       if (!coords) {
         coords = await acquireLocation();
       }
 
-      const activeUser = currentUser || {
-        id: "citizen_quick_action",
-        email: "citizen@urbanpulse.gov",
-        fullName: "Citizen Quick Action",
-        role: "citizen" as const,
-        createdAt: new Date().toISOString()
+      const activeUid = auth.currentUser?.uid || authUser?.uid || currentUser?.id;
+      if (!activeUid) {
+        if (authLoading) {
+          setErrorMessage("Restoring authentication session. Please wait a moment and try again.");
+        } else {
+          setErrorMessage("Please sign in before sending Emergency SOS.");
+        }
+        setIsTriggering(false);
+        setDispatchStage("IDLE");
+        return;
+      }
+
+      const activeUser = {
+        id: activeUid,
+        uid: activeUid,
+        email: auth.currentUser?.email || authUser?.email || currentUser?.email || "citizen@urbanpulse.ai",
+        fullName: auth.currentUser?.displayName || authUser?.displayName || currentUser?.fullName || "Citizen Reporter"
       };
 
       const customTitle = `🚨 URGENT SOS: High-Priority Emergency Incident`;

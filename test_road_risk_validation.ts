@@ -23,7 +23,7 @@ function runValidationTests() {
 
   // TEST A: One isolated report
   {
-    const reports: Report[] = [{
+    const reports: any[] = [{
       id: "REP-A1",
       title: "Isolated small pothole",
       category: "Pothole",
@@ -45,7 +45,7 @@ function runValidationTests() {
 
   // TEST B: Multiple reports on same location
   {
-    const reports: Report[] = [
+    const reports: any[] = [
       {
         id: "REP-B1",
         title: "Deep pothole hit 1",
@@ -92,7 +92,7 @@ function runValidationTests() {
 
   // TEST C: AI + citizen report near same location
   {
-    const reports: Report[] = [
+    const reports: any[] = [
       {
         id: "REP-C1",
         title: "AI Camera detected large crater",
@@ -129,7 +129,7 @@ function runValidationTests() {
 
   // TEST D: AI + citizen reports on different nearby roads (text contradiction)
   {
-    const reports: Report[] = [
+    const reports: any[] = [
       {
         id: "REP-D1",
         title: "Water accumulation Sector 14",
@@ -162,7 +162,7 @@ function runValidationTests() {
 
   // TEST E: Multiple resolved reports (organic recalculation, no arbitrary 80% hack)
   {
-    const reports: Report[] = [
+    const reports: any[] = [
       {
         id: "REP-E1",
         title: "Repaired pothole A",
@@ -202,7 +202,7 @@ function runValidationTests() {
 
   // TEST F: Old unresolved report (> 14 days)
   {
-    const reports: Report[] = [{
+    const reports: any[] = [{
       id: "REP-F1",
       title: "Forgotten sign hazard",
       category: "Road Hazards",
@@ -223,7 +223,7 @@ function runValidationTests() {
 
   // TEST G: High-severity recent incident
   {
-    const reports: Report[] = [{
+    const reports: any[] = [{
       id: "REP-G1",
       title: "Severe Road Cave-In",
       category: "Road Hazards",
@@ -244,7 +244,7 @@ function runValidationTests() {
 
   // TEST H: Invalid 0,0 coordinates
   {
-    const reports: Report[] = [
+    const reports: any[] = [
       {
         id: "REP-H1",
         title: "Corrupt GPS 0,0",
@@ -275,7 +275,7 @@ function runValidationTests() {
 
   // TEST I: Duplicate Road Scanner writes (<5s apart, same coordinates)
   {
-    const reports: Report[] = [
+    const reports: any[] = [
       {
         id: "REP-I1",
         title: "Pothole Dashcam Frame 1",
@@ -313,7 +313,7 @@ function runValidationTests() {
   // TEST J: Parallel roads within 250m
   {
     // Two roads 110m apart, but one is "Barakhamba Road" and one is "Tolstoy Marg" with incompatible categories
-    const reports: Report[] = [
+    const reports: any[] = [
       {
         id: "REP-J1",
         title: "Streetlight outage Barakhamba Road",

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Report, RoadRiskSegment, CorridorRiskLevel, CorroborationState } from "../types";
 import { buildRoadRiskIntelligence } from "../services/roadRiskIntelligence";
+import { createOsmTileLayer } from "../utils/mapConfig";
 
 interface RoadRiskIntelligenceViewProps {
   reports: Report[];
@@ -106,10 +107,7 @@ export default function RoadRiskIntelligenceView({
       zoomControl: false
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      maxZoom: 20,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
-    }).addTo(map);
+    createOsmTileLayer().addTo(map);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
@@ -129,7 +127,7 @@ export default function RoadRiskIntelligenceView({
     if (!map) return;
 
     // Clear existing layers
-    Object.values(corridorLayersRef.current).forEach(layerGroup => {
+    Object.values(corridorLayersRef.current).forEach((layerGroup: L.LayerGroup) => {
       layerGroup.clearLayers();
       map.removeLayer(layerGroup);
     });

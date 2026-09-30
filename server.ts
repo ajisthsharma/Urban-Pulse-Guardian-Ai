@@ -394,7 +394,7 @@ async function generateContentWithFallback(
   preferredModel: string = ROAD_SCANNER_GEMINI_MODEL
 ): Promise<{ response: any; modelUsed: string }> {
   // Use authoritative primary model first, followed by valid standard Google GenAI models
-  const candidateModels = Array.from(new Set([preferredModel, "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]));
+  const candidateModels = Array.from(new Set([preferredModel, "gemini-2.5-flash", "gemini-2.0-flash"]));
   const availableModels = candidateModels.filter(m => !isModelInCooldown(m));
   const models = availableModels.length > 0 ? availableModels : candidateModels.slice(0, 1);
   let lastError: any = null;

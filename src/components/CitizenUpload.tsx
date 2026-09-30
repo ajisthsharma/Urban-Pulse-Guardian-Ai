@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Report, ReportCategory } from "../types";
 import { useAuth } from "../context/AuthContext";
+import { auth } from "../lib/firebase";
 import { validateEvidenceFile, uploadEvidenceImage } from "../services/storageService";
 import { validateCoordinates, createReport as createFirestoreReport } from "../services/reportsService";
 import { AIAnalysisResponse, validateAIAnalysisOutput } from "../services/aiAnalysisService";
@@ -529,7 +530,15 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
       return;
     }
 
-    const currentUid = user?.uid || userProfile?.uid || "anonymous_uid";
+    const currentUid = auth.currentUser?.uid || user?.uid || userProfile?.uid;
+    if (!currentUid) {
+      setCurrentStep("REVIEW");
+      setFormError("Authentication required: Please sign in before submitting an incident report.");
+      setDiagTrace(prev => ({ ...prev, submissionStatus: "ERROR", lastEvent: "AUTH_REQUIRED" }));
+      submitLockRef.current = false;
+      setIsSubmitting(false);
+      return;
+    }
     let finalEvidenceUrl = imagePreview;
 
     // 1. EVIDENCE CHECK & STORAGE UPLOAD
@@ -568,22 +577,23 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
     setDiagTrace(prev => ({ ...prev, firestoreStatus: "PENDING", lastEvent: "FIRESTORE_WRITE_STARTED" }));
     setSubmittingStatus("Writing report record to canonical Firestore database...");
 
+    const isManualSubmission = !aiAnalysis || (activeAnalysis.source as string) === "AI_UNAVAILABLE";
     const reportPayload = {
       title: title.trim(),
       description: description.trim() || `Report on ${title}`,
       category: (activeAnalysis.issueType || category || "Pothole") as ReportCategory,
       issueType: activeAnalysis.issueType || category || "Pothole",
-      severity: activeAnalysis.severity,
-      riskLevel: activeAnalysis.riskLevel,
-      priority: activeAnalysis.priority,
-      confidence: activeAnalysis.confidence,
+      severity: isManualSubmission ? 50 : activeAnalysis.severity,
+      riskLevel: isManualSubmission ? ("Medium" as const) : activeAnalysis.riskLevel,
+      priority: isManualSubmission ? ("Medium" as const) : activeAnalysis.priority,
+      confidence: isManualSubmission ? 0 : activeAnalysis.confidence,
       location: location.trim() || "Delhi NCR Jurisdiction",
       latitude: targetLat,
       longitude: targetLng,
       image: finalEvidenceUrl,
       evidenceUrl: finalEvidenceUrl,
       source: "MANUAL_REPORT" as const,
-      aiAnalysis: (activeAnalysis.source as string) === "AI_UNAVAILABLE" ? null : {
+      aiAnalysis: isManualSubmission ? null : {
         category: activeAnalysis.issueType,
         severityScore: activeAnalysis.severity,
         riskLevel: activeAnalysis.riskLevel,
@@ -595,10 +605,11 @@ export default function CitizenUpload({ onReportCreated, currentUserEmail, onVie
 
     try {
       const created = await withTimeout(
-        createFirestoreReport(reportPayload, userProfile || {
+        createFirestoreReport(reportPayload, {
           uid: currentUid,
-          email: user?.email || currentUserEmail,
-          name: userProfile?.name || "Citizen Reporter"
+          id: currentUid,
+          email: auth.currentUser?.email || user?.email || userProfile?.email || currentUserEmail,
+          name: auth.currentUser?.displayName || userProfile?.name || "Citizen Reporter"
         }),
         12000,
         "Firestore report creation timed out."
