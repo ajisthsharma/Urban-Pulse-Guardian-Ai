@@ -330,19 +330,32 @@ if (apiKey && apiKey !== "YOUR_GEMINI_API_KEY" && apiKey.trim().length > 0) {
   console.log("[Gemini AI] No valid GEMINI_API_KEY in environment. Heuristic fallback mode active.");
 }
 
-// Model Sanitization Helper to prevent obsolete v1beta model errors
+// Model Sanitization Helper to prevent obsolete model identifiers from being used
 function sanitizeGeminiModelName(model?: string): string {
-  if (!model) return "gemini-2.5-flash";
+  if (!model) return "gemini-3.8-flash";
   const cleaned = model.trim().replace(/^models\//, "");
-  // Replace obsolete or deprecated models with supported multimodal models in @google/genai
-  if (cleaned.includes("1.5") || cleaned.includes("1.0") || cleaned === "gemini-flash" || cleaned === "gemini-pro") {
-    return "gemini-2.5-flash";
+  // Gemini 2.x Flash models are retired for new projects. This also protects
+  // deployments that still have GEMINI_MODEL or ROAD_SCANNER_GEMINI_MODEL set
+  // to an old value.
+  if (
+    cleaned.includes("2.5") ||
+    cleaned.includes("2.0") ||
+    cleaned.includes("1.5") ||
+    cleaned.includes("1.0") ||
+    cleaned === "gemini-flash" ||
+    cleaned === "gemini-pro"
+  ) {
+    return "gemini-3.8-flash";
   }
-  return cleaned || "gemini-2.5-flash";
+  return cleaned || "gemini-3.8-flash";
 }
 
 // Authoritative Road Scanner Gemini Model & Batching Configuration
-const ROAD_SCANNER_GEMINI_MODEL = sanitizeGeminiModelName(process.env.ROAD_SCANNER_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash");
+const ROAD_SCANNER_GEMINI_MODEL = sanitizeGeminiModelName(process.env.ROAD_SCANNER_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-3.8-flash");
+// Do not add retired model names here. A 404 from an obsolete fallback prevents
+// the scanner from returning a useful result when a deployment still has an old
+// environment override.
+const GEMINI_VISION_MODELS = ["gemini-3.8-flash"];
 const GEMINI_FRAME_BATCH_SIZE = 4;
 const MAX_GEMINI_REQUESTS_PER_SCAN = 3;
 
@@ -404,9 +417,10 @@ async function generateContentWithFallback(
   params: any,
   preferredModel: string = ROAD_SCANNER_GEMINI_MODEL
 ): Promise<{ response: any; modelUsed: string }> {
-  // Use authoritative primary model first, followed by valid standard Google GenAI models
-  const primaryModel = typeof sanitizeGeminiModelName === "function" ? sanitizeGeminiModelName(preferredModel) : preferredModel;
-  const candidateModels = Array.from(new Set([primaryModel, "gemini-2.5-flash", "gemini-2.0-flash"]));
+  // Use only a currently supported vision model. Retired model fallbacks caused
+  // the production scanner to surface a misleading final 404 response.
+  const primaryModel = sanitizeGeminiModelName(preferredModel);
+  const candidateModels = Array.from(new Set([primaryModel, ...GEMINI_VISION_MODELS]));
   const availableModels = candidateModels.filter(m => !isModelInCooldown(m));
   const models = availableModels.length > 0 ? availableModels : candidateModels.slice(0, 1);
   let lastError: any = null;
@@ -554,7 +568,8 @@ app.get("/api/health", (req: Request, res: Response) => {
     service: "UrbanPulse Guardian AI Engine",
     timestamp: new Date().toISOString(),
     firestoreConnected: Boolean(firestoreDb),
-    aiEngineActive: Boolean(ai)
+    aiEngineActive: Boolean(ai),
+    roadScannerModel: ROAD_SCANNER_GEMINI_MODEL
   });
 });
 
