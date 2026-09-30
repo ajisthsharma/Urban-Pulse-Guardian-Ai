@@ -121,8 +121,12 @@ export function getValidMapPoints(
       if (sourceFilter === "MANUAL_REPORT" && point.source !== "MANUAL_REPORT") continue;
     }
 
-    // Status Filter
-    if (statusFilter !== "All" && point.status !== statusFilter) {
+    // Threat-state filter used by the municipal heatmap. "Active" is an
+    // operational group, not a stored Firestore status: it includes every
+    // unresolved incident the city still needs to act on.
+    if (statusFilter === "Active") {
+      if (point.status === "Resolved") continue;
+    } else if (statusFilter !== "All" && point.status !== statusFilter) {
       continue;
     }
 
