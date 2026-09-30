@@ -526,6 +526,7 @@ export default function App() {
         { id: "infrastructure", label: t("nav.reportIssue"), desc: t("home.reportIssueCardDesc"), icon: Activity },
         { id: "road-scanner", label: t("nav.roadScanner"), desc: t("home.roadScannerCardDesc"), icon: Camera },
         ...(activeScanSession && activeScanSession.candidates.length > 0 ? [{ id: "candidate-review", label: `${t("nav.reviewScans")} (${activeScanSession.candidates.length})`, desc: "Review & submit", icon: ShieldCheck }] : []),
+        { id: "safe-route", label: t("nav.safeRoute"), desc: t("home.safeRouteCardDesc"), icon: Navigation },
         { id: "emergency-sos", label: t("nav.emergencySos"), desc: t("home.emergencySosCardDesc"), icon: AlertTriangle },
       ]
     }
