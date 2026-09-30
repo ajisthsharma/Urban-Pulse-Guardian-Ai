@@ -334,9 +334,11 @@ if (apiKey && apiKey !== "YOUR_GEMINI_API_KEY" && apiKey.trim().length > 0) {
 function sanitizeGeminiModelName(model?: string): string {
   if (!model) return "gemini-3.8-flash";
   const cleaned = model.trim().replace(/^models\//, "");
-  // Gemini 2.0 Flash was retired. This also protects deployments that still
-  // have GEMINI_MODEL or ROAD_SCANNER_GEMINI_MODEL set to the old value.
+  // Gemini 2.x Flash models are retired for new projects. This also protects
+  // deployments that still have GEMINI_MODEL or ROAD_SCANNER_GEMINI_MODEL set
+  // to an old value.
   if (
+    cleaned.includes("2.5") ||
     cleaned.includes("2.0") ||
     cleaned.includes("1.5") ||
     cleaned.includes("1.0") ||
@@ -350,6 +352,10 @@ function sanitizeGeminiModelName(model?: string): string {
 
 // Authoritative Road Scanner Gemini Model & Batching Configuration
 const ROAD_SCANNER_GEMINI_MODEL = sanitizeGeminiModelName(process.env.ROAD_SCANNER_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-3.8-flash");
+// Do not add retired model names here. A 404 from an obsolete fallback prevents
+// the scanner from returning a useful result when a deployment still has an old
+// environment override.
+const GEMINI_VISION_MODELS = ["gemini-3.8-flash"];
 const GEMINI_FRAME_BATCH_SIZE = 4;
 const MAX_GEMINI_REQUESTS_PER_SCAN = 3;
 
@@ -411,10 +417,10 @@ async function generateContentWithFallback(
   params: any,
   preferredModel: string = ROAD_SCANNER_GEMINI_MODEL
 ): Promise<{ response: any; modelUsed: string }> {
-  // Use the current vision model first. Never retry the retired Gemini 2.0
-  // endpoint: doing so turns a recoverable model selection into a scanner failure.
+  // Use only a currently supported vision model. Retired model fallbacks caused
+  // the production scanner to surface a misleading final 404 response.
   const primaryModel = sanitizeGeminiModelName(preferredModel);
-  const candidateModels = Array.from(new Set([primaryModel, "gemini-3.8-flash", "gemini-2.5-flash"]));
+  const candidateModels = Array.from(new Set([primaryModel, ...GEMINI_VISION_MODELS]));
   const availableModels = candidateModels.filter(m => !isModelInCooldown(m));
   const models = availableModels.length > 0 ? availableModels : candidateModels.slice(0, 1);
   let lastError: any = null;
@@ -562,7 +568,8 @@ app.get("/api/health", (req: Request, res: Response) => {
     service: "UrbanPulse Guardian AI Engine",
     timestamp: new Date().toISOString(),
     firestoreConnected: Boolean(firestoreDb),
-    aiEngineActive: Boolean(ai)
+    aiEngineActive: Boolean(ai),
+    roadScannerModel: ROAD_SCANNER_GEMINI_MODEL
   });
 });
 
