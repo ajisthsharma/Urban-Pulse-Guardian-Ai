@@ -523,8 +523,6 @@ export default function App() {
         { id: "infrastructure", label: "Report Issue", desc: "Log urban hazards", icon: Activity },
         { id: "road-scanner", label: "AI Road Scanner", desc: "Dashcam hazard detection", icon: Camera },
         ...(activeScanSession && activeScanSession.candidates.length > 0 ? [{ id: "candidate-review", label: `Review Scans (${activeScanSession.candidates.length})`, desc: "Review & submit", icon: ShieldCheck }] : []),
-        { id: "road-risk-intelligence", label: "Road Risk Intelligence", desc: "Corridor-level risk analysis", icon: ShieldAlert },
-        { id: "safe-route", label: "Safe Route", desc: "Hazard-free navigation", icon: Navigation },
         { id: "emergency-sos", label: "Emergency SOS", desc: "Critical infrastructure beacon", icon: AlertTriangle },
       ]
     }
@@ -1288,7 +1286,7 @@ export default function App() {
             )}
 
             {/* SAFE ROUTE & HAZARD-AWARE NAVIGATION */}
-            {activeSubTab === "safe-route" && (
+            {activeSubTab === "safe-route" && currentUser.role !== "citizen" && (
               <div className="w-full">
                 <SafeRouteNav
                   reports={reports}
@@ -1297,7 +1295,7 @@ export default function App() {
             )}
 
             {/* ROAD RISK INTELLIGENCE LAYER */}
-            {activeSubTab === "road-risk-intelligence" && (
+            {activeSubTab === "road-risk-intelligence" && currentUser.role !== "citizen" && (
               <div className="w-full">
                 <RoadRiskIntelligenceView
                   reports={reports}
@@ -1639,21 +1637,6 @@ export default function App() {
                     currentUserEmail={currentUser.email}
                   />
 
-                  {/* Citizen Map specifically styled */}
-                  <div className="bg-white dark:bg-slate-900 p-4.5 border border-slate-200 shadow-3xs rounded-xl flex flex-col gap-3">
-                    <div>
-                      <h4 className="font-display font-bold text-xs text-slate-800">Visual Wards overlay</h4>
-                      <p className="text-[10px] text-slate-400">Delhi NCR volunteer submission tracking.</p>
-                    </div>
-                    <div className="h-[260px] rounded-lg overflow-hidden border border-slate-200">
-                      <SimpleMap
-                        reports={reports}
-                        selectedReport={selectedReport}
-                        onSelectReport={(rep) => setSelectedReport(rep)}
-                      />
-                    </div>
-                  </div>
-
                   {/* Citizen submitted table */}
                   <div className="bg-white dark:bg-slate-900 p-4.5 border border-slate-200 shadow-3xs rounded-xl">
                     <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
@@ -1860,27 +1843,8 @@ export default function App() {
                   />
                 </div>
 
-                {/* Right Column: Delhi NCR Citizen Map & Recent submissions (Span 7) */}
+                {/* Right Column: citizen submission history (Span 7) */}
                 <div className="lg:col-span-7 flex flex-col gap-6">
-                  
-                  {/* Map overlay Card */}
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200 shadow-xs rounded-2xl p-5">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="font-display font-semibold text-base text-slate-800 tracking-tight">Active Delhi NCR Incident Map</h3>
-                        <p className="text-[11px] text-gray-400 mt-0.5">Centers automatically on your coordinates. Single markers trigger floating popups.</p>
-                      </div>
-                    </div>
-
-                    <div className="h-[380px] w-full rounded-xl border border-slate-150 overflow-hidden shadow-inner">
-                      <SimpleMap
-                        reports={reports}
-                        selectedReport={selectedReport}
-                        onSelectReport={(rep) => setSelectedReport(rep)}
-                      />
-                    </div>
-                  </div>
-
                   {/* Volunteer submissions history list */}
                   <div className="bg-white dark:bg-slate-900 border border-slate-200 shadow-xs rounded-2xl p-5">
                     <div className="flex items-center justify-between mb-4 pb-2 border-b border-light-100">
