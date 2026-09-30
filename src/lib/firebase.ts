@@ -1,20 +1,17 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, initializeFirestore, doc, getDocFromServer, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { getFirestore, doc, getDocFromServer } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import config from "../../firebase-applet-config.json";
 
 // Safe public client configuration with environment fallback
 export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || config.apiKey || "",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || config.authDomain || "",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || config.projectId || "",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || config.storageBucket || "",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || config.messagingSenderId || "",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || config.appId || "",
-  // A database id is not part of Firebase web-app configuration. The generated
-  // AI Studio id in the legacy config is not an actual Firestore database and
-  // made every profile request wait/retry forever in production.
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || config.authDomain || "urbanpulse-gardian-ai.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || config.projectId || "urbanpulse-gardian-ai",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || config.storageBucket || "urbanpulse-gardian-ai.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || config.messagingSenderId || "234829673567",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || config.appId || "1:234829673567:web:ec4f17630cf8a9308d97ea",
   firestoreDatabaseId: "(default)"
 };
 
@@ -23,24 +20,7 @@ export const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getA
 
 // Canonical Auth, Firestore, and Storage Singletons
 export const auth = getAuth(app);
-
-const dbId = firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== "(default)"
-  ? firebaseConfig.firestoreDatabaseId
-  : "(default)";
-
-let dbInstance;
-try {
-  dbInstance = initializeFirestore(app, {
-    experimentalAutoDetectLongPolling: true,
-    localCache: persistentLocalCache({
-      tabManager: persistentMultipleTabManager()
-    })
-  }, dbId);
-} catch {
-  dbInstance = getFirestore(app, dbId);
-}
-
-export const db = dbInstance;
+export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 // Operation types for standard Firebase Error Handling

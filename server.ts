@@ -330,8 +330,19 @@ if (apiKey && apiKey !== "YOUR_GEMINI_API_KEY" && apiKey.trim().length > 0) {
   console.log("[Gemini AI] No valid GEMINI_API_KEY in environment. Heuristic fallback mode active.");
 }
 
+// Model Sanitization Helper to prevent obsolete v1beta model errors
+function sanitizeGeminiModelName(model?: string): string {
+  if (!model) return "gemini-2.5-flash";
+  const cleaned = model.trim().replace(/^models\//, "");
+  // Replace obsolete or deprecated models with supported multimodal models in @google/genai
+  if (cleaned.includes("1.5") || cleaned.includes("1.0") || cleaned === "gemini-flash" || cleaned === "gemini-pro") {
+    return "gemini-2.5-flash";
+  }
+  return cleaned || "gemini-2.5-flash";
+}
+
 // Authoritative Road Scanner Gemini Model & Batching Configuration
-const ROAD_SCANNER_GEMINI_MODEL = process.env.ROAD_SCANNER_GEMINI_MODEL || "gemini-2.5-flash";
+const ROAD_SCANNER_GEMINI_MODEL = sanitizeGeminiModelName(process.env.ROAD_SCANNER_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash");
 const GEMINI_FRAME_BATCH_SIZE = 4;
 const MAX_GEMINI_REQUESTS_PER_SCAN = 3;
 
@@ -394,7 +405,8 @@ async function generateContentWithFallback(
   preferredModel: string = ROAD_SCANNER_GEMINI_MODEL
 ): Promise<{ response: any; modelUsed: string }> {
   // Use authoritative primary model first, followed by valid standard Google GenAI models
-  const candidateModels = Array.from(new Set([preferredModel, "gemini-2.5-flash", "gemini-2.0-flash"]));
+  const primaryModel = typeof sanitizeGeminiModelName === "function" ? sanitizeGeminiModelName(preferredModel) : preferredModel;
+  const candidateModels = Array.from(new Set([primaryModel, "gemini-2.5-flash", "gemini-2.0-flash"]));
   const availableModels = candidateModels.filter(m => !isModelInCooldown(m));
   const models = availableModels.length > 0 ? availableModels : candidateModels.slice(0, 1);
   let lastError: any = null;
@@ -1143,15 +1155,27 @@ Respond ONLY with valid JSON matching:
 
         const isDetected = Boolean(parsed.issueDetected);
 
+        const rawConf = Number(parsed.confidence);
+        const rawSev = Number(parsed.severity ?? parsed.severityScore);
+
+        if (isDetected && (isNaN(rawConf) || isNaN(rawSev))) {
+          console.warn("[Gemini AI] Model response missing numerical confidence or severity metrics.");
+          return res.status(502).json({
+            status: "unavailable",
+            error: "Incomplete AI analysis",
+            message: "AI analysis output did not include required hazard metrics."
+          });
+        }
+
         return res.json({
           status: "success",
           analysis: {
             issueDetected: isDetected,
             issueType: isDetected ? (parsed.issueType || parsed.category || category || "Other") : "Other",
-            confidence: Number(parsed.confidence) || 80,
-            severity: isDetected ? (Number(parsed.severity ?? parsed.severityScore) || 50) : 0,
-            priority: isDetected ? (parsed.priority || (Number(parsed.severity) >= 75 ? "High" : "Medium")) : "Low",
-            riskLevel: isDetected ? (parsed.riskLevel || (Number(parsed.severity) >= 75 ? "High" : "Medium")) : "Low",
+            confidence: isDetected ? Math.max(0, Math.min(100, Math.round(rawConf))) : 0,
+            severity: isDetected ? Math.max(0, Math.min(100, Math.round(rawSev))) : 0,
+            priority: isDetected ? (parsed.priority || (rawSev >= 75 ? "High" : "Medium")) : "Low",
+            riskLevel: isDetected ? (parsed.riskLevel || (rawSev >= 75 ? "High" : "Medium")) : "Low",
             description: parsed.description || (isDetected ? "Identified urban infrastructure hazard." : "No valid urban infrastructure hazard detected in image."),
             recommendedActions: isDetected && Array.isArray(parsed.recommendedActions) ? parsed.recommendedActions : [],
             reasoning: parsed.reasoning || (isDetected ? "Visual hazard detected by Gemini Vision." : "Visual inspection confirmed no road hazard present."),

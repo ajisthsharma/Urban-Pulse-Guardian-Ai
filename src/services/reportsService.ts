@@ -15,7 +15,7 @@ import {
   QueryDocumentSnapshot,
   SnapshotOptions
 } from "firebase/firestore";
-import { db, handleFirestoreError, OperationType, stripUndefinedDeep } from "../lib/firebase";
+import { db, auth, handleFirestoreError, OperationType, stripUndefinedDeep } from "../lib/firebase";
 import { 
   Report, 
   ReportCategory, 
@@ -178,10 +178,17 @@ function generateIdempotencyKey(userId: string, title: string, category: string,
  */
 export async function createReport(
   input: CreateReportInput,
-  currentUser: { uid?: string; id?: string; email?: string; name?: string; fullName?: string }
+  currentUser?: { uid?: string; id?: string; email?: string; name?: string; fullName?: string }
 ): Promise<Report> {
-  const userId = currentUser.uid || currentUser.id || "anonymous_user";
-  const userEmail = currentUser.email || "citizen@urbanpulse.gov";
+  // 0. Enforce authenticated Firebase session before any Firestore operation
+  const currentAuthUser = auth.currentUser;
+  if (!currentAuthUser) {
+    console.warn(`[reportsService] Denied Firestore write: No authenticated Firebase user session. Path: reports/*`);
+    throw new Error("Please sign in before submitting a report.");
+  }
+
+  const userId = currentAuthUser.uid;
+  const userEmail = currentAuthUser.email || "citizen@urbanpulse.ai";
 
   // 1. Validate mandatory fields
   if (!input.title || !input.title.trim()) {
@@ -273,6 +280,10 @@ export async function createReport(
 
   // 5. Write to Firestore `reports/{reportId}`
   const path = `reports/${reportId}`;
+
+  // Log pre-write state without sensitive tokens (Rule 10)
+  console.log(`[Firestore Pre-Write Auth Check] Operation: ${OperationType.CREATE} | Path: ${path} | Has currentUser: ${Boolean(currentAuthUser)} | UID: ${currentAuthUser.uid}`);
+
   try {
     const reportRef = doc(db, "reports", reportId).withConverter(reportConverter);
     
@@ -299,7 +310,7 @@ export async function createReport(
 
     return canonicalReport;
   } catch (error) {
-    handleFirestoreError(error, OperationType.WRITE, path);
+    handleFirestoreError(error, OperationType.CREATE, path);
     return canonicalReport;
   }
 }

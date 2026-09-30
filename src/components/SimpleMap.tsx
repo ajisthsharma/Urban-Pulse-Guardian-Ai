@@ -513,18 +513,22 @@ export default function SimpleMap({
           </select>
         </div>
 
-        {/* Status Filter Dropdown */}
-        <div className="bg-white dark:bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5">
+        {/* Municipal threat-state dropdown: filters both incident markers and
+            heat zones from the same live Firestore report stream. */}
+        <div className="bg-white dark:bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5 w-full sm:w-auto">
+          <AlertTriangle className="w-3 h-3 text-amber-500 shrink-0" />
           <select
             id="map-status-filter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-transparent text-[10.5px] font-bold text-slate-700 focus:outline-hidden cursor-pointer"
+            aria-label="Filter map by threat status"
+            className="bg-transparent text-[10.5px] font-bold text-slate-700 focus:outline-hidden cursor-pointer min-w-0 flex-1 sm:flex-none"
           >
-            <option value="All">All Statuses</option>
-            <option value="Pending">Pending Only</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Resolved">Resolved</option>
+            <option value="All">All Threats</option>
+            <option value="Active">Active Threats</option>
+            <option value="Pending">Pending Threats</option>
+            <option value="In Progress">In-Progress Threats</option>
+            <option value="Resolved">Resolved Threats</option>
           </select>
         </div>
 

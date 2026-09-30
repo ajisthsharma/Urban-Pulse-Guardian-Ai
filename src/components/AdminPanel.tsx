@@ -353,7 +353,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display">
                 Platform Administration & System Registry
               </h1>
-              <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed font-sans max-w-xl">
+              <p className="text-slate-600 dark:text-slate-300 dark:text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed font-sans max-w-xl">
                 Centralized authority for user roles, squad provisioning, security boundaries, and platform health telemetry.
               </p>
             </div>
@@ -464,7 +464,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   {users.filter(u => u.role === "citizen").length || 13}
                 </p>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
                 <span className="text-green-600 dark:text-green-400 font-bold">100% Active</span>
                 <span>• Civic mobile & web</span>
@@ -487,7 +487,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   {users.filter(u => u.role === "municipal").length || 3}
                 </p>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
                 <span>PWD, Power Grid & Sanitation</span>
               </div>
             </div>
@@ -508,7 +508,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   {teams.filter(t => t.active !== false).length || 5}
                 </p>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300 mt-2 flex items-center gap-1.5 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
                 <span className="text-green-600 dark:text-green-400 font-bold">{teams.filter(t => t.availability === "AVAILABLE").length || 5} Ready</span>
                 <span>• Rapid response fleet</span>
@@ -532,7 +532,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div className="text-[11px] text-green-600 dark:text-green-400 font-medium mt-2 flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
                 <span className="font-bold">99.8% Availability</span>
-                <span className="text-slate-500 dark:text-slate-300">• 640ms Avg</span>
+                <span className="text-slate-500 dark:text-slate-400 dark:text-slate-300">• 640ms Avg</span>
               </div>
             </div>
           </div>
@@ -562,7 +562,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </button>
               </div>
 
-              <p className="text-xs text-slate-500 dark:text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-300 leading-relaxed">
                 UrbanPulse Guardian enforces four mutually exclusive operational domains. Role crossing is blocked at both client route guards and backend database rules.
               </p>
 
@@ -580,7 +580,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       CLIENT
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 dark:text-slate-400 leading-relaxed">
                     Report civic hazards, track own submission timelines, view verified resolution evidence, earn civic points. Cannot access municipal triage or field tools.
                   </p>
                 </div>
@@ -596,7 +596,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       OPERATIONS
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 dark:text-slate-400 leading-relaxed">
                     Review city reports, confirm priority, assign registered Field Teams, monitor SLAs, and approve/reject submitted field repairs.
                   </p>
                 </div>
@@ -612,7 +612,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       FIELD OPERATIONS
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 dark:text-slate-400 leading-relaxed">
                     View assigned tasks, transition workflow (Accept → En Route → On Site), submit ground verification, upload before/after photos, request resolution. Cannot approve own work.
                   </p>
                 </div>
@@ -628,7 +628,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       SUPER ADMIN
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 dark:text-slate-400 leading-relaxed">
                     Platform user management, squad creation and configuration, system health monitoring, audit trail inspection, and global security policies.
                   </p>
                 </div>
@@ -658,7 +658,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           Manage User Access
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-300">Promote roles or deactivate accounts</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300">Promote roles or deactivate accounts</p>
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-transform group-hover:translate-x-0.5" />
@@ -681,7 +681,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#059669] transition-colors">
                           Register Field Squad
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-300">Add new dispatch crew to city fleet</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300">Add new dispatch crew to city fleet</p>
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-400 group-hover:text-[#059669] transition-transform group-hover:translate-x-0.5" />
@@ -701,7 +701,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#D97706] transition-colors">
                           System Audit Logs
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-300">View platform activity and security logs</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300">View platform activity and security logs</p>
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-400 group-hover:text-[#D97706] transition-transform group-hover:translate-x-0.5" />
@@ -721,7 +721,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#7C3AED] transition-colors">
                           Platform Settings
                         </h4>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-300">Configure thresholds and integrations</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300">Configure thresholds and integrations</p>
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-400 group-hover:text-[#7C3AED] transition-transform group-hover:translate-x-0.5" />
@@ -729,7 +729,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-300 font-mono">
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300 font-mono">
                 <span>Current Administrator:</span>
                 <span className="font-semibold text-slate-900 dark:text-white">{adminEmail}</span>
               </div>
@@ -747,7 +747,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white">Recent Administrative Audit Events</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-300">Real-time immutable ledger of platform access & security boundaries</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300">Real-time immutable ledger of platform access & security boundaries</p>
                   </div>
                 </div>
                 <button
@@ -767,7 +767,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <span className="w-2 h-2 rounded-full bg-[#2563EB] shrink-0" />
                       <div className="min-w-0">
                         <span className="font-semibold text-slate-900 dark:text-white">{log.action}</span>
-                        <span className="text-[11px] text-slate-500 dark:text-slate-300 block truncate font-mono">Actor: {log.adminEmail || "system_governance"}</span>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-300 block truncate font-mono">Actor: {log.adminEmail || "system_governance"}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0 text-[11px] font-mono">
@@ -805,7 +805,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <div key={t.id} className="p-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between text-xs">
                       <div>
                         <div className="font-bold text-slate-900 dark:text-white">{t.name}</div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-300">{t.district} • {t.membersCount} crew members</div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 dark:text-slate-300">{t.district} • {t.membersCount} crew members</div>
                       </div>
                       <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 dark:text-green-400 border border-green-200 dark:border-green-800">
                         READY
@@ -815,7 +815,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-300">
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400 dark:text-slate-300">
                 <span>Dispatch SLA Target:</span>
                 <span className="font-bold text-green-600 dark:text-green-400">&lt; 45 Mins Ground Response</span>
               </div>
@@ -826,25 +826,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {showMatrixModal && (
             <div className="fixed inset-0 z-50 bg-[#0F172A]/50 backdrop-blur-xs flex items-center justify-center p-4">
               <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4 animate-in fade-in zoom-in-95 duration-200">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700 dark:border-slate-700">
                   <div className="flex items-center gap-2">
                     <Lock className="w-5 h-5 text-slate-900 dark:text-white" />
                     <h3 className="font-bold text-base text-slate-900 dark:text-white">Security Domain & Route Separation Matrix</h3>
                   </div>
                   <button
                     onClick={() => setShowMatrixModal(false)}
-                    className="p-1 rounded-lg text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-slate-100 dark:bg-slate-800"
+                    className="p-1 rounded-lg text-slate-500 dark:text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-slate-100 dark:bg-slate-800 dark:bg-slate-800"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="space-y-3 text-xs text-slate-600 dark:text-slate-400">
+                <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300 dark:text-slate-400">
                   <p>
                     All routes in UrbanPulse Guardian strictly validate role claims directly from Firebase Authentication tokens before mounting views.
                   </p>
                   <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
                     <table className="w-full text-left">
-                      <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-500 dark:text-slate-300 uppercase">
+                      <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:text-slate-300 uppercase">
                         <tr>
                           <th className="p-2.5">Domain</th>
                           <th className="p-2.5">Allowed Role</th>
@@ -897,45 +897,45 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       {/* TAB 2: USER MANAGEMENT */}
       {activeTab === "users" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl shadow-xs overflow-hidden">
-          <div className="p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xs overflow-hidden">
+          <div className="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-base font-bold text-slate-900">User Access Control & Identity</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">User Access Control & Identity</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Manage credentials, assign department affiliations, and toggle account activation.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5">
               {/* Role filter */}
-              <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-lg text-xs font-semibold">
+              <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg text-xs font-semibold">
                 <button
                   onClick={() => setRoleFilter("ALL")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "ALL" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "ALL" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs" : "text-slate-600 dark:text-slate-300"}`}
                 >
                   All
                 </button>
                 <button
                   onClick={() => setRoleFilter("citizen")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "citizen" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "citizen" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs" : "text-slate-600 dark:text-slate-300"}`}
                 >
                   Citizens
                 </button>
                 <button
                   onClick={() => setRoleFilter("municipal")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "municipal" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "municipal" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs" : "text-slate-600 dark:text-slate-300"}`}
                 >
                   Municipal
                 </button>
                 <button
                   onClick={() => setRoleFilter("field_team")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "field_team" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "field_team" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs" : "text-slate-600 dark:text-slate-300"}`}
                 >
                   Field Team
                 </button>
                 <button
                   onClick={() => setRoleFilter("admin")}
-                  className={`px-2.5 py-1 rounded ${roleFilter === "admin" ? "bg-white dark:bg-slate-900 text-slate-900 shadow-xs" : "text-slate-600"}`}
+                  className={`px-2.5 py-1 rounded ${roleFilter === "admin" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs" : "text-slate-600 dark:text-slate-300"}`}
                 >
                   Admin
                 </button>
@@ -949,7 +949,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   placeholder="Search user or email..."
                   value={userSearch}
                   onChange={e => setUserSearch(e.target.value)}
-                  className="pl-8.5 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-blue-500 w-48 sm:w-56"
+                  className="pl-8.5 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-hidden focus:border-blue-500 w-48 sm:w-56"
                 />
               </div>
             </div>
@@ -957,8 +957,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           {/* Users Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-slate-50 text-[11px] uppercase tracking-wider font-bold text-slate-500 border-b border-slate-200">
+            <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800/50 text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 border-b border-slate-200">
                 <tr>
                   <th className="py-3 px-4">User</th>
                   <th className="py-3 px-4">Role</th>
@@ -979,7 +979,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   filteredUsers.map(u => (
                     <tr key={u.id} className="hover:bg-slate-50/75 transition">
                       <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-900">{u.fullName}</div>
+                        <div className="font-semibold text-slate-900 dark:text-white">{u.fullName}</div>
                         <div className="text-[11px] text-slate-400 font-mono">{u.email}</div>
                       </td>
                       <td className="py-3 px-4">
@@ -997,16 +997,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       </td>
                       <td className="py-3 px-4">
                         {u.role === "field_team" && u.teamName ? (
-                          <div className="font-medium text-slate-800">{u.teamName}</div>
+                          <div className="font-medium text-slate-800 dark:text-slate-200">{u.teamName}</div>
                         ) : (
-                          <div className="text-slate-700">{u.department || "General Public"}</div>
+                          <div className="text-slate-700 dark:text-slate-300">{u.department || "General Public"}</div>
                         )}
                       </td>
                       <td className="py-3 px-4 text-[11px]">
                         {u.role === "citizen" ? (
                           <span className="font-semibold text-emerald-600">{u.points || 0} Points</span>
                         ) : u.role === "field_team" ? (
-                          <span className="font-mono text-slate-700">{u.availability || "AVAILABLE"}</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300">{u.availability || "AVAILABLE"}</span>
                         ) : (
                           <span className="text-slate-400">System Staff</span>
                         )}
@@ -1031,7 +1031,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             setNewRoleInput(u.role);
                             setNewDeptInput(u.department || "");
                           }}
-                          className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded transition"
+                          className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded transition"
                         >
                           Edit Role
                         </button>
@@ -1058,10 +1058,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* TAB 3: TEAM MANAGEMENT */}
       {activeTab === "teams" && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 p-5 rounded-xl shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-5 rounded-xl shadow-xs">
             <div>
-              <h2 className="text-base font-bold text-slate-900">Platform Field Squad Registry</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">Platform Field Squad Registry</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Admin defines and provisions teams. Municipal officers assign incidents to these teams.
               </p>
             </div>
@@ -1074,7 +1074,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   placeholder="Search squads..."
                   value={teamSearch}
                   onChange={e => setTeamSearch(e.target.value)}
-                  className="pl-8.5 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-blue-500 w-44 sm:w-56"
+                  className="pl-8.5 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-hidden focus:border-blue-500 w-44 sm:w-56"
                 />
               </div>
 
@@ -1093,16 +1093,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div
                 key={t.id}
                 className={`bg-white dark:bg-slate-900 border rounded-xl p-5 shadow-xs transition relative flex flex-col justify-between ${
-                  t.active !== false ? "border-slate-200" : "border-slate-300 opacity-60 bg-slate-50"
+                  t.active !== false ? "border-slate-200" : "border-slate-300 dark:border-slate-600 opacity-60 bg-slate-50 dark:bg-slate-800/50"
                 }`}
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">
+                      <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded border border-slate-200">
                         {t.id}
                       </span>
-                      <h3 className="text-sm font-bold text-slate-900 mt-1.5 leading-snug">{t.name}</h3>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white mt-1.5 leading-snug">{t.name}</h3>
                     </div>
 
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -1110,54 +1110,54 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                         : t.availability === "BUSY"
                         ? "bg-amber-50 text-amber-700 border border-amber-200"
-                        : "bg-slate-100 text-slate-600 border border-slate-200"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200"
                     }`}>
                       {t.availability}
                     </span>
                   </div>
 
-                  <div className="space-y-2 mt-4 text-xs text-slate-600">
+                  <div className="space-y-2 mt-4 text-xs text-slate-600 dark:text-slate-300">
                     <div className="flex items-center gap-2">
                       <Briefcase className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="font-semibold text-slate-700">Category:</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Category:</span>
                       <span className="truncate">{t.category}</span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <Layers className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="font-semibold text-slate-700">Department:</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Department:</span>
                       <span className="truncate">{t.department || getDepartmentForCategory(t.category)}</span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="font-semibold text-slate-700">Service Zone:</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Service Zone:</span>
                       <span>{t.district || t.serviceZone}</span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="font-semibold text-slate-700">Supervisor:</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Supervisor:</span>
                       <span>{t.lead}</span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="font-semibold text-slate-700">Emergency Line:</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Emergency Line:</span>
                       <span className="font-mono text-[11px]">{t.phone}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500 font-semibold">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
                     {t.membersCount || 4} crew members
                   </span>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setEditingTeam(t)}
-                      className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded transition flex items-center gap-1"
+                      className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded transition flex items-center gap-1"
                     >
                       <Edit2 className="w-3 h-3" />
                       <span>Configure</span>
@@ -1185,9 +1185,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Service 1: Firebase Auth */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
                   <Lock className="w-4 h-4 text-blue-600" />
                   <span>Firebase Authentication</span>
                 </div>
@@ -1195,10 +1195,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   HEALTHY
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 JWT token issuance, email verification, Google OAuth provider and session lifecycle.
               </p>
-              <div className="text-[11px] font-mono text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+              <div className="text-[11px] font-mono text-slate-600 dark:text-slate-300 space-y-1 bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100">
                 <div className="flex justify-between"><span>Provider:</span><span>Identity Platform</span></div>
                 <div className="flex justify-between"><span>Latency:</span><span>45ms</span></div>
                 <div className="flex justify-between"><span>Security:</span><span>Strict RBAC</span></div>
@@ -1206,9 +1206,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {/* Service 2: Cloud Firestore */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
                   <Server className="w-4 h-4 text-purple-600" />
                   <span>Cloud Firestore NoSQL</span>
                 </div>
@@ -1216,10 +1216,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   HEALTHY
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Real-time snapshots, incident reports index, spatial documents, and immutable history log.
               </p>
-              <div className="text-[11px] font-mono text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+              <div className="text-[11px] font-mono text-slate-600 dark:text-slate-300 space-y-1 bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100">
                 <div className="flex justify-between"><span>Database:</span><span>Default (eur3)</span></div>
                 <div className="flex justify-between"><span>Write Avg:</span><span>110ms</span></div>
                 <div className="flex justify-between"><span>Listeners:</span><span>Active (Live Sync)</span></div>
@@ -1227,9 +1227,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {/* Service 3: Gemini Vision AI */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
                   <Cpu className="w-4 h-4 text-emerald-600" />
                   <span>Gemini 2.5 / 3.5 Engine</span>
                 </div>
@@ -1237,10 +1237,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   HEALTHY
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Hazard detection, spatial deduplication (<span className="font-mono">r &lt; 5m</span>), and repair severity scoring.
               </p>
-              <div className="text-[11px] font-mono text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+              <div className="text-[11px] font-mono text-slate-600 dark:text-slate-300 space-y-1 bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100">
                 <div className="flex justify-between"><span>Model:</span><span>gemini-2.5-flash</span></div>
                 <div className="flex justify-between"><span>Inference:</span><span>640ms</span></div>
                 <div className="flex justify-between"><span>Status:</span><span>Operational</span></div>
@@ -1249,8 +1249,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           {/* System Rate Limits & SLA Config */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-6 shadow-xs space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Clock className="w-4 h-4 text-blue-600" />
               <span>SLA Target Parameters by Priority Tier</span>
             </h3>
@@ -1270,10 +1270,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <p className="text-xl font-extrabold text-blue-900 mt-1">24 Hours</p>
                 <p className="text-[11px] text-blue-700 mt-0.5">Secondary street surfaces, streetlights</p>
               </div>
-              <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                <span className="font-bold text-slate-800">Low Priority</span>
-                <p className="text-xl font-extrabold text-slate-900 mt-1">48 Hours</p>
-                <p className="text-[11px] text-slate-700 mt-0.5">Surface cracks, cosmetic graffiti</p>
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                <span className="font-bold text-slate-800 dark:text-slate-200">Low Priority</span>
+                <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">48 Hours</p>
+                <p className="text-[11px] text-slate-700 dark:text-slate-300 mt-0.5">Surface cracks, cosmetic graffiti</p>
               </div>
             </div>
           </div>
@@ -1282,15 +1282,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       {/* TAB 5: AUDIT TRAIL */}
       {activeTab === "audit" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl shadow-xs overflow-hidden">
-          <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xs overflow-hidden">
+          <div className="p-5 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
             <div>
-              <h2 className="text-base font-bold text-slate-900">Platform Security & Governance Ledger</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">Platform Security & Governance Ledger</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Audited timeline of administrative decisions, role modifications, and system triggers.
               </p>
             </div>
-            <span className="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200">
+            <span className="text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-1 rounded border border-slate-200">
               IMMUTABLE FIRESTORE AUDIT
             </span>
           </div>
@@ -1301,14 +1301,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
                 <div className="space-y-1 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-900 font-mono">{log.action}</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white font-mono">{log.action}</span>
                     <span className="text-[10px] text-slate-400">
                       {new Date(log.timestamp).toLocaleString()}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600">{log.details}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-300">{log.details}</p>
                   <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                    <span>Actor: <strong className="text-slate-700">{log.actorEmail}</strong></span>
+                    <span>Actor: <strong className="text-slate-700 dark:text-slate-300">{log.actorEmail}</strong></span>
                     <span>•</span>
                     <span className="uppercase font-mono font-bold text-blue-600">{log.actorRole}</span>
                   </div>
@@ -1321,34 +1321,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       {/* TAB 6: SETTINGS */}
       {activeTab === "settings" && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-6 shadow-xs space-y-6">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-xs space-y-6">
           <div>
-            <h2 className="text-base font-bold text-slate-900">Global City Configuration</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white">Global City Configuration</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Tune automated hazard deduplication radii, AI confidence threshold, and notifications.
             </p>
           </div>
 
           <div className="space-y-4 max-w-xl text-xs">
             <div>
-              <label className="block font-bold text-slate-700 mb-1">
+              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                 AI Deduplication Proximity Threshold (meters)
               </label>
               <input
                 type="number"
                 defaultValue={5}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
               />
-              <p className="text-[11px] text-slate-500 mt-1">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                 Submissions within 5 meters of an existing active incident are automatically grouped into a single cluster.
               </p>
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1">
+              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Emergency SOS Dispatch Escalation
               </label>
-              <select className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800">
+              <select className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200">
                 <option value="AUTO_ALL">Broadcast to All Online Squads Immediately</option>
                 <option value="MUNICIPAL_FIRST">Alert Municipal Command Center First</option>
               </select>
@@ -1369,21 +1369,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* MODAL: EDIT USER ROLE */}
       {editingUser && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
-            <h3 className="text-sm font-bold text-slate-900">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
               Edit User Role & Clearance: {editingUser.fullName}
             </h3>
-            <p className="text-xs text-slate-500">
-              Select the appropriate authority domain for <span className="font-mono text-slate-700">{editingUser.email}</span>.
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Select the appropriate authority domain for <span className="font-mono text-slate-700 dark:text-slate-300">{editingUser.email}</span>.
             </p>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">System Role</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">System Role</label>
                 <select
                   value={newRoleInput}
                   onChange={e => setNewRoleInput(e.target.value as UserRole)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800 font-semibold"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200 font-semibold"
                 >
                   <option value="citizen">CITIZEN (Report & Track)</option>
                   <option value="municipal">MUNICIPAL (Command Center & Dispatch)</option>
@@ -1393,13 +1393,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Department / Division</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Department / Division</label>
                 <input
                   type="text"
                   placeholder="e.g. Roads & Highway Authority (PWD)"
                   value={newDeptInput}
                   onChange={e => setNewDeptInput(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                 />
               </div>
             </div>
@@ -1407,7 +1407,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setEditingUser(null)}
-                className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
+                className="px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 rounded-lg transition"
               >
                 Cancel
               </button>
@@ -1425,46 +1425,46 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* MODAL: CREATE SQUAD */}
       {showCreateTeamModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-lg w-full space-y-4">
-            <h3 className="text-sm font-bold text-slate-900">Provision New Field Operations Squad</h3>
-            <p className="text-xs text-slate-500">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-2xl max-w-lg w-full space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Provision New Field Operations Squad</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Register a new operational crew into the city fleet registry.
             </p>
 
             <form onSubmit={handleCreateTeam} className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Squad Name</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Squad Name</label>
                 <input
                   type="text"
                   placeholder="e.g. Rapid Asphalt Recovery Unit"
                   value={newTeamName}
                   onChange={e => setNewTeamName(e.target.value)}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Lead Supervisor</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Lead Supervisor</label>
                   <input
                     type="text"
                     placeholder="Supervisor Name"
                     value={newTeamLead}
                     onChange={e => setNewTeamLead(e.target.value)}
                     required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Category</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Category</label>
                   <select
                     value={newTeamCategory}
                     onChange={e => {
                       setNewTeamCategory(e.target.value);
                       setNewTeamDepartment(getDepartmentForCategory(e.target.value));
                     }}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                   >
                     <option value="Pothole">Pothole & Surface Repair</option>
                     <option value="Broken Streetlight">Electrical & Streetlights</option>
@@ -1476,22 +1476,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Service Zone</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Service Zone</label>
                   <input
                     type="text"
                     placeholder="e.g. Central Zone"
                     value={newTeamDistrict}
                     onChange={e => setNewTeamDistrict(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Emergency Phone</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Emergency Phone</label>
                   <input
                     type="text"
                     value={newTeamPhone}
                     onChange={e => setNewTeamPhone(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                   />
                 </div>
               </div>
@@ -1500,7 +1500,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowCreateTeamModal(false)}
-                  className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
+                  className="px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 rounded-lg transition"
                 >
                   Cancel
                 </button>
@@ -1519,46 +1519,46 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* MODAL: EDIT TEAM */}
       {editingTeam && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
-            <h3 className="text-sm font-bold text-slate-900">Configure Squad: {editingTeam.name}</h3>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-2xl max-w-md w-full space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Configure Squad: {editingTeam.name}</h3>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Squad Name</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Squad Name</label>
                 <input
                   type="text"
                   value={editingTeam.name}
                   onChange={e => setEditingTeam({ ...editingTeam, name: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Supervisor Lead</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Supervisor Lead</label>
                 <input
                   type="text"
                   value={editingTeam.lead}
                   onChange={e => setEditingTeam({ ...editingTeam, lead: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Service Zone</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Service Zone</label>
                 <input
                   type="text"
                   value={editingTeam.district}
                   onChange={e => setEditingTeam({ ...editingTeam, district: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Availability</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Availability</label>
                 <select
                   value={editingTeam.availability}
                   onChange={e => setEditingTeam({ ...editingTeam, availability: e.target.value as any })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-800"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-800 dark:text-slate-200"
                 >
                   <option value="AVAILABLE">AVAILABLE</option>
                   <option value="BUSY">BUSY</option>
@@ -1570,7 +1570,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setEditingTeam(null)}
-                className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition"
+                className="px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 rounded-lg transition"
               >
                 Cancel
               </button>

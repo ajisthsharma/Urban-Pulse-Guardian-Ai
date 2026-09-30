@@ -1,7 +1,7 @@
 import { handleFirestoreError, OperationType } from "../lib/firestore_errors";
 import { setDoc } from "firebase/firestore";
 import { collection, query, where, onSnapshot, doc, updateDoc, writeBatch, orderBy, limit } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { db, auth } from "../lib/firebase";
 import { Notification } from "../types";
 
 export function subscribeToNotifications(
@@ -90,9 +90,18 @@ export async function createNotification(
   reportId: string = "SYSTEM"
 ): Promise<void> {
   if (!db) return;
+  const currentAuthUser = auth.currentUser;
+  if (!currentAuthUser) {
+    console.warn("[notificationsService] Skipping notification creation: No authenticated Firebase user session.");
+    return;
+  }
+  const notifId = `notif_${Date.now()}`;
+  const notifRef = doc(db, "notifications", notifId);
+  const path = `notifications/${notifId}`;
+
+  console.log(`[Firestore Pre-Write Auth Check] Operation: ${OperationType.CREATE} | Path: ${path} | Has currentUser: ${Boolean(currentAuthUser)} | UID: ${currentAuthUser.uid}`);
+
   try {
-    const notifId = `notif_${Date.now()}`;
-    const notifRef = doc(db, "notifications", notifId);
     await setDoc(notifRef, {
       id: notifId,
       title,
@@ -105,6 +114,6 @@ export async function createNotification(
       createdAt: new Date().toISOString()
     });
   } catch (error) {
-    handleFirestoreError(error, OperationType.CREATE, "notifications");
+    handleFirestoreError(error, OperationType.CREATE, path);
   }
 }
